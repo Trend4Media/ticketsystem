@@ -1,0 +1,39 @@
+title: TicketSystem - Professioneller Kundensupport
+description: Revolutionäres Ticketsystem für modernen Kundensupport. Elegant, effizient und benutzerfreundlich.
+url: "https://trend4media.github.io"
+baseurl: "/ticketsystem"
+author: Trend4Media
+lang: de
+
+# GitHub Pages settings
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# SEO settings
+twitter:
+  username: trend4media
+  card: summary_large_image
+
+social:
+  name: TicketSystem
+  links:
+    - https://github.com/Trend4Media/ticketsystem
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+timezone: Europe/Berlin
+
+# Exclude files
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .bundle
+  - .sass-cache
+  - .jekyll-cache
+  - .git

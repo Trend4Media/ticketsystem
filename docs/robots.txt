@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://trend4media.github.io/ticketsystem/sitemap.xml
