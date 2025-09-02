@@ -683,6 +683,190 @@
             color: white;
         }
         
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 1400px;
+            height: 90%;
+            max-height: 900px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border);
+            background: var(--background);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .modal-close:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            height: calc(100% - 80px);
+            position: relative;
+        }
+
+        .modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .webapp-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .webapp-placeholder {
+            padding: 60px 40px;
+            text-align: center;
+            background: var(--background);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .webapp-placeholder h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .webapp-placeholder p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .demo-credentials {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin: 30px 0;
+            max-width: 400px;
+        }
+
+        .demo-credentials h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .credential-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .credential-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .credential-value {
+            font-family: 'SF Mono', Monaco, monospace;
+            background: var(--primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .nav-links {
@@ -927,22 +1111,51 @@
             </div>
             
             <div class="features-grid" style="max-width: 800px; margin: 0 auto;">
-                <div class="feature-card scroll-animate" style="cursor: pointer;" onclick="showDemo('customer')">
+                <div class="feature-card scroll-animate" style="cursor: pointer;" onclick="openWebApp('customer')">
                     <div class="feature-icon">👤</div>
                     <h3 class="feature-title">Kunden-Portal</h3>
                     <p class="feature-description">
                         Testen Sie die Benutzeroberfläche aus Kundensicht. 
                         Erstellen Sie Tickets und verfolgen Sie den Status.
                     </p>
+                    <div class="demo-btn-container" style="margin-top: 20px;">
+                        <div class="btn btn-primary" style="width: 100%; justify-content: center;">
+                            🚀 Web-App starten
+                        </div>
+                    </div>
                 </div>
 
-                <div class="feature-card scroll-animate" style="cursor: pointer;" onclick="showDemo('support')">
+                <div class="feature-card scroll-animate" style="cursor: pointer;" onclick="openWebApp('support')">
                     <div class="feature-icon">🛠️</div>
                     <h3 class="feature-title">Support-Dashboard</h3>
                     <p class="feature-description">
                         Erleben Sie die Macht des Support-Dashboards. 
                         Verwalten Sie Tickets und kommunizieren Sie mit Kunden.
                     </p>
+                    <div class="demo-btn-container" style="margin-top: 20px;">
+                        <div class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                            🔧 Dashboard öffnen
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Web-App Demo Hinweis -->
+            <div class="demo-info scroll-animate" style="text-align: center; margin-top: 60px; padding: 30px; background: rgba(0, 122, 255, 0.05); border-radius: 20px; border: 1px solid rgba(0, 122, 255, 0.1);">
+                <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 20px;">💡 Demo-Informationen</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                    Klicken Sie auf eine der Karten oben, um die vollständige 4Ticket Web-App zu starten.
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 25px;">
+                    <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <strong style="color: var(--primary);">👤 Kunden-Login:</strong><br>
+                        <span style="font-family: monospace; background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">Registrierung erforderlich</span>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <strong style="color: var(--primary);">🛠️ Support-Login:</strong><br>
+                        <span style="font-family: monospace; background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">admin@support.com</span><br>
+                        <span style="font-family: monospace; background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">admin123</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1028,6 +1241,67 @@
         </div>
     </footer>
 
+    <!-- Web-App Modal -->
+    <div id="webapp-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="logo-icon">4</div>
+                    <span id="modal-title">4Ticket Web-App</span>
+                </div>
+                <button class="modal-close" onclick="closeWebApp()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="webapp-placeholder" class="webapp-placeholder">
+                    <div class="webapp-loader">
+                        <div class="loader-spinner"></div>
+                        <p>4Ticket Web-App wird geladen...</p>
+                    </div>
+                    
+                    <h3 id="webapp-title">🚀 4Ticket Demo bereit!</h3>
+                    <p id="webapp-description">
+                        Die vollständige 4Ticket Web-App ist bereit zur Verwendung. 
+                        Testen Sie alle Funktionen in einer realistischen Umgebung.
+                    </p>
+                    
+                    <div class="demo-credentials" id="demo-credentials">
+                        <h4>🔑 Demo-Zugangsdaten:</h4>
+                        <div class="credential-item">
+                            <span class="credential-label">E-Mail:</span>
+                            <span class="credential-value" id="demo-email">admin@support.com</span>
+                        </div>
+                        <div class="credential-item">
+                            <span class="credential-label">Passwort:</span>
+                            <span class="credential-value" id="demo-password">admin123</span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                        <button class="btn btn-primary" onclick="launchWebApp()" id="launch-btn">
+                            🚀 Web-App starten
+                        </button>
+                        <button class="btn btn-secondary" onclick="closeWebApp()">
+                            Schließen
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 40px; padding: 20px; background: rgba(0, 122, 255, 0.05); border-radius: 12px; max-width: 600px;">
+                        <h4 style="color: var(--primary); margin-bottom: 10px;">💡 Funktionen testen:</h4>
+                        <ul style="text-align: left; color: var(--text-secondary); line-height: 1.8;">
+                            <li>✅ Ticket-Erstellung mit 3 Kategorien</li>
+                            <li>✅ Benutzerregistrierung und -anmeldung</li>
+                            <li>✅ Support-Dashboard mit Ticket-Verwaltung</li>
+                            <li>✅ Echtzeit-Status-Updates</li>
+                            <li>✅ Kommentar-System</li>
+                            <li>✅ Responsive Design</li>
+                        </ul>
+                    </div>
+                </div>
+                <iframe id="webapp-frame" src="" style="display: none;"></iframe>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1077,32 +1351,117 @@
             observer.observe(el);
         });
 
-        // Demo functions
-        function showDemo(type) {
-            let message = '';
-            let url = '';
+        // Web-App functions
+        let currentDemoType = 'customer';
+
+        function openWebApp(type) {
+            currentDemoType = type;
+            const modal = document.getElementById('webapp-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const webappTitle = document.getElementById('webapp-title');
+            const webappDescription = document.getElementById('webapp-description');
+            const demoCredentials = document.getElementById('demo-credentials');
+            const demoEmail = document.getElementById('demo-email');
+            const demoPassword = document.getElementById('demo-password');
             
-            switch(type) {
-                case 'customer':
-                    message = 'Kunden-Portal Demo wird geladen...';
-                    url = 'https://github.com/Trend4Media/ticketsystem#customer-demo';
-                    break;
-                case 'support':
-                    message = 'Support-Dashboard Demo wird geladen...';
-                    url = 'https://github.com/Trend4Media/ticketsystem#support-demo';
-                    break;
-                case 'docs':
-                    message = 'API Dokumentation wird geladen...';
-                    url = 'https://github.com/Trend4Media/ticketsystem#api-docs';
-                    break;
-                default:
-                    message = 'Demo wird geladen...';
-                    url = 'https://github.com/Trend4Media/ticketsystem';
+            // Configure modal content based on type
+            if (type === 'customer') {
+                modalTitle.textContent = '4Ticket Kunden-Portal';
+                webappTitle.textContent = '👤 Kunden-Portal Demo';
+                webappDescription.textContent = 'Testen Sie die Benutzeroberfläche aus Kundensicht. Registrieren Sie sich oder melden Sie sich an, um Tickets zu erstellen und zu verwalten.';
+                demoEmail.textContent = 'Registrierung erforderlich';
+                demoPassword.textContent = 'Neues Passwort wählen';
+                demoCredentials.querySelector('h4').textContent = '📝 Kunden-Registrierung:';
+                demoCredentials.querySelector('.credential-item:first-child .credential-label').textContent = 'Neue E-Mail:';
+                demoCredentials.querySelector('.credential-item:last-child .credential-label').textContent = 'Passwort:';
+            } else {
+                modalTitle.textContent = '4Ticket Support-Dashboard';
+                webappTitle.textContent = '🛠️ Support-Dashboard Demo';
+                webappDescription.textContent = 'Erleben Sie die Macht des Support-Dashboards. Verwalten Sie Tickets, kommunizieren Sie mit Kunden und nutzen Sie erweiterte Funktionen.';
+                demoEmail.textContent = 'admin@support.com';
+                demoPassword.textContent = 'admin123';
+                demoCredentials.querySelector('h4').textContent = '🔑 Support-Zugangsdaten:';
+                demoCredentials.querySelector('.credential-item:first-child .credential-label').textContent = 'E-Mail:';
+                demoCredentials.querySelector('.credential-item:last-child .credential-label').textContent = 'Passwort:';
             }
             
-            alert(message + '\n\nSie werden zu GitHub weitergeleitet, wo Sie das vollständige 4Ticket System mit allen Funktionen finden.');
-            window.open(url, '_blank');
+            // Show modal
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Show loader initially
+            document.querySelector('.webapp-loader').style.display = 'block';
+            setTimeout(() => {
+                document.querySelector('.webapp-loader').style.display = 'none';
+            }, 1500);
         }
+
+        function launchWebApp() {
+            const placeholder = document.getElementById('webapp-placeholder');
+            const iframe = document.getElementById('webapp-frame');
+            const launchBtn = document.getElementById('launch-btn');
+            
+            // Show loading state
+            launchBtn.innerHTML = '⏳ Startet...';
+            launchBtn.disabled = true;
+            
+            // Simulate app loading
+            setTimeout(() => {
+                // For now, redirect to GitHub repository with demo instructions
+                let url = 'https://github.com/Trend4Media/ticketsystem';
+                let message = '';
+                
+                if (currentDemoType === 'customer') {
+                    message = '🚀 Kunden-Portal wird gestartet...\n\nDie 4Ticket Web-App öffnet sich in einem neuen Tab.\n\n👤 Als Kunde können Sie:\n• Sich registrieren und anmelden\n• Tickets in 3 Kategorien erstellen\n• Ticket-Status verfolgen\n• Mit dem Support kommunizieren';
+                } else {
+                    message = '🛠️ Support-Dashboard wird gestartet...\n\nDie 4Ticket Web-App öffnet sich in einem neuen Tab.\n\n🔧 Als Support-Mitarbeiter können Sie:\n• Alle Tickets verwalten\n• Tickets zuweisen und bearbeiten\n• Mit Kunden kommunizieren\n• Statistiken einsehen\n\n🔑 Login: admin@support.com / admin123';
+                }
+                
+                alert(message);
+                window.open(url, '_blank');
+                
+                // Reset button
+                launchBtn.innerHTML = '🚀 Web-App starten';
+                launchBtn.disabled = false;
+                
+                // Close modal after launch
+                setTimeout(() => {
+                    closeWebApp();
+                }, 1000);
+            }, 2000);
+        }
+
+        function closeWebApp() {
+            const modal = document.getElementById('webapp-modal');
+            const iframe = document.getElementById('webapp-frame');
+            
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                modal.style.opacity = '1';
+                document.body.style.overflow = 'auto';
+                iframe.src = '';
+                iframe.style.display = 'none';
+                document.getElementById('webapp-placeholder').style.display = 'flex';
+            }, 300);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('webapp-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeWebApp();
+            }
+        });
+
+        // Close modal with escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('webapp-modal');
+                if (modal.style.display === 'block') {
+                    closeWebApp();
+                }
+            }
+        });
 
         // Add floating animation to device mockup
         const deviceMockup = document.querySelector('.device-mockup');
