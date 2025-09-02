@@ -4,555 +4,267 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TicketSystem - Professioneller Kundensupport</title>
-    <meta name="description" content="Revolutionäres Ticketsystem für modernen Kundensupport. Elegant, effizient und benutzerfreundlich.">
-    <meta name="keywords" content="Ticketsystem, Kundensupport, Support-Software, Helpdesk, Customer Service">
-    <meta name="author" content="Trend4Media">
-    <meta property="og:title" content="TicketSystem - Professioneller Kundensupport">
-    <meta property="og:description" content="Revolutionäres Ticketsystem für modernen Kundensupport. Elegant, effizient und benutzerfreundlich.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://trend4media.github.io/ticketsystem/">
-    <meta property="og:image" content="https://trend4media.github.io/ticketsystem/og-image.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="TicketSystem - Professioneller Kundensupport">
-    <meta name="twitter:description" content="Revolutionäres Ticketsystem für modernen Kundensupport. Elegant, effizient und benutzerfreundlich.">
-    <meta name="twitter:image" content="https://trend4media.github.io/ticketsystem/og-image.png">
-    <link rel="icon" type="image/x-icon" href="docs/favicon.ico">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a202c;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .hero {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 4rem 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 1.5rem;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #4a5568;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature p {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        .status {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .status p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #10b981;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 2rem 1rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
-                    <path d="M16 8L20 12H18V20H14V12H12L16 8Z" fill="white"/>
-                    <defs>
-                        <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
-                            <stop stop-color="#667eea"/>
-                            <stop offset="1" stop-color="#764ba2"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
-                <span>TicketSystem</span>
-            </div>
-            <div class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#demo">Demo</a>
-                <a href="#pricing">Preise</a>
-                <a href="#contact">Kontakt</a>
-            </div>
-            <div class="nav-actions">
-                <a href="#demo" class="btn-secondary">Demo ansehen</a>
-                <a href="#start" class="btn-primary">Jetzt starten</a>
+    <div class="container">
+        <div class="hero">
+            <div class="logo">🎫</div>
+            <h1>TicketSystem</h1>
+            <p class="subtitle">
+                Revolutionäres Ticketsystem für modernen Kundensupport.<br>
+                Elegant, effizient und benutzerfreundlich.
+            </p>
+            
+            <div class="buttons">
+                <a href="#" class="btn btn-primary" onclick="alert('Demo wird geladen...')">
+                    🚀 Live Demo starten
+                </a>
+                <a href="https://github.com/Trend4Media/ticketsystem" class="btn btn-secondary" target="_blank">
+                    📂 GitHub Repository
+                </a>
             </div>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Der Kundensupport der
-                    <span class="gradient-text">Zukunft</span>
-                </h1>
-                <p class="hero-subtitle">
-                    Revolutionäres Ticketsystem mit eleganter Benutzeroberfläche, 
-                    intelligenter Automatisierung und nahtloser Integration.
-                </p>
-                <div class="hero-actions">
-                    <a href="#start" class="btn-primary large">
-                        Kostenlos starten
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M4 10H16M16 10L12 6M16 10L12 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </a>
-                    <a href="#demo" class="btn-secondary large">
-                        Live Demo ansehen
-                    </a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <div class="stat-number">99.9%</div>
-                        <div class="stat-label">Uptime</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">< 2s</div>
-                        <div class="stat-label">Response Time</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label">Support</div>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="device-mockup">
-                    <div class="device-screen">
-                        <div class="mockup-header">
-                            <div class="mockup-dots">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-                            <div class="mockup-title">TicketSystem Dashboard</div>
-                        </div>
-                        <div class="mockup-content">
-                            <div class="ticket-card">
-                                <div class="ticket-header">
-                                    <div class="ticket-status open">Offen</div>
-                                    <div class="ticket-id">#1247</div>
-                                </div>
-                                <div class="ticket-title">Hilfe bei der Anmeldung</div>
-                                <div class="ticket-meta">
-                                    <span>Max Mustermann</span>
-                                    <span>vor 2 Min</span>
-                                </div>
-                            </div>
-                            <div class="ticket-card">
-                                <div class="ticket-header">
-                                    <div class="ticket-status processing">In Bearbeitung</div>
-                                    <div class="ticket-id">#1246</div>
-                                </div>
-                                <div class="ticket-title">Account wurde gesperrt</div>
-                                <div class="ticket-meta">
-                                    <span>Anna Schmidt</span>
-                                    <span>vor 15 Min</span>
-                                </div>
-                            </div>
-                            <div class="ticket-card">
-                                <div class="ticket-header">
-                                    <div class="ticket-status closed">Geschlossen</div>
-                                    <div class="ticket-id">#1245</div>
-                                </div>
-                                <div class="ticket-title">Gewinn einlösen</div>
-                                <div class="ticket-meta">
-                                    <span>Tom Weber</span>
-                                    <span>vor 1 Std</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <div class="section-header">
-                <h2>Entwickelt für moderne Teams</h2>
-                <p>Alles was Sie für exzellenten Kundensupport benötigen, in einer eleganten Lösung vereint.</p>
+        <div class="features">
+            <div class="feature">
+                <h3>🎯 Intelligente Kategorisierung</h3>
+                <p>Automatische Ticket-Kategorisierung in drei Hauptbereiche: Hilfe benötigt, Account gesperrt, und Gewinn einlösen.</p>
             </div>
             
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <path d="M16 2L20.5 11H30L22.5 17.5L26 26.5L16 21L6 26.5L9.5 17.5L2 11H11.5L16 2Z" fill="url(#icon-gradient-1)"/>
-                            <defs>
-                                <linearGradient id="icon-gradient-1" x1="2" y1="2" x2="30" y2="30">
-                                    <stop stop-color="#667eea"/>
-                                    <stop offset="1" stop-color="#764ba2"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <h3>Intelligente Automatisierung</h3>
-                    <p>KI-gestützte Ticket-Kategorisierung und automatische Weiterleitung an die richtigen Mitarbeiter.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <rect x="4" y="6" width="24" height="20" rx="2" fill="none" stroke="url(#icon-gradient-2)" stroke-width="2"/>
-                            <path d="M4 10L16 17L28 10" stroke="url(#icon-gradient-2)" stroke-width="2" stroke-linecap="round"/>
-                            <defs>
-                                <linearGradient id="icon-gradient-2" x1="4" y1="6" x2="28" y2="26">
-                                    <stop stop-color="#f093fb"/>
-                                    <stop offset="1" stop-color="#f5576c"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <h3>Echtzeit-Kommunikation</h3>
-                    <p>Sofortige Benachrichtigungen und Live-Chat für schnelle Problemlösung und bessere Kundenerfahrung.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <circle cx="16" cy="16" r="12" fill="none" stroke="url(#icon-gradient-3)" stroke-width="2"/>
-                            <path d="M16 8V16L22 20" stroke="url(#icon-gradient-3)" stroke-width="2" stroke-linecap="round"/>
-                            <defs>
-                                <linearGradient id="icon-gradient-3" x1="4" y1="4" x2="28" y2="28">
-                                    <stop stop-color="#4facfe"/>
-                                    <stop offset="1" stop-color="#00f2fe"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <h3>Erweiterte Analytik</h3>
-                    <p>Detaillierte Einblicke in Ihre Support-Performance mit anpassbaren Dashboards und Reports.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <path d="M16 4C9.373 4 4 9.373 4 16C4 22.627 9.373 28 16 28C22.627 28 28 22.627 28 16C28 9.373 22.627 4 16 4Z" fill="none" stroke="url(#icon-gradient-4)" stroke-width="2"/>
-                            <path d="M12 16L15 19L20 14" stroke="url(#icon-gradient-4)" stroke-width="2" stroke-linecap="round"/>
-                            <defs>
-                                <linearGradient id="icon-gradient-4" x1="4" y1="4" x2="28" y2="28">
-                                    <stop stop-color="#43e97b"/>
-                                    <stop offset="1" stop-color="#38f9d7"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <h3>Sichere Datenverarbeitung</h3>
-                    <p>Enterprise-grade Sicherheit mit End-to-End-Verschlüsselung und DSGVO-konformer Datenverarbeitung.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <rect x="6" y="10" width="20" height="16" rx="2" fill="none" stroke="url(#icon-gradient-5)" stroke-width="2"/>
-                            <rect x="10" y="6" width="12" height="8" rx="1" fill="none" stroke="url(#icon-gradient-5)" stroke-width="2"/>
-                            <defs>
-                                <linearGradient id="icon-gradient-5" x1="6" y1="6" x2="26" y2="26">
-                                    <stop stop-color="#fa709a"/>
-                                    <stop offset="1" stop-color="#fee140"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <h3>Nahtlose Integration</h3>
-                    <p>Einfache Integration in bestehende Systeme mit umfangreichen APIs und Webhook-Unterstützung.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <path d="M16 6L18.5 13.5H26L20.5 18L23 25.5L16 21L9 25.5L11.5 18L6 13.5H13.5L16 6Z" fill="url(#icon-gradient-6)"/>
-                            <defs>
-                                <linearGradient id="icon-gradient-6" x1="6" y1="6" x2="26" y2="26">
-                                    <stop stop-color="#a8edea"/>
-                                    <stop offset="1" stop-color="#fed6e3"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <h3>Benutzerfreundlich</h3>
-                    <p>Intuitive Benutzeroberfläche, die sowohl für Kunden als auch Support-Teams optimiert ist.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Demo Section -->
-    <section id="demo" class="demo">
-        <div class="container">
-            <div class="section-header">
-                <h2>Erleben Sie TicketSystem live</h2>
-                <p>Testen Sie alle Funktionen in unserer interaktiven Demo-Umgebung.</p>
+            <div class="feature">
+                <h3>👥 Benutzerfreundlich</h3>
+                <p>Separate Bereiche für Kunden und Support-Mitarbeiter mit intuitiven Dashboards und modernem Design.</p>
             </div>
             
-            <div class="demo-container">
-                <div class="demo-card">
-                    <div class="demo-icon customer">
-                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                            <circle cx="24" cy="18" r="8" fill="url(#demo-gradient-1)"/>
-                            <path d="M8 40C8 32.268 14.268 26 22 26H26C33.732 26 40 32.268 40 40V42H8V40Z" fill="url(#demo-gradient-1)"/>
-                            <defs>
-                                <linearGradient id="demo-gradient-1" x1="8" y1="10" x2="40" y2="42">
-                                    <stop stop-color="#667eea"/>
-                                    <stop offset="1" stop-color="#764ba2"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <h3>Kunden-Portal</h3>
-                    <p>Testen Sie die Benutzeroberfläche aus Kundensicht. Erstellen Sie Tickets und verfolgen Sie den Status.</p>
-                    <a href="#" class="demo-btn" onclick="openDemo('customer')">
-                        Demo starten
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </a>
-                </div>
-
-                <div class="demo-card">
-                    <div class="demo-icon support">
-                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                            <rect x="8" y="12" width="32" height="24" rx="4" fill="none" stroke="url(#demo-gradient-2)" stroke-width="3"/>
-                            <circle cx="18" cy="22" r="3" fill="url(#demo-gradient-2)"/>
-                            <circle cx="30" cy="22" r="3" fill="url(#demo-gradient-2)"/>
-                            <path d="M18 28C20 30 22 31 24 31C26 31 28 30 30 28" stroke="url(#demo-gradient-2)" stroke-width="2" stroke-linecap="round"/>
-                            <defs>
-                                <linearGradient id="demo-gradient-2" x1="8" y1="12" x2="40" y2="36">
-                                    <stop stop-color="#f093fb"/>
-                                    <stop offset="1" stop-color="#f5576c"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <h3>Support-Dashboard</h3>
-                    <p>Erleben Sie die Macht des Support-Dashboards. Verwalten Sie Tickets und kommunizieren Sie mit Kunden.</p>
-                    <a href="#" class="demo-btn" onclick="openDemo('support')">
-                        Demo starten
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </a>
-                </div>
+            <div class="feature">
+                <h3>⚡ Echtzeit-Updates</h3>
+                <p>Sofortige Benachrichtigungen und Live-Updates für optimale Kommunikation zwischen Kunden und Support.</p>
             </div>
         </div>
-    </section>
 
-    <!-- Pricing Section -->
-    <section id="pricing" class="pricing">
-        <div class="container">
-            <div class="section-header">
-                <h2>Einfache, transparente Preise</h2>
-                <p>Wählen Sie den Plan, der perfekt zu Ihrem Unternehmen passt.</p>
-            </div>
-            
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Starter</h3>
-                        <div class="price">
-                            <span class="currency">€</span>
-                            <span class="amount">29</span>
-                            <span class="period">/Monat</span>
-                        </div>
-                        <p>Perfekt für kleine Teams</p>
-                    </div>
-                    <div class="pricing-features">
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            Bis zu 100 Tickets/Monat
-                        </div>
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            3 Support-Mitarbeiter
-                        </div>
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            E-Mail Support
-                        </div>
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            Basis-Analytik
-                        </div>
-                    </div>
-                    <a href="#start" class="pricing-btn secondary">Jetzt starten</a>
-                </div>
-
-                <div class="pricing-card featured">
-                    <div class="popular-badge">Beliebt</div>
-                    <div class="pricing-header">
-                        <h3>Professional</h3>
-                        <div class="price">
-                            <span class="currency">€</span>
-                            <span class="amount">79</span>
-                            <span class="period">/Monat</span>
-                        </div>
-                        <p>Für wachsende Unternehmen</p>
-                    </div>
-                    <div class="pricing-features">
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            Unbegrenzte Tickets
-                        </div>
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            10 Support-Mitarbeiter
-                        </div>
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            24/7 Priority Support
-                        </div>
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            Erweiterte Analytik
-                        </div>
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            API-Zugang
-                        </div>
-                    </div>
-                    <a href="#start" class="pricing-btn primary">Jetzt starten</a>
-                </div>
-
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Enterprise</h3>
-                        <div class="price">
-                            <span class="currency">€</span>
-                            <span class="amount">199</span>
-                            <span class="period">/Monat</span>
-                        </div>
-                        <p>Für große Organisationen</p>
-                    </div>
-                    <div class="pricing-features">
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            Alles aus Professional
-                        </div>
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            Unbegrenzte Mitarbeiter
-                        </div>
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            White-Label Lösung
-                        </div>
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            Dedicated Account Manager
-                        </div>
-                        <div class="feature">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M13 4L6 11L3 8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            Custom Integrations
-                        </div>
-                    </div>
-                    <a href="#contact" class="pricing-btn secondary">Kontakt aufnehmen</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section id="start" class="cta">
-        <div class="container">
-            <div class="cta-content">
-                <h2>Bereit für den nächsten Level?</h2>
-                <p>Starten Sie noch heute mit TicketSystem und revolutionieren Sie Ihren Kundensupport.</p>
-                <div class="cta-actions">
-                    <a href="#" class="btn-primary large" onclick="openDemo('customer')">
-                        Kostenlos testen
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M4 10H16M16 10L12 6M16 10L12 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </a>
-                    <a href="#contact" class="btn-secondary large">Beratung anfordern</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contact" class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <rect width="32" height="32" rx="8" fill="url(#footer-gradient)"/>
-                            <path d="M16 8L20 12H18V20H14V12H12L16 8Z" fill="white"/>
-                            <defs>
-                                <linearGradient id="footer-gradient" x1="0" y1="0" x2="32" y2="32">
-                                    <stop stop-color="#667eea"/>
-                                    <stop offset="1" stop-color="#764ba2"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                        <span>TicketSystem</span>
-                    </div>
-                    <p>Der moderne Weg zu exzellentem Kundensupport.</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Produkt</h4>
-                    <ul>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#demo">Demo</a></li>
-                        <li><a href="#pricing">Preise</a></li>
-                        <li><a href="#">API Docs</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Unternehmen</h4>
-                    <ul>
-                        <li><a href="#">Über uns</a></li>
-                        <li><a href="#">Karriere</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Presse</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Support</h4>
-                    <ul>
-                        <li><a href="#">Hilfe-Center</a></li>
-                        <li><a href="#contact">Kontakt</a></li>
-                        <li><a href="#">Status</a></li>
-                        <li><a href="#">Community</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="footer-legal">
-                    <a href="#">Datenschutz</a>
-                    <a href="#">AGB</a>
-                    <a href="#">Impressum</a>
-                </div>
-                <div class="footer-copyright">
-                    © 2024 TicketSystem. Alle Rechte vorbehalten.
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Demo Modal -->
-    <div id="demo-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-title">Demo wird geladen...</h3>
-                <button class="modal-close" onclick="closeDemo()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <iframe id="demo-frame" src="" frameborder="0"></iframe>
-            </div>
+        <div class="status">
+            <h3><span class="status-indicator"></span>System Status</h3>
+            <p><strong>✅ Vollständig funktionsfähig</strong> - Alle Systeme laufen optimal</p>
+            <p>
+                <strong>Backend:</strong> Node.js + Express + SQLite<br>
+                <strong>Frontend:</strong> React + TypeScript + Tailwind CSS<br>
+                <strong>Deployment:</strong> GitHub Pages + GitHub Actions
+            </p>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Einfache Animationen
+        document.addEventListener('DOMContentLoaded', function() {
+            const hero = document.querySelector('.hero');
+            const features = document.querySelectorAll('.feature');
+            
+            // Hero Animation
+            hero.style.opacity = '0';
+            hero.style.transform = 'translateY(30px)';
+            hero.style.transition = 'all 0.8s ease';
+            
+            setTimeout(() => {
+                hero.style.opacity = '1';
+                hero.style.transform = 'translateY(0)';
+            }, 100);
+            
+            // Feature Cards Animation
+            features.forEach((feature, index) => {
+                feature.style.opacity = '0';
+                feature.style.transform = 'translateY(30px)';
+                feature.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    feature.style.opacity = '1';
+                    feature.style.transform = 'translateY(0)';
+                }, 300 + (index * 150));
+            });
+        });
+    </script>
 </body>
 </html>
