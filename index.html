@@ -942,7 +942,7 @@
             </ul>
             <div class="nav-actions">
                 <a href="#demo" class="btn btn-secondary">Demo ansehen</a>
-                <a href="#cta" class="btn btn-primary">Jetzt starten</a>
+                <a href="app.html" class="btn btn-primary">Jetzt starten</a>
             </div>
         </div>
     </nav>
@@ -957,7 +957,7 @@
                     intelligenter Automatisierung und nahtloser Integration.
                 </p>
                 <div class="hero-actions">
-                    <a href="#cta" class="btn btn-primary btn-large">
+                    <a href="app.html" class="btn btn-primary btn-large">
                         Kostenlos starten
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                             <path d="M4 10H16M16 10L12 6M16 10L12 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -1170,7 +1170,7 @@
                     Starten Sie noch heute mit 4Ticket und revolutionieren Sie Ihren Kundensupport.
                 </p>
                 <div class="cta-actions">
-                    <a href="https://github.com/Trend4Media/ticketsystem" class="btn btn-primary btn-large" target="_blank">
+                    <a href="app.html" class="btn btn-primary btn-large">
                         Kostenlos testen
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                             <path d="M4 10H16M16 10L12 6M16 10L12 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -1407,14 +1407,14 @@
             
             // Simulate app loading
             setTimeout(() => {
-                // For now, redirect to GitHub repository with demo instructions
-                let url = 'https://github.com/Trend4Media/ticketsystem';
+                // Redirect to the actual 4Ticket Web-App
+                let url = 'app.html';
                 let message = '';
                 
                 if (currentDemoType === 'customer') {
-                    message = '🚀 Kunden-Portal wird gestartet...\n\nDie 4Ticket Web-App öffnet sich in einem neuen Tab.\n\n👤 Als Kunde können Sie:\n• Sich registrieren und anmelden\n• Tickets in 3 Kategorien erstellen\n• Ticket-Status verfolgen\n• Mit dem Support kommunizieren';
+                    message = '🚀 Kunden-Portal wird gestartet...\n\nDie 4Ticket Web-App öffnet sich jetzt.\n\n👤 Als Kunde können Sie:\n• Sich registrieren und anmelden\n• Tickets in 3 Kategorien erstellen\n• Ticket-Status verfolgen\n• Mit dem Support kommunizieren\n\n💡 Tipp: Klicken Sie auf "Demo-Modus starten" für sofortigen Zugang!';
                 } else {
-                    message = '🛠️ Support-Dashboard wird gestartet...\n\nDie 4Ticket Web-App öffnet sich in einem neuen Tab.\n\n🔧 Als Support-Mitarbeiter können Sie:\n• Alle Tickets verwalten\n• Tickets zuweisen und bearbeiten\n• Mit Kunden kommunizieren\n• Statistiken einsehen\n\n🔑 Login: admin@support.com / admin123';
+                    message = '🛠️ Support-Dashboard wird gestartet...\n\nDie 4Ticket Web-App öffnet sich jetzt.\n\n🔧 Als Support-Mitarbeiter können Sie:\n• Alle Tickets verwalten\n• Tickets zuweisen und bearbeiten\n• Mit Kunden kommunizieren\n• Statistiken einsehen\n\n🔑 Login: admin@support.com / admin123';
                 }
                 
                 alert(message);

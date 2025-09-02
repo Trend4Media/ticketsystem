@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4Ticket - Web App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #007AFF;
+            --primary-dark: #0056CC;
+            --secondary: #5856D6;
+            --success: #28CA42;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --text-primary: #1D1D1F;
+            --text-secondary: #86868B;
+            --background: #FBFBFD;
+            --surface: #FFFFFF;
+            --border: rgba(0, 0, 0, 0.1);
+            --shadow-light: rgba(0, 0, 0, 0.05);
+            --shadow-medium: rgba(0, 0, 0, 0.1);
+            --gradient-primary: linear-gradient(135deg, #007AFF, #5856D6);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .app-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        
+        .nav-menu {
+            flex: 1;
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(0, 122, 255, 0.1);
+            color: var(--primary);
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            font-size: 16px;
+        }
+        
+        .user-info {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            background: var(--background);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .user-details {
+            margin-left: 12px;
+            flex: 1;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--background);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--surface);
+        }
+        
+        .content-area {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            background: var(--background);
+        }
+        
+        /* Welcome Screen */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+        
+        .welcome-icon {
+            width: 120px;
+            height: 120px;
+            background: var(--gradient-primary);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            margin-bottom: 32px;
+        }
+        
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .welcome-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            max-width: 500px;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: var(--gradient-primary);
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .login-logo {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: 700;
+            margin: 0 auto 16px;
+        }
+        
+        .login-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .login-subtitle {
+            color: var(--text-secondary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: var(--surface);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+        
+        .login-actions {
+            margin-top: 32px;
+        }
+        
+        .btn-full {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 12px;
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .login-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .login-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Demo Banner */
+        .demo-banner {
+            background: rgba(255, 149, 0, 0.1);
+            border: 1px solid rgba(255, 149, 0, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .demo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--warning);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .demo-content h4 {
+            color: var(--warning);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .demo-content p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .demo-credentials {
+            background: rgba(0, 122, 255, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+            
+            .sidebar .nav-item span {
+                display: none;
+            }
+            
+            .user-info {
+                padding: 12px;
+            }
+            
+            .user-details {
+                display: none;
+            }
+            
+            .login-card {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* Ticket Styles */
+        .tickets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .ticket-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ticket-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--shadow-medium);
+        }
+        
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+        
+        .ticket-id {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .ticket-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-open {
+            background: rgba(255, 149, 0, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-processing {
+            background: rgba(0, 122, 255, 0.1);
+            color: var(--primary);
+        }
+        
+        .status-closed {
+            background: rgba(40, 202, 66, 0.1);
+            color: var(--success);
+        }
+        
+        .ticket-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .ticket-description {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        
+        .ticket-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .ticket-category {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .category-icon {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen (Initial View) -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-card fade-in">
+            <div class="login-header">
+                <div class="login-logo">4</div>
+                <h2 class="login-title">Willkommen bei 4Ticket</h2>
+                <p class="login-subtitle">Melden Sie sich an oder registrieren Sie sich</p>
+            </div>
+            
+            <div class="demo-banner">
+                <div class="demo-icon">🎯</div>
+                <div class="demo-content">
+                    <h4>Demo-Modus</h4>
+                    <p>Testen Sie alle Funktionen ohne Registrierung</p>
+                    <div class="demo-credentials">
+                        <strong>Support:</strong> admin@support.com / admin123<br>
+                        <strong>Kunde:</strong> Registrierung oder Demo-Modus
+                    </div>
+                </div>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label">E-Mail-Adresse</label>
+                    <input type="email" class="form-input" placeholder="ihre@email.com" value="admin@support.com">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Passwort</label>
+                    <input type="password" class="form-input" placeholder="Ihr Passwort" value="admin123">
+                </div>
+                
+                <div class="login-actions">
+                    <button type="submit" class="btn btn-primary btn-full">
+                        🔐 Anmelden
+                    </button>
+                </div>
+            </form>
+            
+            <div class="login-footer">
+                <p>
+                    <a href="#" class="login-link" onclick="startDemo()">🚀 Demo-Modus starten</a> |
+                    <a href="#" class="login-link" onclick="showRegister()">Registrieren</a> |
+                    <a href="index.html" class="login-link">← Zurück zur Homepage</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App (Hidden Initially) -->
+    <div id="main-app" class="app-container" style="display: none;">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">4</div>
+                    <span>4Ticket</span>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('tickets')">
+                    <span class="nav-icon">🎫</span>
+                    <span>Tickets</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('create')">
+                    <span class="nav-icon">➕</span>
+                    <span>Neues Ticket</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('users')">
+                    <span class="nav-icon">👥</span>
+                    <span>Benutzer</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('settings')">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Einstellungen</span>
+                </a>
+            </nav>
+            
+            <div class="user-info" style="display: flex; align-items: center;">
+                <div class="user-avatar">A</div>
+                <div class="user-details">
+                    <div class="user-name">Admin User</div>
+                    <div class="user-role">Support-Team</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="header">
+                <h1 class="header-title" id="page-title">Dashboard</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="logout()">
+                        🚪 Abmelden
+                    </button>
+                    <button class="btn btn-primary" onclick="showSection('create')">
+                        ➕ Neues Ticket
+                    </button>
+                </div>
+            </header>
+            
+            <main class="content-area">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-section">
+                    <div class="welcome-screen">
+                        <div class="welcome-icon">🎯</div>
+                        <h2 class="welcome-title">Willkommen bei 4Ticket!</h2>
+                        <p class="welcome-subtitle">
+                            Ihr professionelles Ticketsystem ist bereit. Verwalten Sie Kundenanfragen 
+                            effizient und sorgen Sie für exzellenten Support.
+                        </p>
+                        <div class="quick-actions">
+                            <button class="btn btn-primary" onclick="showSection('create')">
+                                ➕ Erstes Ticket erstellen
+                            </button>
+                            <button class="btn btn-secondary" onclick="showSection('tickets')">
+                                🎫 Tickets anzeigen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tickets Section -->
+                <div id="tickets-section" class="content-section" style="display: none;">
+                    <h3 style="margin-bottom: 20px;">Alle Tickets</h3>
+                    <div class="tickets-grid" id="tickets-grid">
+                        <!-- Tickets werden hier dynamisch geladen -->
+                    </div>
+                </div>
+                
+                <!-- Create Ticket Section -->
+                <div id="create-section" class="content-section" style="display: none;">
+                    <h3 style="margin-bottom: 20px;">Neues Ticket erstellen</h3>
+                    <div style="max-width: 600px;">
+                        <div class="form-group">
+                            <label class="form-label">Kategorie</label>
+                            <select class="form-input">
+                                <option value="hilfe">💡 Ich benötige Hilfe</option>
+                                <option value="gesperrt">🔒 Ich wurde gesperrt</option>
+                                <option value="gewonnen">🎉 Ich habe etwas gewonnen</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Titel</label>
+                            <input type="text" class="form-input" placeholder="Kurze Beschreibung des Problems">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Beschreibung</label>
+                            <textarea class="form-input" rows="5" placeholder="Detaillierte Beschreibung des Problems..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="createTicket()">
+                            🚀 Ticket erstellen
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Other Sections -->
+                <div id="users-section" class="content-section" style="display: none;">
+                    <div class="welcome-screen">
+                        <div class="welcome-icon">👥</div>
+                        <h2 class="welcome-title">Benutzerverwaltung</h2>
+                        <p class="welcome-subtitle">
+                            Verwalten Sie Benutzer, Support-Mitarbeiter und Berechtigungen.
+                        </p>
+                    </div>
+                </div>
+                
+                <div id="settings-section" class="content-section" style="display: none;">
+                    <div class="welcome-screen">
+                        <div class="welcome-icon">⚙️</div>
+                        <h2 class="welcome-title">Einstellungen</h2>
+                        <p class="welcome-subtitle">
+                            Konfigurieren Sie Ihr 4Ticket System nach Ihren Anforderungen.
+                        </p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Sample ticket data
+        const sampleTickets = [
+            {
+                id: 1247,
+                title: "Hilfe bei der Anmeldung",
+                description: "Ich kann mich nicht in mein Konto einloggen. Die Passwort-Reset-Funktion funktioniert nicht.",
+                category: "hilfe",
+                status: "open",
+                user: "Max Mustermann",
+                created: "vor 2 Min"
+            },
+            {
+                id: 1246,
+                title: "Account wurde gesperrt",
+                description: "Mein Account wurde ohne Vorwarnung gesperrt. Ich benötige dringend Zugang zu meinen Daten.",
+                category: "gesperrt",
+                status: "processing",
+                user: "Anna Schmidt",
+                created: "vor 15 Min"
+            },
+            {
+                id: 1245,
+                title: "Gewinn einlösen",
+                description: "Ich habe bei der letzten Aktion gewonnen und möchte meinen Preis einlösen.",
+                category: "gewonnen",
+                status: "closed",
+                user: "Tom Weber",
+                created: "vor 1 Std"
+            },
+            {
+                id: 1244,
+                title: "Probleme mit der Zahlungsabwicklung",
+                description: "Die Zahlung wurde nicht korrekt verarbeitet. Bitte um Überprüfung.",
+                category: "hilfe",
+                status: "open",
+                user: "Lisa Müller",
+                created: "vor 3 Std"
+            },
+            {
+                id: 1243,
+                title: "Unberechtigte Sperrung",
+                description: "Mein Account wurde fälschlicherweise gesperrt. Ich habe keine Regeln verletzt.",
+                category: "gesperrt",
+                status: "processing",
+                user: "Peter Klein",
+                created: "vor 5 Std"
+            }
+        ];
+
+        // Login functionality
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            login();
+        });
+
+        function login() {
+            // Simulate login process
+            const loginScreen = document.getElementById('login-screen');
+            const mainApp = document.getElementById('main-app');
+            
+            loginScreen.style.opacity = '0';
+            setTimeout(() => {
+                loginScreen.style.display = 'none';
+                mainApp.style.display = 'flex';
+                mainApp.style.opacity = '0';
+                setTimeout(() => {
+                    mainApp.style.opacity = '1';
+                    loadTickets();
+                }, 100);
+            }, 300);
+        }
+
+        function startDemo() {
+            login();
+        }
+
+        function showRegister() {
+            alert('🚀 Registrierungsfunktion\n\nIn der Vollversion können sich neue Benutzer hier registrieren.\n\nFür die Demo verwenden Sie bitte:\n• Support-Login: admin@support.com / admin123\n• Oder klicken Sie auf "Demo-Modus starten"');
+        }
+
+        function logout() {
+            const loginScreen = document.getElementById('login-screen');
+            const mainApp = document.getElementById('main-app');
+            
+            mainApp.style.opacity = '0';
+            setTimeout(() => {
+                mainApp.style.display = 'none';
+                loginScreen.style.display = 'flex';
+                loginScreen.style.opacity = '1';
+            }, 300);
+        }
+
+        // Navigation
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').style.display = 'block';
+            
+            // Add active class to clicked nav item
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Update page title
+            const titles = {
+                dashboard: 'Dashboard',
+                tickets: 'Alle Tickets',
+                create: 'Neues Ticket erstellen',
+                users: 'Benutzerverwaltung',
+                settings: 'Einstellungen'
+            };
+            document.getElementById('page-title').textContent = titles[sectionName];
+            
+            // Load tickets if tickets section
+            if (sectionName === 'tickets') {
+                loadTickets();
+            }
+        }
+
+        // Load tickets
+        function loadTickets() {
+            const ticketsGrid = document.getElementById('tickets-grid');
+            ticketsGrid.innerHTML = '';
+            
+            sampleTickets.forEach(ticket => {
+                const ticketCard = createTicketCard(ticket);
+                ticketsGrid.appendChild(ticketCard);
+            });
+        }
+
+        function createTicketCard(ticket) {
+            const card = document.createElement('div');
+            card.className = 'ticket-card fade-in';
+            
+            const categoryIcons = {
+                hilfe: '💡',
+                gesperrt: '🔒',
+                gewonnen: '🎉'
+            };
+            
+            const statusClasses = {
+                open: 'status-open',
+                processing: 'status-processing',
+                closed: 'status-closed'
+            };
+            
+            const statusTexts = {
+                open: 'Offen',
+                processing: 'In Bearbeitung',
+                closed: 'Geschlossen'
+            };
+            
+            card.innerHTML = `
+                <div class="ticket-header">
+                    <div class="ticket-id">#${ticket.id}</div>
+                    <div class="ticket-status ${statusClasses[ticket.status]}">
+                        ${statusTexts[ticket.status]}
+                    </div>
+                </div>
+                <h4 class="ticket-title">${ticket.title}</h4>
+                <p class="ticket-description">${ticket.description}</p>
+                <div class="ticket-meta">
+                    <div class="ticket-category">
+                        <span class="category-icon">${categoryIcons[ticket.category]}</span>
+                        <span>${ticket.user}</span>
+                    </div>
+                    <span>${ticket.created}</span>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Create ticket
+        function createTicket() {
+            alert('🎉 Ticket erstellt!\n\nIhr Ticket wurde erfolgreich erstellt und an das Support-Team weitergeleitet.\n\nIn der Vollversion würden Sie eine Bestätigung per E-Mail erhalten.');
+            showSection('tickets');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add some entrance animations
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
