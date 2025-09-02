@@ -3,161 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TicketSystem - Professioneller Kundensupport</title>
+    <title>TicketSystem - Test</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #1a202c;
+            margin: 0;
+            padding: 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
             text-align: center;
         }
-
-        .hero {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 2rem;
-            padding: 4rem 2rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 1.5rem;
-            margin: 0 auto 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-        }
-
-        h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .subtitle {
-            font-size: 1.25rem;
-            color: #4a5568;
-            margin-bottom: 3rem;
-            line-height: 1.6;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 3rem;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            border-radius: 1rem;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
-        }
-
-        .btn-secondary:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .feature {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 1.5rem;
+        .container {
+            max-width: 800px;
             padding: 2rem;
-            text-align: left;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-        .feature h3 {
-            color: white;
-            font-size: 1.5rem;
+        h1 {
+            font-size: 3rem;
             margin-bottom: 1rem;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
-        .feature p {
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.6;
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
         }
-
         .status {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
             border-radius: 1rem;
-            padding: 1.5rem;
-            margin-top: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
         }
-
-        .status h3 {
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            margin-bottom: 1rem;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
-
-        .status p {
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 1rem;
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
-
-        .status-indicator {
+        .pulse {
             display: inline-block;
             width: 12px;
             height: 12px;
@@ -166,104 +62,67 @@
             margin-right: 0.5rem;
             animation: pulse 2s infinite;
         }
-
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
-        }
-
-        @media (max-width: 768px) {
-            .hero {
-                padding: 2rem 1rem;
-            }
-            
-            .buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 100%;
-                max-width: 300px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="hero">
-            <div class="logo">🎫</div>
-            <h1>TicketSystem</h1>
-            <p class="subtitle">
-                Revolutionäres Ticketsystem für modernen Kundensupport.<br>
-                Elegant, effizient und benutzerfreundlich.
-            </p>
-            
-            <div class="buttons">
-                <a href="#" class="btn btn-primary" onclick="alert('Demo wird geladen...')">
-                    🚀 Live Demo starten
-                </a>
-                <a href="https://github.com/Trend4Media/ticketsystem" class="btn btn-secondary" target="_blank">
-                    📂 GitHub Repository
-                </a>
-            </div>
-        </div>
-
-        <div class="features">
-            <div class="feature">
-                <h3>🎯 Intelligente Kategorisierung</h3>
-                <p>Automatische Ticket-Kategorisierung in drei Hauptbereiche: Hilfe benötigt, Account gesperrt, und Gewinn einlösen.</p>
-            </div>
-            
-            <div class="feature">
-                <h3>👥 Benutzerfreundlich</h3>
-                <p>Separate Bereiche für Kunden und Support-Mitarbeiter mit intuitiven Dashboards und modernem Design.</p>
-            </div>
-            
-            <div class="feature">
-                <h3>⚡ Echtzeit-Updates</h3>
-                <p>Sofortige Benachrichtigungen und Live-Updates für optimale Kommunikation zwischen Kunden und Support.</p>
-            </div>
-        </div>
-
+        <h1>🎫 TicketSystem</h1>
+        <p>Professioneller Kundensupport für moderne Teams</p>
+        
         <div class="status">
-            <h3><span class="status-indicator"></span>System Status</h3>
-            <p><strong>✅ Vollständig funktionsfähig</strong> - Alle Systeme laufen optimal</p>
-            <p>
-                <strong>Backend:</strong> Node.js + Express + SQLite<br>
-                <strong>Frontend:</strong> React + TypeScript + Tailwind CSS<br>
-                <strong>Deployment:</strong> GitHub Pages + GitHub Actions
+            <span class="pulse"></span>
+            <strong>GitHub Pages ist aktiv!</strong><br>
+            Diese Seite wird erfolgreich über GitHub Pages ausgeliefert.
+        </div>
+        
+        <p>
+            <strong>Repository:</strong> Trend4Media/ticketsystem<br>
+            <strong>Branch:</strong> main<br>
+            <strong>Deployment:</strong> GitHub Actions
+        </p>
+        
+        <div>
+            <a href="https://github.com/Trend4Media/ticketsystem" class="btn" target="_blank">
+                📂 GitHub Repository
+            </a>
+            <a href="#" class="btn" onclick="showInfo()">
+                ℹ️ System Info
+            </a>
+        </div>
+        
+        <div id="info" style="display: none; margin-top: 2rem; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: 0.5rem;">
+            <h3>Technische Details:</h3>
+            <p style="font-size: 0.9rem; text-align: left;">
+                • <strong>Frontend:</strong> React + TypeScript + Tailwind CSS<br>
+                • <strong>Backend:</strong> Node.js + Express + SQLite<br>
+                • <strong>Features:</strong> Ticket-Management, User Authentication, Support Dashboard<br>
+                • <strong>Kategorien:</strong> Hilfe, Account gesperrt, Gewinn einlösen<br>
+                • <strong>Demo-Login:</strong> admin@support.com / admin123
             </p>
         </div>
     </div>
 
     <script>
-        // Einfache Animationen
+        function showInfo() {
+            const info = document.getElementById('info');
+            if (info.style.display === 'none') {
+                info.style.display = 'block';
+            } else {
+                info.style.display = 'none';
+            }
+        }
+        
+        // Einfache Animation beim Laden
         document.addEventListener('DOMContentLoaded', function() {
-            const hero = document.querySelector('.hero');
-            const features = document.querySelectorAll('.feature');
-            
-            // Hero Animation
-            hero.style.opacity = '0';
-            hero.style.transform = 'translateY(30px)';
-            hero.style.transition = 'all 0.8s ease';
-            
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
             setTimeout(() => {
-                hero.style.opacity = '1';
-                hero.style.transform = 'translateY(0)';
+                document.body.style.opacity = '1';
             }, 100);
-            
-            // Feature Cards Animation
-            features.forEach((feature, index) => {
-                feature.style.opacity = '0';
-                feature.style.transform = 'translateY(30px)';
-                feature.style.transition = 'all 0.6s ease';
-                
-                setTimeout(() => {
-                    feature.style.opacity = '1';
-                    feature.style.transform = 'translateY(0)';
-                }, 300 + (index * 150));
-            });
         });
     </script>
 </body>
