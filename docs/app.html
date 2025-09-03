@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>4Ticket - Anmeldung</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--primary: #FE2C55;
+			--primary-dark: #d12045;
+			--primary-light: #ff5579;
+			--secondary: #25F4EE;
+			--accent: #25F4EE;
+			--success: #00D4AA;
+			--warning: #FDCB6E;
+			--danger: #ff4d4f;
+			--text-primary: #FFFFFF;
+			--text-secondary: #A3A7AE;
+			--text-muted: #7A7F86;
+			--background: #0f0f0f;
+			--surface: #161823;
+			--surface-hover: #1f222b;
+			--border: #2a2d35;
+			--border-light: #2a2d35;
+			--shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.35);
+			--shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+			--shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.55);
+			--shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.6);
+			--gradient-primary: linear-gradient(135deg, #FE2C55 0%, #ff5b7e 100%);
+			--gradient-secondary: linear-gradient(135deg, #25F4EE 0%, #7deaf0 100%);
+			--gradient-accent: linear-gradient(135deg, #25F4EE 0%, #74B9FF 100%);
+			--gradient-hero: linear-gradient(135deg, #0f0f0f 0%, #161823 60%, #0f0f0f 100%);
+			--gradient-card: linear-gradient(145deg, rgba(22, 24, 35, 0.98) 0%, rgba(22, 24, 35, 0.9) 100%);
+		}
+		* { margin: 0; padding: 0; box-sizing: border-box; }
+		body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--background); color: var(--text-primary); line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; scroll-behavior: smooth; }
+		.login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--gradient-hero); padding: 24px; position: relative; overflow: hidden; }
+		.login-screen::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>'); opacity: 0.15; }
+		.login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; box-shadow: var(--shadow-lg); width: 100%; max-width: 420px; animation: slideUp 0.6s ease-out; position: relative; z-index: 1; }
+		@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+		.login-header { text-align: center; margin-bottom: 28px; }
+		.login-logo { width: 64px; height: 64px; background: var(--gradient-primary); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; font-weight: 800; margin: 0 auto 20px; box-shadow: var(--shadow-md); }
+		.login-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
+		.login-subtitle { color: var(--text-secondary); font-size: 14px; }
+		.form-group { margin-bottom: 20px; }
+		.form-label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary); font-size: 14px; }
+		.form-input { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 16px; transition: all 0.2s ease; background: #0f0f12; color: var(--text-primary); font-family: inherit; }
+		.form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.2); }
+		.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; border-radius: 12px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: all 0.3s ease; font-size: 16px; font-family: inherit; }
+		.btn-primary { background: var(--primary); color: #fff; box-shadow: 0 8px 22px rgba(254, 44, 85, 0.35); }
+		.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(254, 44, 85, 0.45); }
+		.btn-full { width: 100%; }
+		.login-actions { margin-top: 24px; }
+		.login-footer { text-align: center; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); }
+		.login-link { color: var(--primary); text-decoration: none; font-weight: 500; font-size: 14px; }
+		.login-link:hover { text-decoration: underline; }
+		.error-message { background: rgba(255, 77, 79, 0.12); color: var(--danger); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; text-align: center; }
+		.success-message { background: rgba(40, 202, 66, 0.12); color: var(--success); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; text-align: center; }
+		@media (max-width: 768px) { .login-card{ padding: 28px 20px; } }
+	</style>
+</head>
+<body>
+	<a href="index.html" style="position: absolute; top: 20px; left: 20px; z-index: 10; color: white; text-decoration: none; padding: 8px 16px; background: rgba(255,255,255,0.1); border-radius: 8px; font-weight: 500; backdrop-filter: blur(10px);">← Zurück zur Homepage</a>
+	<div id="login-screen" class="login-screen">
+		<div class="login-card">
+			<div class="login-header">
+				<div class="login-logo">4</div>
+				<h2 class="login-title">Anmelden bei 4Ticket</h2>
+				<p class="login-subtitle">Bitte E-Mail und Passwort eingeben</p>
+			</div>
+			<div id="message-area"></div>
+			<form id="login-form">
+				<div class="form-group">
+					<label class="form-label">E-Mail-Adresse</label>
+					<input type="email" id="email" class="form-input" placeholder="ihre@email.com" required>
+				</div>
+				<div class="form-group">
+					<label class="form-label">Passwort</label>
+					<input type="password" id="password" class="form-input" placeholder="Ihr Passwort" required>
+				</div>
+				<div class="login-actions">
+					<button type="submit" class="btn btn-primary btn-full" id="login-btn">🔐 Anmelden</button>
+				</div>
+			</form>
+			<div class="login-footer">
+				<p><a href="index.html" class="login-link">← Zurück zur Homepage</a></p>
+			</div>
+		</div>
+	</div>
+	<script>
+		document.getElementById('login-form').addEventListener('submit', function(e){ e.preventDefault(); login(); });
+		async function apiLogin(email, password){ const endpoint = '/api/auth/login'; const tryTypes = ['admin','customer']; for (const userType of tryTypes){ try{ const res = await fetch(endpoint,{ method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ email, password, userType }) }); if(res.ok){ const data = await res.json(); return { data, userType }; } }catch(_){} } return null; }
+		async function login(){ const email = document.getElementById('email').value; const password = document.getElementById('password').value; const loginBtn = document.getElementById('login-btn'); const messageArea = document.getElementById('message-area'); messageArea.innerHTML=''; loginBtn.innerHTML='<span class="spinner"></span> Anmeldung läuft...'; loginBtn.classList.add('loading'); try { const result = await apiLogin(email, password); if(!result){ showMessage('❌ Ungültige Anmeldedaten.','error'); return; } const { data, userType } = result; const token = data.token; const user = data.user || {}; const company = user.company || null; if(!token){ showMessage('❌ Login fehlgeschlagen: Kein Token erhalten.','error'); return; } const authPayload = { token, user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, type: userType }, company }; localStorage.setItem('auth', JSON.stringify(authPayload)); showMessage('✅ Anmeldung erfolgreich! Weiterleitung...','success'); if(userType === 'admin'){ window.location.href = 'admin/index.html'; } else { window.location.href = 'customer/index.html'; } } catch(err){ showMessage('❌ Unerwarteter Fehler beim Login.','error'); } finally { loginBtn.innerHTML='🔐 Anmelden'; loginBtn.classList.remove('loading'); } }
+		function showMessage(text,type){ const messageArea=document.getElementById('message-area'); const className = type==='error' ? 'error-message' : 'success-message'; messageArea.innerHTML = `<div class="${className}">${text}</div>`; }
+	</script>
+</body>
+</html>
