@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4Ticket - Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../shared/css/common.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- Admin Dashboard -->
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-left">
+                <div class="app-logo">
+                    <div class="app-logo-icon">4</div>
+                    <span>4Ticket Admin</span>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="admin-avatar">A</div>
+                <div class="user-details">
+                    <div class="user-name" id="admin-name">Admin User</div>
+                    <div class="user-role">Support-Team</div>
+                </div>
+                <button class="btn btn-secondary" onclick="logout()" style="margin-left: 16px;">
+                    🚪 Abmelden
+                </button>
+            </div>
+        </header>
+        
+        <main class="app-main">
+            <!-- Sidebar Navigation -->
+            <nav class="admin-sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">📊 Dashboard</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="#" class="sidebar-link active" onclick="showOverview()">🏠 Übersicht</a></li>
+                        <li><a href="#" class="sidebar-link" onclick="showStatistics()">📈 Statistiken</a></li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">🎫 Tickets</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="#" class="sidebar-link" onclick="showAllTickets()">📋 Alle Tickets</a></li>
+                        <li><a href="#" class="sidebar-link" onclick="showOpenTickets()">🔓 Offene Tickets</a></li>
+                        <li><a href="#" class="sidebar-link" onclick="showClosedTickets()">✅ Geschlossene Tickets</a></li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">👥 Verwaltung</h3>
+                    <ul class="sidebar-menu">
+                        <li><a href="#" class="sidebar-link" onclick="showUsers()">👤 Benutzer</a></li>
+                        <li><a href="#" class="sidebar-link" onclick="showSettings()">⚙️ Einstellungen</a></li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <!-- Main Content Area -->
+            <div class="content-area">
+                <div id="overview-content" class="content-view active">
+                    <div class="welcome-screen">
+                        <div class="welcome-icon">🛠️</div>
+                        <h2 class="welcome-title">Support-Dashboard</h2>
+                        <p class="welcome-subtitle">
+                            Willkommen im 4Ticket Support-Dashboard! Verwalten Sie alle Kundenanfragen, 
+                            weisen Sie Tickets zu und sorgen Sie für exzellenten Kundensupport.
+                        </p>
+                        <div class="quick-actions">
+                            <button class="btn btn-primary" onclick="showAllTickets()">
+                                🎫 Alle Tickets verwalten
+                            </button>
+                            <button class="btn btn-secondary" onclick="showStatistics()">
+                                📊 Statistiken anzeigen
+                            </button>
+                        </div>
+                        
+                        <!-- Ticket-Vorschau -->
+                        <div class="tickets-preview">
+                            <h3 class="preview-title">🎯 Aktuelle Tickets:</h3>
+                            <div class="tickets-grid">
+                                <div class="ticket-card">
+                                    <div class="ticket-info">
+                                        <div class="ticket-title">💡 Hilfe bei der Anmeldung</div>
+                                        <div class="ticket-meta">Max Mustermann • vor 2 Min</div>
+                                    </div>
+                                    <div class="ticket-status status-open">OFFEN</div>
+                                </div>
+                                <div class="ticket-card">
+                                    <div class="ticket-info">
+                                        <div class="ticket-title">🔒 Account wurde gesperrt</div>
+                                        <div class="ticket-meta">Anna Schmidt • vor 15 Min</div>
+                                    </div>
+                                    <div class="ticket-status status-progress">BEARBEITUNG</div>
+                                </div>
+                                <div class="ticket-card">
+                                    <div class="ticket-info">
+                                        <div class="ticket-title">🎉 Gewinn einlösen</div>
+                                        <div class="ticket-meta">Tom Weber • vor 1 Std</div>
+                                    </div>
+                                    <div class="ticket-status status-closed">GESCHLOSSEN</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Weitere Content-Views werden hier dynamisch geladen -->
+                <div id="tickets-content" class="content-view">
+                    <h2>🎫 Ticket-Verwaltung</h2>
+                    <p>Hier werden alle Tickets angezeigt und verwaltet.</p>
+                </div>
+                
+                <div id="statistics-content" class="content-view">
+                    <h2>📊 Support-Statistiken</h2>
+                    <p>Detaillierte Einblicke in die Support-Performance.</p>
+                </div>
+                
+                <div id="users-content" class="content-view">
+                    <h2>👥 Benutzerverwaltung</h2>
+                    <p>Verwalten Sie Kunden und Support-Mitarbeiter.</p>
+                </div>
+                
+                <div id="settings-content" class="content-view">
+                    <h2>⚙️ Systemeinstellungen</h2>
+                    <p>Konfigurieren Sie das Ticketsystem.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../shared/js/auth.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4Ticket - Kundendashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../shared/css/common.css">
+    <link rel="stylesheet" href="css/customer.css">
+</head>
+<body>
+    <!-- Customer Dashboard -->
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-left">
+                <div class="app-logo">
+                    <div class="app-logo-icon">4</div>
+                    <span>4Ticket</span>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="customer-avatar">K</div>
+                <div class="user-details">
+                    <div class="user-name" id="customer-name">Demo Kunde</div>
+                    <div class="user-role">Kunde</div>
+                </div>
+                <button class="btn btn-secondary" onclick="logout()" style="margin-left: 16px;">
+                    🚪 Abmelden
+                </button>
+            </div>
+        </header>
+        
+        <main class="app-main">
+            <div class="content-area">
+                <!-- Willkommensbereich -->
+                <div id="welcome-content" class="content-view active">
+                    <div class="welcome-screen">
+                        <div class="welcome-icon">👤</div>
+                        <h2 class="welcome-title">Willkommen bei 4Ticket</h2>
+                        <p class="welcome-subtitle">
+                            Ihr persönlicher Support-Bereich. Erstellen Sie Tickets, verfolgen Sie den Status 
+                            und kommunizieren Sie direkt mit unserem Support-Team.
+                        </p>
+                        <div class="quick-actions">
+                            <button class="btn btn-primary" onclick="showCreateTicket()">
+                                ➕ Neues Ticket erstellen
+                            </button>
+                            <button class="btn btn-secondary" onclick="showMyTickets()">
+                                📋 Meine Tickets anzeigen
+                            </button>
+                        </div>
+                        
+                        <!-- Ticket-Kategorien -->
+                        <div class="categories-section">
+                            <h3 class="categories-title">📂 Verfügbare Kategorien:</h3>
+                            <div class="categories-grid">
+                                <div class="category-card" onclick="createTicketWithCategory('help')">
+                                    <div class="category-icon">💡</div>
+                                    <div class="category-title">Ich benötige Hilfe</div>
+                                    <div class="category-desc">Allgemeine Fragen und Unterstützung</div>
+                                </div>
+                                <div class="category-card" onclick="createTicketWithCategory('blocked')">
+                                    <div class="category-icon">🔒</div>
+                                    <div class="category-title">Ich wurde gesperrt</div>
+                                    <div class="category-desc">Account-Probleme und Sperrungen</div>
+                                </div>
+                                <div class="category-card" onclick="createTicketWithCategory('prize')">
+                                    <div class="category-icon">🎉</div>
+                                    <div class="category-title">Ich habe etwas gewonnen</div>
+                                    <div class="category-desc">Gewinne und Belohnungen einlösen</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ticket erstellen -->
+                <div id="create-ticket-content" class="content-view">
+                    <div class="content-header">
+                        <h2>➕ Neues Ticket erstellen</h2>
+                        <button class="btn btn-secondary" onclick="showWelcome()">← Zurück</button>
+                    </div>
+                    
+                    <div class="ticket-form-container">
+                        <form class="ticket-form" onsubmit="submitTicket(event)">
+                            <div class="form-group">
+                                <label for="ticket-category" class="form-label">Kategorie</label>
+                                <select id="ticket-category" class="form-input" required>
+                                    <option value="">Bitte wählen Sie eine Kategorie</option>
+                                    <option value="help">💡 Ich benötige Hilfe</option>
+                                    <option value="blocked">🔒 Ich wurde gesperrt</option>
+                                    <option value="prize">🎉 Ich habe etwas gewonnen</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="ticket-subject" class="form-label">Betreff</label>
+                                <input type="text" id="ticket-subject" class="form-input" 
+                                       placeholder="Kurze Beschreibung Ihres Problems" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="ticket-description" class="form-label">Beschreibung</label>
+                                <textarea id="ticket-description" class="form-input" rows="6" 
+                                          placeholder="Beschreiben Sie Ihr Anliegen detailliert..." required></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="ticket-priority" class="form-label">Priorität</label>
+                                <select id="ticket-priority" class="form-input" required>
+                                    <option value="low">🟢 Niedrig</option>
+                                    <option value="medium" selected>🟡 Mittel</option>
+                                    <option value="high">🔴 Hoch</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    🚀 Ticket erstellen
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="showWelcome()">
+                                    ❌ Abbrechen
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Meine Tickets -->
+                <div id="my-tickets-content" class="content-view">
+                    <div class="content-header">
+                        <h2>📋 Meine Tickets</h2>
+                        <button class="btn btn-primary" onclick="showCreateTicket()">➕ Neues Ticket</button>
+                    </div>
+                    
+                    <div class="tickets-container" id="customer-tickets-list">
+                        <!-- Wird dynamisch mit JavaScript gefüllt -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../shared/js/auth.js"></script>
+    <script src="js/customer.js"></script>
+</body>
+</html>

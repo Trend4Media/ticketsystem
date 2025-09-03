@@ -1,0 +1,254 @@
+/* 4Ticket - Admin-Bereich Stile */
+
+.admin-sidebar {
+    width: 280px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    overflow-y: auto;
+}
+
+.sidebar-section {
+    margin-bottom: 32px;
+    padding: 0 24px;
+}
+
+.sidebar-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+.sidebar-menu li {
+    margin-bottom: 4px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.sidebar-link:hover {
+    background: rgba(0, 122, 255, 0.08);
+    color: var(--primary);
+}
+
+.sidebar-link.active {
+    background: rgba(0, 122, 255, 0.1);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Content Views */
+.content-view {
+    display: none;
+}
+
+.content-view.active {
+    display: block;
+}
+
+/* Tickets Preview */
+.tickets-preview {
+    margin-top: 50px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.preview-title {
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.tickets-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.ticket-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.ticket-card:hover {
+    box-shadow: 0 4px 16px var(--shadow-medium);
+    border-color: var(--primary);
+}
+
+.ticket-info {
+    flex: 1;
+}
+
+.ticket-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 16px;
+}
+
+.ticket-meta {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.ticket-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-open {
+    background: rgba(255, 149, 0, 0.1);
+    color: var(--warning);
+}
+
+.status-progress {
+    background: rgba(0, 122, 255, 0.1);
+    color: var(--primary);
+}
+
+.status-closed {
+    background: rgba(40, 202, 66, 0.1);
+    color: var(--success);
+}
+
+/* Admin-spezifische Tabellen */
+.admin-table {
+    width: 100%;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-table th {
+    background: var(--background);
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table tr:hover {
+    background: var(--background);
+}
+
+/* Statistik-Karten */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    background: var(--surface);
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-primary);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    margin: 0 auto 16px;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Responsive Design für Admin */
+@media (max-width: 1024px) {
+    .admin-sidebar {
+        width: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-main {
+        flex-direction: column;
+    }
+    
+    .admin-sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 0;
+    }
+    
+    .sidebar-section {
+        padding: 0 16px;
+        margin-bottom: 20px;
+    }
+    
+    .sidebar-menu {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+    }
+    
+    .sidebar-menu li {
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+    
+    .sidebar-link {
+        white-space: nowrap;
+    }
+}

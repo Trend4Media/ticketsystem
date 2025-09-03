@@ -1,150 +1,209 @@
-# Ticketsystem - Kundensupport Web-App
+# 🎫 4Ticket - Support-Ticketsystem
 
-Ein vollständiges Ticketsystem für Kundensupport mit separaten Bereichen für Kunden und Support-Mitarbeiter.
+Ein vollständiges Ticketsystem für Kundensupport mit **getrennten Bereichen** für Kunden und Support-Mitarbeiter.
 
-## 🚀 Features
+## 🏗️ Projektstruktur
 
-### Für Kunden:
-- **Benutzerregistrierung und Anmeldung**
-- **Ticket-Erstellung** mit 3 vordefinierte Kategorien:
+```
+ticketsystem/
+├── index.html              # Hauptanmeldeseite
+├── admin/                  # 🛠️ Admin-Bereich (Support-Team)
+│   ├── index.html         # Admin-Dashboard
+│   ├── css/
+│   │   └── admin.css      # Admin-spezifische Stile
+│   └── js/
+│       └── admin.js       # Admin-Funktionen
+├── customer/               # 👤 Kundenbereich
+│   ├── index.html         # Kunden-Dashboard
+│   ├── css/
+│   │   └── customer.css   # Kunden-spezifische Stile
+│   └── js/
+│       └── customer.js    # Kunden-Funktionen
+├── shared/                 # 🔗 Gemeinsame Ressourcen
+│   ├── css/
+│   │   └── common.css     # Gemeinsame Stile
+│   └── js/
+│       └── auth.js        # Authentifizierung
+├── server/                 # 🖥️ Backend (Node.js/Express)
+│   ├── index.js           # Hauptserver-Datei
+│   ├── database.js        # Datenbank-Logik
+│   └── package.json       # Backend-Abhängigkeiten
+├── client/                 # ⚛️ React Frontend (Alternative)
+│   └── src/               # React-Komponenten
+└── package.json           # Root-Package mit Scripts
+```
+
+## 🚀 Schnellstart
+
+### 1. Repository klonen
+```bash
+git clone https://github.com/IhrBenutzername/ticketsystem.git
+cd ticketsystem
+```
+
+### 2. Abhängigkeiten installieren
+```bash
+npm run install:all
+```
+
+### 3. Entwicklungsserver starten
+```bash
+npm run dev
+```
+
+### 4. Anwendung öffnen
+- **Hauptseite:** http://localhost:3000
+- **Admin-Bereich:** http://localhost:3000/admin
+- **Kundenbereich:** http://localhost:3000/customer
+
+## 🔑 Demo-Zugangsdaten
+
+### 🛠️ Support-Team (Admin):
+- **E-Mail:** admin@support.com
+- **Passwort:** admin123
+- **Zugang zu:** Alle Tickets, Statistiken, Benutzerverwaltung
+
+### 👤 Kunde:
+- **E-Mail:** kunde@demo.com
+- **Passwort:** demo123
+- **Zugang zu:** Eigene Tickets, Ticket-Erstellung
+
+## 🎯 Funktionen
+
+### Admin-Bereich (`/admin/`)
+- ✅ **Dashboard-Übersicht** mit aktuellen Tickets
+- ✅ **Ticket-Verwaltung** (alle, offene, geschlossene)
+- ✅ **Support-Statistiken** und Performance-Metriken
+- ✅ **Benutzerverwaltung** für Kunden und Support-Team
+- ✅ **Systemeinstellungen** und Konfiguration
+- ✅ **Responsive Sidebar-Navigation**
+
+### Kundenbereich (`/customer/`)
+- ✅ **Persönliches Dashboard** mit Willkommensbereich
+- ✅ **Ticket-Erstellung** mit 3 Kategorien:
   - 💡 Ich benötige Hilfe
   - 🔒 Ich wurde gesperrt  
   - 🎉 Ich habe etwas gewonnen
-- **Ticket-Übersicht** mit Status-Tracking
-- **Responsive Design** für alle Geräte
+- ✅ **Meine Tickets** - Übersicht aller eigenen Tickets
+- ✅ **Status-Verfolgung** in Echtzeit
+- ✅ **Mobile-optimierte Benutzeroberfläche**
 
-### Für Support-Mitarbeiter:
-- **Support-Dashboard** mit Ticket-Übersicht
-- **Ticket-Verwaltung** (Status ändern, zuweisen)
-- **Kommentar-System** für Kommunikation
-- **Statistiken** und Filter-Funktionen
+### Gemeinsame Funktionen (`/shared/`)
+- ✅ **Zentrale Anmeldung** mit automatischer Weiterleitung
+- ✅ **Session-Management** und Authentifizierung
+- ✅ **Responsive Design** für alle Geräte
+- ✅ **Moderne UI** mit Inter-Schriftart und Gradient-Design
 
 ## 🛠️ Technologie-Stack
 
-### Backend:
+### Frontend:
+- **HTML5** + **CSS3** mit CSS Custom Properties
+- **Vanilla JavaScript** für Interaktivität
+- **Google Fonts (Inter)** für moderne Typografie
+- **Responsive Design** mit CSS Grid und Flexbox
+
+### Backend (bereits vorhanden):
 - **Node.js** + **Express.js**
 - **SQLite** Datenbank
 - **JWT** Authentifizierung
 - **bcryptjs** Passwort-Hashing
 
-### Frontend:
+### Alternative Frontend (React):
 - **React 18** + **TypeScript**
 - **Tailwind CSS** für Styling
 - **React Router** für Navigation
-- **Axios** für API-Calls
-- **Heroicons** für Icons
 
-## 📦 Installation
+## 📂 Bereiche im Detail
 
-1. **Abhängigkeiten installieren:**
-```bash
-npm run install:all
-```
+### 🛠️ Admin-Bereich
+**Pfad:** `/admin/index.html`
+- Vollständige Ticket-Verwaltung
+- Übersichtliche Sidebar-Navigation
+- Statistik-Dashboard mit Metriken
+- Benutzerverwaltung mit Tabellen-Ansicht
+- Responsive Design für Desktop und Mobile
 
-2. **Entwicklungsserver starten:**
-```bash
-npm run dev
-```
+### 👤 Kundenbereich  
+**Pfad:** `/customer/index.html`
+- Benutzerfreundliches Dashboard
+- Einfache Ticket-Erstellung mit Kategorien
+- Übersicht aller eigenen Tickets
+- Status-Verfolgung und Updates
+- Mobile-first Design
 
-Dies startet:
-- Backend-Server auf http://localhost:3001
-- Frontend-Server auf http://localhost:3000
+### 🔗 Gemeinsame Ressourcen
+**Pfad:** `/shared/`
+- Einheitliche Stile und Farben
+- Zentrale Authentifizierungs-Logik
+- Wiederverwendbare Komponenten
+- Konsistente Benutzeroberfläche
 
-## 🔑 Demo-Zugangsdaten
+## 🔒 Sicherheit
 
-### Support-Mitarbeiter:
-- **E-Mail:** admin@support.com
-- **Passwort:** admin123
-
-### Kunden:
-Registrieren Sie sich über die Registrierungsseite oder erstellen Sie einen Test-Account.
-
-## 📋 Verwendung
-
-### Als Kunde:
-1. Registrieren Sie sich auf der Homepage
-2. Melden Sie sich an
-3. Erstellen Sie ein neues Ticket mit der gewünschten Kategorie
-4. Verfolgen Sie den Status in Ihrem Dashboard
-
-### Als Support-Mitarbeiter:
-1. Melden Sie sich mit den Demo-Zugangsdaten an
-2. Sehen Sie alle Tickets im Support-Dashboard
-3. Wählen Sie ein Ticket aus, um Details zu sehen
-4. Ändern Sie den Status und fügen Sie Kommentare hinzu
-
-## 🗂️ Projektstruktur
-
-```
-ticketsystem/
-├── server/                 # Backend (Node.js/Express)
-│   ├── index.js           # Hauptserver-Datei
-│   ├── database.js        # Datenbank-Logik
-│   ├── package.json       # Backend-Abhängigkeiten
-│   └── .env              # Umgebungsvariablen
-├── client/                # Frontend (React/TypeScript)
-│   ├── src/
-│   │   ├── components/    # React-Komponenten
-│   │   ├── contexts/      # React-Contexts
-│   │   ├── pages/         # Seiten-Komponenten
-│   │   └── App.tsx        # Haupt-App-Komponente
-│   ├── public/            # Statische Dateien
-│   └── package.json       # Frontend-Abhängigkeiten
-└── package.json           # Root-Package mit Scripts
-```
-
-## 🔧 Entwicklung
-
-### Backend-Entwicklung:
-```bash
-cd server && npm run dev
-```
-
-### Frontend-Entwicklung:
-```bash
-cd client && npm run dev
-```
-
-### Beide zusammen:
-```bash
-npm run dev
-```
-
-## 📊 Datenbank-Schema
-
-### Tabellen:
-- **users** - Kundendaten
-- **support_staff** - Support-Mitarbeiter
-- **tickets** - Support-Tickets
-- **ticket_comments** - Kommentare zu Tickets
-
-## 🔐 Sicherheit
-
-- Passwörter werden mit bcrypt gehashed
-- JWT-Token für Authentifizierung
-- Separate Authentifizierung für Kunden und Support
-- Input-Validierung auf Backend und Frontend
+- ✅ **Getrennte Authentifizierung** für Admin und Kunden
+- ✅ **Session-Management** mit localStorage
+- ✅ **Zugriffskontrolle** - Admins können nicht auf Kundenbereich zugreifen und umgekehrt
+- ✅ **Automatische Weiterleitung** basierend auf Benutzertyp
 
 ## 🚀 Deployment
 
-Für Produktion:
-1. Umgebungsvariablen in `.env` anpassen
-2. Frontend builden: `npm run build`
-3. Server starten: `npm start`
+### GitHub Pages:
+Das Projekt ist bereits für GitHub Pages konfiguriert:
+```bash
+git add .
+git commit -m "Neue Projektstruktur mit getrennten Bereichen"
+git push origin main
+```
 
-## 📝 API-Endpunkte
+### Lokale Entwicklung:
+```bash
+# Einfacher HTTP-Server für statische Dateien
+python -m http.server 8000
+# oder
+npx serve .
+```
 
-### Authentifizierung:
-- `POST /api/register` - Kundenregistrierung
-- `POST /api/login` - Kundenanmeldung
-- `POST /api/support/login` - Support-Anmeldung
+## 📱 Responsive Design
 
-### Tickets:
-- `POST /api/tickets` - Ticket erstellen
-- `GET /api/tickets` - Alle Tickets (Support)
-- `GET /api/my-tickets` - Benutzer-Tickets
-- `PUT /api/tickets/:id/status` - Status ändern
+- ✅ **Mobile-optimiert** für Smartphones
+- ✅ **Tablet-freundlich** für mittlere Bildschirme  
+- ✅ **Desktop-optimiert** mit Sidebar-Navigation
+- ✅ **Touch-freundliche** Buttons und Interaktionen
 
-### Kommentare:
-- `POST /api/tickets/:id/comments` - Kommentar hinzufügen
-- `GET /api/tickets/:id/comments` - Kommentare abrufen
+## 🎨 Design-System
+
+### Farben:
+- **Primary:** #007AFF (iOS-Blau)
+- **Secondary:** #5856D6 (Lila)
+- **Success:** #28CA42 (Grün)
+- **Warning:** #FF9500 (Orange)
+- **Danger:** #FF3B30 (Rot)
+
+### Schriftarten:
+- **Inter** (Google Fonts) für optimale Lesbarkeit
+- **SF Mono** für Code und IDs
+
+## 🔄 Git-Workflow
+
+1. **Änderungen hinzufügen:**
+   ```bash
+   git add .
+   ```
+
+2. **Commit erstellen:**
+   ```bash
+   git commit -m "Beschreibung der Änderungen"
+   ```
+
+3. **Zu GitHub pushen:**
+   ```bash
+   git push origin main
+   ```
+
+## 📞 Support
+
+Bei Fragen zur Implementierung oder Erweiterung des Systems, nutzen Sie die GitHub Issues oder kontaktieren Sie das Entwicklungsteam.
+
+---
+
+**Entwickelt mit ❤️ für optimalen Kundensupport**
