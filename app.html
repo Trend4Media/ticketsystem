@@ -771,65 +771,83 @@
             login();
         });
 
-        function login() {
+        async function apiLogin(email, password) {
+            // Versuche zuerst Admin-Login, dann Customer-Login
+            const endpoint = '/api/auth/login';
+            const tryTypes = ['admin', 'customer'];
+            for (const userType of tryTypes) {
+                try {
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password, userType })
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        return { data, userType };
+                    }
+                } catch (_) {
+                    // weiter versuchen
+                }
+            }
+            return null;
+        }
+
+        async function login() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const loginBtn = document.getElementById('login-btn');
             const messageArea = document.getElementById('message-area');
-            
-            // Clear previous messages
             messageArea.innerHTML = '';
-            
-            // Show loading state
             loginBtn.innerHTML = '<span class="spinner"></span> Anmeldung läuft...';
             loginBtn.classList.add('loading');
-            
-            setTimeout(() => {
-                // Check credentials
-                const account = testAccounts[email];
-                
-                if (!account || account.password !== password) {
-                    showMessage('❌ Ungültige Anmeldedaten. Bitte verwenden Sie einen der Test-Accounts.', 'error');
-                    loginBtn.innerHTML = '🔐 Anmelden';
-                    loginBtn.classList.remove('loading');
+
+            try {
+                const result = await apiLogin(email, password);
+                if (!result) {
+                    showMessage('❌ Ungültige Anmeldedaten.', 'error');
                     return;
                 }
-                
-                // Successful login
-                currentUser = account;
+
+                const { data, userType } = result;
+                // Erwartete Struktur: { success, token, user: { id, email, firstName, lastName, type, company } }
+                const token = data.token;
+                const user = data.user || {};
+                const company = user.company || null;
+
+                if (!token) {
+                    showMessage('❌ Login fehlgeschlagen: Kein Token erhalten.', 'error');
+                    return;
+                }
+
+                // Persistiere Auth-Daten (mobil-tauglich)
+                const authPayload = {
+                    token,
+                    user: {
+                        id: user.id,
+                        email: user.email,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        type: userType
+                    },
+                    company
+                };
+                localStorage.setItem('auth', JSON.stringify(authPayload));
+
                 showMessage('✅ Anmeldung erfolgreich! Weiterleitung...', 'success');
-                
-                setTimeout(() => {
-                    // Debug-Ausgabe
-                    console.log('🔍 Weiterleitung für Account-Typ:', account.type);
-                    console.log('🔍 Account-Objekt:', account);
-                    
-                    // Session speichern
-                    const sessionData = {
-                        firstName: account.firstName,
-                        lastName: account.lastName,
-                        name: account.name,
-                        email: email,
-                        type: account.type
-                    };
-                    
-                    console.log('💾 Session-Daten speichern:', sessionData);
-                    localStorage.setItem('currentUser', JSON.stringify(sessionData));
-                    
-                    // Weiterleitung zu den separaten Bereichen
-                    if (account.type === 'admin') {
-                        console.log('➡️ Weiterleitung zu separatem Admin-Bereich');
-                        window.location.href = 'admin/index.html';
-                    } else if (account.type === 'customer') {
-                        console.log('➡️ Weiterleitung zu separatem Kunden-Bereich');
-                        window.location.href = 'customer/index.html';
-                    } else {
-                        console.error('❌ Unbekannter Account-Typ:', account.type);
-                        alert('❌ Fehler: Unbekannter Account-Typ. Bitte kontaktieren Sie den Support.');
-                    }
-                }, 1000);
-                
-            }, 1500); // Simulate server response time
+
+                // Rollenbasierte Weiterleitung
+                if (userType === 'admin') {
+                    window.location.href = 'admin/index.html';
+                } else {
+                    window.location.href = 'customer/index.html';
+                }
+            } catch (err) {
+                showMessage('❌ Unerwarteter Fehler beim Login.', 'error');
+            } finally {
+                loginBtn.innerHTML = '🔐 Anmelden';
+                loginBtn.classList.remove('loading');
+            }
         }
 
         function showAdminDashboard(user) {

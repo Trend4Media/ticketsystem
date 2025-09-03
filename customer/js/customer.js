@@ -2,40 +2,31 @@
 
 // Initialisierung des Kundenbereichs
 document.addEventListener('DOMContentLoaded', function() {
-    // Session-Daten prüfen
-    const userStr = localStorage.getItem('currentUser');
-    console.log('🔍 Gespeicherte Session:', userStr);
-    
-    if (!userStr) {
-        console.log('❌ Keine Session gefunden - Weiterleitung zum Login');
-        window.location.href = '../app.html';
-        return;
-    }
-    
-    let user;
+    // Neue Auth: JWT-basierte Prüfung
     try {
-        user = JSON.parse(userStr);
-        console.log('✅ Session geladen:', user);
-    } catch (error) {
-        console.error('❌ Fehler beim Parsen der Session:', error);
-        localStorage.removeItem('currentUser');
-        window.location.href = '../app.html';
+        const auth = JSON.parse(localStorage.getItem('auth') || 'null');
+        if (!auth || !auth.token || !auth.user || auth.user.type !== 'customer') {
+            window.location.replace('../app.html');
+            return;
+        }
+        // Fetch automatisch mit Authorization-Header versehen
+        const originalFetch = window.fetch.bind(window);
+        window.fetch = (input, init = {}) => {
+            init.headers = Object.assign({ 'Authorization': `Bearer ${auth.token}` }, init.headers || {});
+            return originalFetch(input, init);
+        };
+    } catch (_) {
+        window.location.replace('../app.html');
         return;
     }
-    
-    // Prüfe Benutzertyp
-    if (user.type !== 'customer') {
-        console.log('❌ Falscher Benutzertyp:', user.type, '- Erwartet: customer');
-        alert('❌ Zugriff verweigert! Nur Kunden haben Zugang zu diesem Bereich.');
-        window.location.href = '../app.html';
-        return;
-    }
-    
+    // Session-Daten prüfen
+    const user = (function(){ try { const a = JSON.parse(localStorage.getItem('auth')||'null'); return (a && a.user) ? a.user : null; } catch(_) { return null; } })();
+    if (!user) { window.location.replace('../app.html'); return; }
     console.log('✅ Kunde authentifiziert:', user.firstName, user.lastName);
     
     // Benutzerinformationen anzeigen
-    document.getElementById('customer-name').textContent = `${user.firstName} ${user.lastName}`;
-    document.getElementById('customer-avatar').textContent = user.firstName.charAt(0);
+    document.getElementById('customer-name').textContent = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+    document.getElementById('customer-avatar').textContent = (user.firstName || 'K').charAt(0);
     
     // Standard-View anzeigen
     showWelcome();
