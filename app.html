@@ -725,11 +725,29 @@
                 showMessage('✅ Anmeldung erfolgreich! Weiterleitung...', 'success');
                 
                 setTimeout(() => {
+                    // Debug-Ausgabe
+                    console.log('🔍 Weiterleitung für Account-Typ:', account.type);
+                    console.log('🔍 Account-Objekt:', account);
+                    
+                    // Session speichern
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        firstName: account.firstName,
+                        lastName: account.lastName,
+                        name: account.name,
+                        email: email,
+                        type: account.type
+                    }));
+                    
                     // Weiterleitung zu den neuen separaten Bereichen
                     if (account.type === 'admin') {
+                        console.log('➡️ Weiterleitung zu Admin-Bereich');
                         window.location.href = 'admin/index.html';
-                    } else {
+                    } else if (account.type === 'customer') {
+                        console.log('➡️ Weiterleitung zu Kunden-Bereich');
                         window.location.href = 'customer/index.html';
+                    } else {
+                        console.error('❌ Unbekannter Account-Typ:', account.type);
+                        alert('❌ Fehler: Unbekannter Account-Typ. Bitte kontaktieren Sie den Support.');
                     }
                 }, 1000);
                 

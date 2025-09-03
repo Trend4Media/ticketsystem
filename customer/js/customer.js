@@ -3,11 +3,11 @@
 // Initialisierung des Kundenbereichs
 document.addEventListener('DOMContentLoaded', function() {
     // Authentifizierung prüfen - nur Kunden erlaubt
-    const user = requireAuth('customer');
+    const user = requireAuthentication('customer');
     if (!user) return;
     
     // Benutzerinformationen anzeigen
-    document.getElementById('customer-name').textContent = user.name;
+    document.getElementById('customer-name').textContent = `${user.firstName} ${user.lastName}`;
     document.getElementById('customer-avatar').textContent = user.firstName.charAt(0);
     
     // Standard-View anzeigen
@@ -62,7 +62,7 @@ window.createTicketWithCategory = function(category) {
 }
 
 // Ticket-Formular absenden - global verfügbar
-window.submitTicket = function(event) {
+window.submitTicket = async function(event) {
     event.preventDefault();
     
     const category = document.getElementById('ticket-category').value;
@@ -75,86 +75,92 @@ window.submitTicket = function(event) {
         return;
     }
     
-    // Simuliere Ticket-Erstellung
-    const ticketId = Math.floor(Math.random() * 1000) + 100;
-    
-    // Erfolgs-Nachricht
-    alert(`✅ Ticket erfolgreich erstellt!\n\nTicket-ID: #${ticketId}\nKategorie: ${getCategoryText(category)}\nBetreff: ${subject}\n\nSie erhalten eine E-Mail-Bestätigung und können den Status in "Meine Tickets" verfolgen.`);
-    
-    // Zurück zur Übersicht
-    showWelcome();
-    
-    // Formular zurücksetzen
-    document.querySelector('.ticket-form').reset();
+    try {
+        // Ticket über API erstellen
+        const response = await window.ticketAPI.createTicket({
+            subject,
+            description,
+            category,
+            priority
+        });
+        
+        if (response.success) {
+            // Erfolgs-Nachricht
+            alert(`✅ Ticket erfolgreich erstellt!\n\nTicket-Nummer: ${response.ticket.ticketNumber}\nKategorie: ${getCategoryText(category)}\nBetreff: ${subject}\n\nSie erhalten eine E-Mail-Bestätigung und können den Status in "Meine Tickets" verfolgen.`);
+            
+            // Zurück zur Übersicht
+            showWelcome();
+            
+            // Formular zurücksetzen
+            document.querySelector('.ticket-form').reset();
+        }
+    } catch (error) {
+        console.error('❌ Ticket-Erstellungsfehler:', error);
+        alert(`❌ Fehler beim Erstellen des Tickets: ${error.message}`);
+    }
 }
 
-// Meine Tickets laden (Demo-Daten)
-function loadMyTickets() {
-    const currentUser = loadUserSession();
-    const demoTickets = [
-        {
-            id: 42,
-            title: '💡 Hilfe bei der Anmeldung',
-            category: 'help',
-            status: 'progress',
-            priority: 'medium',
-            created: '15.01.2024 14:30',
-            lastUpdate: 'vor 2 Std',
-            description: 'Ich kann mich nicht in meinen Account einloggen. Das Passwort scheint nicht zu funktionieren.'
-        },
-        {
-            id: 38,
-            title: '🎉 Gewinn aus Aktion einlösen',
-            category: 'prize',
-            status: 'closed',
-            priority: 'low',
-            created: '12.01.2024 09:15',
-            lastUpdate: 'vor 3 Tagen',
-            description: 'Ich habe bei der letzten Aktion gewonnen und möchte meinen Gewinn einlösen.'
+// Meine Tickets laden (echte API)
+async function loadMyTickets() {
+    try {
+        const response = await window.ticketAPI.getMyTickets();
+        const tickets = response.tickets || [];
+        
+        const ticketsContainer = document.getElementById('customer-tickets-list');
+        
+        if (tickets.length === 0) {
+            ticketsContainer.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <div class="empty-state-title">Noch keine Tickets</div>
+                    <div class="empty-state-desc">Sie haben noch keine Support-Tickets erstellt.</div>
+                    <button class="btn btn-primary" onclick="showCreateTicket()">
+                        ➕ Erstes Ticket erstellen
+                    </button>
+                </div>
+            `;
+        } else {
+            ticketsContainer.innerHTML = tickets.map(ticket => `
+                <div class="customer-ticket-card" onclick="openTicketDetails(${ticket.id})">
+                    <div class="ticket-card-header">
+                        <div>
+                            <div class="ticket-card-title">${getCategoryIcon(ticket.category)} ${ticket.subject}</div>
+                            <div class="ticket-card-id">${ticket.ticket_number}</div>
+                        </div>
+                        <div class="ticket-card-status status-${ticket.status}">
+                            ${getStatusText(ticket.status)}
+                        </div>
+                    </div>
+                    
+                    <div class="ticket-card-content">
+                        ${ticket.description.length > 100 ? ticket.description.substring(0, 100) + '...' : ticket.description}
+                    </div>
+                    
+                    <div class="ticket-card-footer">
+                        <div class="ticket-card-date">
+                            Erstellt: ${new Date(ticket.created_at).toLocaleDateString('de-DE')}<br>
+                            Aktualisiert: ${new Date(ticket.updated_at).toLocaleDateString('de-DE')}
+                        </div>
+                        <div class="ticket-card-priority priority-${ticket.priority}">
+                            ${getPriorityText(ticket.priority)}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
-    ];
-    
-    const ticketsContainer = document.getElementById('customer-tickets-list');
-    
-    if (demoTickets.length === 0) {
+    } catch (error) {
+        console.error('❌ Fehler beim Laden der Tickets:', error);
+        const ticketsContainer = document.getElementById('customer-tickets-list');
         ticketsContainer.innerHTML = `
             <div class="empty-state">
-                <div class="empty-state-icon">📭</div>
-                <div class="empty-state-title">Noch keine Tickets</div>
-                <div class="empty-state-desc">Sie haben noch keine Support-Tickets erstellt.</div>
-                <button class="btn btn-primary" onclick="showCreateTicket()">
-                    ➕ Erstes Ticket erstellen
+                <div class="empty-state-icon">❌</div>
+                <div class="empty-state-title">Fehler beim Laden</div>
+                <div class="empty-state-desc">Tickets konnten nicht geladen werden: ${error.message}</div>
+                <button class="btn btn-primary" onclick="loadMyTickets()">
+                    🔄 Erneut versuchen
                 </button>
             </div>
         `;
-    } else {
-        ticketsContainer.innerHTML = demoTickets.map(ticket => `
-            <div class="customer-ticket-card" onclick="openTicketDetails(${ticket.id})">
-                <div class="ticket-card-header">
-                    <div>
-                        <div class="ticket-card-title">${ticket.title}</div>
-                        <div class="ticket-card-id">Ticket #${ticket.id}</div>
-                    </div>
-                    <div class="ticket-card-status status-${ticket.status}">
-                        ${getStatusText(ticket.status)}
-                    </div>
-                </div>
-                
-                <div class="ticket-card-content">
-                    ${ticket.description.length > 100 ? ticket.description.substring(0, 100) + '...' : ticket.description}
-                </div>
-                
-                <div class="ticket-card-footer">
-                    <div class="ticket-card-date">
-                        Erstellt: ${ticket.created}<br>
-                        Aktualisiert: ${ticket.lastUpdate}
-                    </div>
-                    <div class="ticket-card-priority priority-${ticket.priority}">
-                        ${getPriorityText(ticket.priority)}
-                    </div>
-                </div>
-            </div>
-        `).join('');
     }
 }
 
@@ -164,6 +170,15 @@ window.openTicketDetails = function(ticketId) {
 }
 
 // Hilfsfunktionen
+function getCategoryIcon(category) {
+    switch(category) {
+        case 'help': return '💡';
+        case 'blocked': return '🔒';
+        case 'prize': return '🎉';
+        default: return '📝';
+    }
+}
+
 function getCategoryText(category) {
     switch(category) {
         case 'help': return '💡 Ich benötige Hilfe';
