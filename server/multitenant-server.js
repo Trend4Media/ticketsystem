@@ -4,6 +4,8 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
 const MultiTenantDatabase = require('./multitenant-database');
 
 const app = express();
@@ -14,6 +16,13 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-producti
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../')));
+
+// Uploads Verzeichnis sicher bereitstellen
+const UPLOADS_ROOT = path.join(__dirname, '../uploads');
+if (!fs.existsSync(UPLOADS_ROOT)) {
+    fs.mkdirSync(UPLOADS_ROOT, { recursive: true });
+}
+app.use('/uploads', express.static(UPLOADS_ROOT));
 
 // Datenbank initialisieren
 const db = new MultiTenantDatabase();
@@ -62,6 +71,52 @@ function authenticateToken(req, res, next) {
         next();
     });
 }
+
+// Multer Konfiguration
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        try {
+            const companyKey = (req.company && req.company.company_key) ? req.company.company_key : 'unknown';
+            const now = new Date();
+            const year = String(now.getFullYear());
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const dir = path.join(UPLOADS_ROOT, companyKey, year, month);
+            fs.mkdirSync(dir, { recursive: true });
+            cb(null, dir);
+        } catch (err) {
+            cb(err);
+        }
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+        const safeOriginal = (file.originalname || 'file').replace(/[^a-zA-Z0-9._-]/g, '_');
+        cb(null, `${uniqueSuffix}-${safeOriginal}`);
+    }
+});
+
+const allowedMimes = new Set([
+    'image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp',
+    'video/mp4', 'video/quicktime', 'video/webm',
+    'application/pdf'
+]);
+
+function getTypeLimitBytes(mime) {
+    if (mime.startsWith('image/')) return 10 * 1024 * 1024; // 10MB
+    if (mime.startsWith('video/')) return 100 * 1024 * 1024; // 100MB
+    if (mime === 'application/pdf') return 20 * 1024 * 1024; // 20MB
+    return 0;
+}
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 100 * 1024 * 1024 }, // harte Obergrenze 100MB
+    fileFilter: (req, file, cb) => {
+        if (!allowedMimes.has(file.mimetype)) {
+            return cb(new Error('Ungültiger Dateityp'));
+        }
+        cb(null, true);
+    }
+});
 
 // API-Routen
 
@@ -119,8 +174,8 @@ app.post('/api/auth/login', getTenant, async (req, res) => {
 
 // 🎫 Tickets
 
-// Ticket erstellen (Kunden)
-app.post('/api/tickets', getTenant, authenticateToken, async (req, res) => {
+// Ticket erstellen (Kunden) mit optionalen Anhängen
+app.post('/api/tickets', getTenant, authenticateToken, upload.array('files', 10), async (req, res) => {
     try {
         if (req.user.userType !== 'customer') {
             return res.status(403).json({ error: 'Nur Kunden können Tickets erstellen' });
@@ -151,13 +206,40 @@ app.post('/api/tickets', getTenant, authenticateToken, async (req, res) => {
         `, [req.company.id, req.user.userId, ticketNumber, subject, description, category, priority]);
 
         // Erste Nachricht hinzufügen (Ticket-Beschreibung)
-        await db.runQuery(`
+        const messageInsert = await db.runQuery(`
             INSERT INTO ticket_messages 
             (company_id, ticket_id, sender_type, sender_id, sender_name, message)
             VALUES (?, ?, 'customer', ?, ?, ?)
         `, [req.company.id, result.id, req.user.userId, 
             `${req.user.firstName || 'Kunde'} ${req.user.lastName || ''}`.trim(), 
             description]);
+
+        // Dateien verarbeiten (optional)
+        let attachmentsMeta = [];
+        if (Array.isArray(req.files) && req.files.length > 0) {
+            for (const file of req.files) {
+                const limit = getTypeLimitBytes(file.mimetype);
+                if (!allowedMimes.has(file.mimetype) || file.size > limit) {
+                    try { fs.unlinkSync(file.path); } catch (e) {}
+                    return res.status(413).json({ error: 'Datei zu groß oder ungültiger Typ' });
+                }
+
+                const relative = path.relative(UPLOADS_ROOT, file.path).split(path.sep).join('/');
+                const publicPath = `/uploads/${relative}`;
+                const att = await db.runQuery(`
+                    INSERT INTO attachments 
+                    (company_id, ticket_id, message_id, uploader_type, uploader_id, storage_path, mime_type, file_size, original_name)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `, [req.company.id, result.id, messageInsert.id, 'customer', req.user.userId, publicPath, file.mimetype, file.size, file.originalname]);
+
+                attachmentsMeta.push({ id: att.id, mime: file.mimetype, name: file.originalname, size: file.size, url: publicPath });
+            }
+
+            // Ticket Message um Metadaten ergänzen
+            await db.runQuery(`
+                UPDATE ticket_messages SET attachments = ? WHERE id = ? AND company_id = ?
+            `, [JSON.stringify(attachmentsMeta), messageInsert.id, req.company.id]);
+        }
 
         res.json({
             success: true,
@@ -235,7 +317,7 @@ app.get('/api/admin/tickets', getTenant, authenticateToken, async (req, res) => 
     }
 });
 
-// Ticket-Nachrichten abrufen
+// Ticket-Nachrichten abrufen inkl. Anhängen
 app.get('/api/tickets/:ticketId/messages', getTenant, authenticateToken, async (req, res) => {
     try {
         const { ticketId } = req.params;
@@ -262,7 +344,26 @@ app.get('/api/tickets/:ticketId/messages', getTenant, authenticateToken, async (
             ORDER BY created_at ASC
         `, [req.company.id, ticketId]);
 
-        res.json({ success: true, messages: messages });
+        const atts = await db.getAllQuery(`
+            SELECT * FROM attachments WHERE company_id = ? AND ticket_id = ? AND message_id IS NOT NULL
+            ORDER BY created_at ASC
+        `, [req.company.id, ticketId]);
+        const byMessage = new Map();
+        for (const a of atts) {
+            const list = byMessage.get(a.message_id) || [];
+            list.push({ id: a.id, mime: a.mime_type, name: a.original_name, size: a.file_size, url: a.storage_path });
+            byMessage.set(a.message_id, list);
+        }
+
+        const enriched = messages.map(m => {
+            let parsed = [];
+            try { parsed = m.attachments ? JSON.parse(m.attachments) : []; } catch (_) { parsed = []; }
+            const fromTable = byMessage.get(m.id) || [];
+            const merged = parsed.length ? parsed : fromTable;
+            return { ...m, attachments: merged };
+        });
+
+        res.json({ success: true, messages: enriched });
 
     } catch (error) {
         console.error('❌ Fehler beim Abrufen der Nachrichten:', error);
@@ -270,11 +371,11 @@ app.get('/api/tickets/:ticketId/messages', getTenant, authenticateToken, async (
     }
 });
 
-// Nachricht zu Ticket hinzufügen
-app.post('/api/tickets/:ticketId/messages', getTenant, authenticateToken, async (req, res) => {
+// Nachricht zu Ticket hinzufügen (mit optionalen Anhängen)
+app.post('/api/tickets/:ticketId/messages', getTenant, authenticateToken, upload.array('files', 10), async (req, res) => {
     try {
         const { ticketId } = req.params;
-        const { message, isInternal = false } = req.body;
+        let { message, isInternal = false } = req.body;
 
         if (!message || message.trim().length === 0) {
             return res.status(400).json({ error: 'Nachricht darf nicht leer sein' });
@@ -298,6 +399,8 @@ app.post('/api/tickets/:ticketId/messages', getTenant, authenticateToken, async 
         // Kunden können keine internen Nachrichten erstellen
         if (req.user.userType === 'customer') {
             isInternal = false;
+        } else {
+            isInternal = Boolean(isInternal);
         }
 
         // Sender-Name ermitteln
@@ -316,6 +419,29 @@ app.post('/api/tickets/:ticketId/messages', getTenant, authenticateToken, async 
             VALUES (?, ?, ?, ?, ?, ?, ?)
         `, [req.company.id, ticketId, req.user.userType, req.user.userId, senderName, message.trim(), isInternal]);
 
+        // Dateien verarbeiten
+        let attachmentsMeta = [];
+        if (Array.isArray(req.files) && req.files.length > 0) {
+            for (const file of req.files) {
+                const limit = getTypeLimitBytes(file.mimetype);
+                if (!allowedMimes.has(file.mimetype) || file.size > limit) {
+                    try { fs.unlinkSync(file.path); } catch (e) {}
+                    return res.status(413).json({ error: 'Datei zu groß oder ungültiger Typ' });
+                }
+                const relative = path.relative(UPLOADS_ROOT, file.path).split(path.sep).join('/');
+                const publicPath = `/uploads/${relative}`;
+                const att = await db.runQuery(`
+                    INSERT INTO attachments 
+                    (company_id, ticket_id, message_id, uploader_type, uploader_id, storage_path, mime_type, file_size, original_name)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `, [req.company.id, ticketId, result.id, req.user.userType, req.user.userId, publicPath, file.mimetype, file.size, file.originalname]);
+                attachmentsMeta.push({ id: att.id, mime: file.mimetype, name: file.originalname, size: file.size, url: publicPath });
+            }
+            await db.runQuery(`
+                UPDATE ticket_messages SET attachments = ? WHERE id = ? AND company_id = ?
+            `, [JSON.stringify(attachmentsMeta), result.id, req.company.id]);
+        }
+
         // Ticket als aktualisiert markieren
         await db.runQuery(`
             UPDATE tickets 
@@ -329,6 +455,7 @@ app.post('/api/tickets/:ticketId/messages', getTenant, authenticateToken, async 
                 id: result.id,
                 senderName: senderName,
                 message: message.trim(),
+                attachments: attachmentsMeta,
                 createdAt: new Date().toISOString()
             }
         });
@@ -336,6 +463,135 @@ app.post('/api/tickets/:ticketId/messages', getTenant, authenticateToken, async 
     } catch (error) {
         console.error('❌ Fehler beim Hinzufügen der Nachricht:', error);
         res.status(500).json({ error: 'Server-Fehler beim Hinzufügen der Nachricht' });
+    }
+});
+
+// Watcher hinzufügen (Admin)
+app.post('/api/tickets/:ticketId/watchers', getTenant, authenticateToken, async (req, res) => {
+    try {
+        if (req.user.userType !== 'admin') {
+            return res.status(403).json({ error: 'Nur Admins können Watcher verwalten' });
+        }
+        const { ticketId } = req.params;
+        const { adminUserId } = req.body;
+        if (!adminUserId) {
+            return res.status(400).json({ error: 'adminUserId ist erforderlich' });
+        }
+        // Prüfen Ticket
+        const ticket = await db.getQuery(`SELECT id FROM tickets WHERE id = ? AND company_id = ?`, [ticketId, req.company.id]);
+        if (!ticket) return res.status(404).json({ error: 'Ticket nicht gefunden' });
+
+        await db.runQuery(`
+            INSERT OR IGNORE INTO ticket_watchers (company_id, ticket_id, admin_user_id)
+            VALUES (?, ?, ?)
+        `, [req.company.id, ticketId, adminUserId]);
+
+        res.json({ success: true, message: 'Watcher hinzugefügt' });
+    } catch (error) {
+        console.error('❌ Fehler beim Hinzufügen des Watchers:', error);
+        res.status(500).json({ error: 'Server-Fehler beim Hinzufügen des Watchers' });
+    }
+});
+
+// Watcher entfernen (Admin)
+app.delete('/api/tickets/:ticketId/watchers/:adminUserId', getTenant, authenticateToken, async (req, res) => {
+    try {
+        if (req.user.userType !== 'admin') {
+            return res.status(403).json({ error: 'Nur Admins können Watcher verwalten' });
+        }
+        const { ticketId, adminUserId } = req.params;
+        await db.runQuery(`
+            DELETE FROM ticket_watchers WHERE company_id = ? AND ticket_id = ? AND admin_user_id = ?
+        `, [req.company.id, ticketId, adminUserId]);
+        res.json({ success: true, message: 'Watcher entfernt' });
+    } catch (error) {
+        console.error('❌ Fehler beim Entfernen des Watchers:', error);
+        res.status(500).json({ error: 'Server-Fehler beim Entfernen des Watchers' });
+    }
+});
+
+// Subscription anzeigen (Admin)
+app.get('/api/admin/subscription', getTenant, authenticateToken, async (req, res) => {
+    try {
+        if (req.user.userType !== 'admin') {
+            return res.status(403).json({ error: 'Nur für Admins verfügbar' });
+        }
+        const sub = await db.getQuery(`SELECT * FROM subscriptions WHERE company_id = ?`, [req.company.id]);
+        res.json({ success: true, subscription: sub || null });
+    } catch (error) {
+        console.error('❌ Fehler beim Abrufen des Abos:', error);
+        res.status(500).json({ error: 'Server-Fehler beim Abrufen des Abos' });
+    }
+});
+
+// Rechnungen auflisten (Admin)
+app.get('/api/admin/invoices', getTenant, authenticateToken, async (req, res) => {
+    try {
+        if (req.user.userType !== 'admin') {
+            return res.status(403).json({ error: 'Nur für Admins verfügbar' });
+        }
+        const invoices = await db.getAllQuery(`SELECT * FROM invoices WHERE company_id = ? ORDER BY issued_at DESC`, [req.company.id]);
+        res.json({ success: true, invoices });
+    } catch (error) {
+        console.error('❌ Fehler beim Abrufen der Rechnungen:', error);
+        res.status(500).json({ error: 'Server-Fehler beim Abrufen der Rechnungen' });
+    }
+});
+
+// Rechnung erstellen (Admin)
+app.post('/api/admin/invoices', getTenant, authenticateToken, async (req, res) => {
+    try {
+        if (req.user.userType !== 'admin') {
+            return res.status(403).json({ error: 'Nur für Admins verfügbar' });
+        }
+        const { amountCents, currency = 'EUR', pdfUrl = null } = req.body;
+        if (!amountCents || amountCents <= 0) return res.status(400).json({ error: 'amountCents erforderlich' });
+
+        const year = String(new Date().getFullYear());
+        const countRow = await db.getQuery(`
+            SELECT COUNT(*) as count FROM invoices WHERE company_id = ? AND strftime('%Y', issued_at) = ?
+        `, [req.company.id, year]);
+        const number = String((countRow?.count || 0) + 1).padStart(6, '0');
+        const invoiceNumber = `INV-${year}-${number}`;
+
+        const inv = await db.runQuery(`
+            INSERT INTO invoices (company_id, invoice_number, amount_cents, currency, status, pdf_url)
+            VALUES (?, ?, ?, ?, 'open', ?)
+        `, [req.company.id, invoiceNumber, amountCents, currency, pdfUrl]);
+
+        res.status(201).json({ success: true, invoice: { id: inv.id, invoice_number: invoiceNumber } });
+    } catch (error) {
+        console.error('❌ Fehler beim Erstellen der Rechnung:', error);
+        res.status(500).json({ error: 'Server-Fehler beim Erstellen der Rechnung' });
+    }
+});
+
+// Zahlung verbuchen und Rechnung als bezahlt markieren (Admin)
+app.post('/api/admin/invoices/:id/payments', getTenant, authenticateToken, async (req, res) => {
+    try {
+        if (req.user.userType !== 'admin') {
+            return res.status(403).json({ error: 'Nur für Admins verfügbar' });
+        }
+        const { id } = req.params;
+        const { amountCents, currency = 'EUR', provider = 'manual', providerId = null } = req.body;
+        if (!amountCents || amountCents <= 0) return res.status(400).json({ error: 'amountCents erforderlich' });
+
+        const invoice = await db.getQuery(`SELECT * FROM invoices WHERE id = ? AND company_id = ?`, [id, req.company.id]);
+        if (!invoice) return res.status(404).json({ error: 'Rechnung nicht gefunden' });
+
+        const pay = await db.runQuery(`
+            INSERT INTO payments (company_id, invoice_id, provider, provider_id, amount_cents, currency, status)
+            VALUES (?, ?, ?, ?, ?, ?, 'succeeded')
+        `, [req.company.id, id, provider, providerId, amountCents, currency]);
+
+        await db.runQuery(`
+            UPDATE invoices SET status = 'paid', paid_at = CURRENT_TIMESTAMP WHERE id = ? AND company_id = ?
+        `, [id, req.company.id]);
+
+        res.json({ success: true, payment: { id: pay.id } });
+    } catch (error) {
+        console.error('❌ Fehler beim Verbuchen der Zahlung:', error);
+        res.status(500).json({ error: 'Server-Fehler beim Verbuchen der Zahlung' });
     }
 });
 
