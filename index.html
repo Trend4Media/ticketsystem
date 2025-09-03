@@ -4,19 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>4Ticket - Professionelles Ticketsystem für Ihren Support</title>
-    <meta http-equiv="refresh" content="0; url=app.html">
-    <script>
-        (function() {
-            if (typeof window !== 'undefined') {
-                // Wenn Brand-Admin bereits eingeloggt ist, dorthin leiten
-                try {
-                    const brand = JSON.parse(localStorage.getItem('brandAuth')||'null');
-                    if (brand && brand.token) { window.location.replace('brand-admin/index.html'); return; }
-                } catch(_) {}
-                window.location.replace('app.html');
-            }
-        })();
-    </script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
