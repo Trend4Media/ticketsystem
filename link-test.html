@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔗 Link-Test für 4Ticket</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; }
+        .test-section { margin: 30px 0; padding: 20px; border: 2px solid #ddd; border-radius: 8px; }
+        .test-button { 
+            display: inline-block; padding: 8px 16px; margin: 4px; background: #007AFF; 
+            color: white; text-decoration: none; border-radius: 6px; font-size: 14px; 
+        }
+        .status-ok { background: #28CA42; }
+        .status-error { background: #FF3B30; }
+        .status-warning { background: #FF9500; }
+        .result { margin-top: 10px; padding: 10px; border-radius: 6px; font-size: 14px; }
+        .result.ok { background: #d4edda; color: #155724; }
+        .result.error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 4Ticket Link-Test</h1>
+        <p>Automatischer Test aller Links und Buttons in der Anwendung:</p>
+
+        <div class="test-section">
+            <h2>🏠 Landingpage (index.html)</h2>
+            <button class="test-button" onclick="testLink('index.html')">Test Landingpage</button>
+            <button class="test-button" onclick="testLink('index.html#features')">Test #features</button>
+            <button class="test-button" onclick="testLink('index.html#pricing')">Test #pricing</button>
+            <div id="index-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔐 Login-Seite (app.html)</h2>
+            <button class="test-button" onclick="testLink('app.html')">Test Login-Seite</button>
+            <button class="test-button" onclick="testLoginFunctions()">Test Login-Funktionen</button>
+            <div id="app-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🛠️ Admin-Bereich</h2>
+            <button class="test-button" onclick="testLink('admin/')">Test Admin-Dashboard</button>
+            <button class="test-button" onclick="testLink('admin/index.html')">Test Admin-Index</button>
+            <button class="test-button" onclick="testLink('admin/ticket-management.html')">Test Ticket-Verwaltung</button>
+            <button class="test-button" onclick="testAdminWithLogin()">Test Admin mit Login</button>
+            <div id="admin-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>👤 Kunden-Bereich</h2>
+            <button class="test-button" onclick="testLink('customer/')">Test Kunden-Portal</button>
+            <button class="test-button" onclick="testLink('customer/index.html')">Test Kunden-Index</button>
+            <button class="test-button" onclick="testLink('customer/ticket-detail.html')">Test Ticket-Details</button>
+            <button class="test-button" onclick="testCustomerWithLogin()">Test Kunde mit Login</button>
+            <div id="customer-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔗 Shared Resources</h2>
+            <button class="test-button" onclick="testLink('shared/css/common.css')">Test Common CSS</button>
+            <button class="test-button" onclick="testLink('shared/js/auth.js')">Test Auth JS</button>
+            <button class="test-button" onclick="testLink('shared/js/api.js')">Test API JS</button>
+            <div id="shared-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>💾 Session-Test</h2>
+            <button class="test-button" onclick="createAdminSession()">Admin-Session erstellen</button>
+            <button class="test-button" onclick="createCustomerSession()">Kunden-Session erstellen</button>
+            <button class="test-button" onclick="clearAllSessions()">Alle Sessions löschen</button>
+            <button class="test-button" onclick="showSessionInfo()">Session-Info anzeigen</button>
+            <div id="session-result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Link testen
+        async function testLink(url) {
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                const resultId = url.includes('admin') ? 'admin-result' : 
+                                url.includes('customer') ? 'customer-result' :
+                                url.includes('shared') ? 'shared-result' : 'index-result';
+                
+                const resultDiv = document.getElementById(resultId);
+                
+                if (response.ok) {
+                    resultDiv.className = 'result ok';
+                    resultDiv.innerHTML = `✅ ${url} - OK (${response.status})`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ ${url} - Fehler (${response.status})`;
+                }
+            } catch (error) {
+                const resultId = url.includes('admin') ? 'admin-result' : 
+                                url.includes('customer') ? 'customer-result' : 'index-result';
+                const resultDiv = document.getElementById(resultId);
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ ${url} - Netzwerkfehler: ${error.message}`;
+            }
+        }
+
+        // Login-Funktionen testen
+        function testLoginFunctions() {
+            const resultDiv = document.getElementById('app-result');
+            const tests = [];
+            
+            // Prüfe ob Funktionen existieren
+            if (typeof window.fillCredentials === 'function') {
+                tests.push('✅ fillCredentials() verfügbar');
+            } else {
+                tests.push('❌ fillCredentials() fehlt');
+            }
+            
+            if (typeof window.directLogin === 'function') {
+                tests.push('✅ directLogin() verfügbar');
+            } else {
+                tests.push('❌ directLogin() fehlt');
+            }
+            
+            if (typeof window.showRegisterInfo === 'function') {
+                tests.push('✅ showRegisterInfo() verfügbar');
+            } else {
+                tests.push('❌ showRegisterInfo() fehlt');
+            }
+            
+            resultDiv.className = 'result ok';
+            resultDiv.innerHTML = tests.join('<br>');
+        }
+
+        // Admin mit Login testen
+        function testAdminWithLogin() {
+            // Admin-Session erstellen
+            const adminSession = {
+                firstName: 'Test',
+                lastName: 'Admin',
+                name: 'Test Admin',
+                email: 'admin@support.com',
+                type: 'admin'
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(adminSession));
+            
+            // Admin-Bereich öffnen
+            window.open('admin/index.html', '_blank');
+            
+            const resultDiv = document.getElementById('admin-result');
+            resultDiv.className = 'result ok';
+            resultDiv.innerHTML = '✅ Admin-Session erstellt und Bereich geöffnet';
+        }
+
+        // Kunde mit Login testen
+        function testCustomerWithLogin() {
+            // Kunden-Session erstellen
+            const customerSession = {
+                firstName: 'Test',
+                lastName: 'Kunde',
+                name: 'Test Kunde',
+                email: 'kunde@demo.com',
+                type: 'customer'
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(customerSession));
+            
+            // Kunden-Bereich öffnen
+            window.open('customer/index.html', '_blank');
+            
+            const resultDiv = document.getElementById('customer-result');
+            resultDiv.className = 'result ok';
+            resultDiv.innerHTML = '✅ Kunden-Session erstellt und Bereich geöffnet';
+        }
+
+        // Session-Funktionen
+        function createAdminSession() {
+            const adminSession = {
+                firstName: 'Test',
+                lastName: 'Admin',
+                name: 'Test Admin',
+                email: 'admin@support.com',
+                type: 'admin'
+            };
+            localStorage.setItem('currentUser', JSON.stringify(adminSession));
+            showSessionInfo();
+        }
+
+        function createCustomerSession() {
+            const customerSession = {
+                firstName: 'Test',
+                lastName: 'Kunde',
+                name: 'Test Kunde',
+                email: 'kunde@demo.com',
+                type: 'customer'
+            };
+            localStorage.setItem('currentUser', JSON.stringify(customerSession));
+            showSessionInfo();
+        }
+
+        function clearAllSessions() {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('authToken');
+            showSessionInfo();
+        }
+
+        function showSessionInfo() {
+            const currentUser = localStorage.getItem('currentUser');
+            const authToken = localStorage.getItem('authToken');
+            
+            const resultDiv = document.getElementById('session-result');
+            resultDiv.className = 'result ok';
+            resultDiv.innerHTML = `
+                <strong>currentUser:</strong><br>
+                <code>${currentUser || 'Nicht vorhanden'}</code><br><br>
+                <strong>authToken:</strong><br>
+                <code>${authToken || 'Nicht vorhanden'}</code>
+            `;
+        }
+
+        // Automatische Tests beim Laden
+        document.addEventListener('DOMContentLoaded', function() {
+            showSessionInfo();
+            
+            // Automatisch wichtige Links testen
+            setTimeout(() => {
+                testLink('index.html');
+                testLink('app.html');
+                testLink('admin/index.html');
+                testLink('customer/index.html');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

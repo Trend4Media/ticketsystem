@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 4Ticket Diagnose</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; padding: 20px; background: #f5f7fa; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card { background: white; padding: 24px; margin: 16px 0; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+        .test-item { padding: 16px; border: 1px solid #ddd; border-radius: 8px; margin: 8px 0; }
+        .status { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+        .status-ok { background: #d4edda; color: #155724; }
+        .status-error { background: #f8d7da; color: #721c24; }
+        .status-warning { background: #fff3cd; color: #856404; }
+        .btn { padding: 8px 16px; margin: 4px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-primary { background: #007AFF; color: white; }
+        .btn-success { background: #28CA42; color: white; }
+        .btn-warning { background: #FF9500; color: white; }
+        .btn-danger { background: #FF3B30; color: white; }
+        .log { background: #f8f9fa; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 4Ticket System-Diagnose</h1>
+        
+        <div class="card">
+            <h2>📊 System-Übersicht</h2>
+            <div class="test-grid">
+                <div>
+                    <h3>🌐 Verfügbare Seiten</h3>
+                    <div id="pages-status"></div>
+                </div>
+                <div>
+                    <h3>📁 Dateien-Status</h3>
+                    <div id="files-status"></div>
+                </div>
+                <div>
+                    <h3>💾 Session-Status</h3>
+                    <div id="session-status"></div>
+                </div>
+                <div>
+                    <h3>🔧 JavaScript-Funktionen</h3>
+                    <div id="functions-status"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🎯 Schnell-Tests</h2>
+            <button class="btn btn-primary" onclick="runAllTests()">🚀 Alle Tests ausführen</button>
+            <button class="btn btn-success" onclick="setupAdminTest()">🛠️ Admin-Test vorbereiten</button>
+            <button class="btn btn-warning" onclick="setupCustomerTest()">👤 Kunden-Test vorbereiten</button>
+            <button class="btn btn-danger" onclick="resetEverything()">🗑️ Alles zurücksetzen</button>
+        </div>
+
+        <div class="card">
+            <h2>📋 Test-Ergebnisse</h2>
+            <div id="test-results" class="log">
+                Klicke auf "Alle Tests ausführen" um zu starten...
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔗 Direkte Navigation</h2>
+            <div class="test-grid">
+                <div>
+                    <h3>🏠 Landingpage</h3>
+                    <a href="index.html" target="_blank" class="btn btn-primary">Öffnen</a>
+                </div>
+                <div>
+                    <h3>🔐 Login</h3>
+                    <a href="app.html" target="_blank" class="btn btn-primary">Öffnen</a>
+                </div>
+                <div>
+                    <h3>🛠️ Admin (mit Session)</h3>
+                    <button class="btn btn-primary" onclick="openAdminWithSession()">Öffnen</button>
+                </div>
+                <div>
+                    <h3>👤 Kunde (mit Session)</h3>
+                    <button class="btn btn-primary" onclick="openCustomerWithSession()">Öffnen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testLog = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString('de-DE');
+            testLog.push(`[${timestamp}] ${message}`);
+            
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = testLog.slice(-20).join('\n');
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        // Alle Tests ausführen
+        async function runAllTests() {
+            testLog = [];
+            log('🚀 Starte umfassende System-Diagnose...');
+            
+            // 1. Seiten testen
+            await testPages();
+            
+            // 2. Dateien testen  
+            await testFiles();
+            
+            // 3. JavaScript-Funktionen testen
+            testJavaScriptFunctions();
+            
+            // 4. Session-Management testen
+            testSessionManagement();
+            
+            log('✅ Alle Tests abgeschlossen');
+        }
+
+        // Seiten-Verfügbarkeit testen
+        async function testPages() {
+            const pages = [
+                { url: 'index.html', name: 'Landingpage' },
+                { url: 'app.html', name: 'Login-Seite' },
+                { url: 'admin/index.html', name: 'Admin-Dashboard' },
+                { url: 'admin/ticket-management.html', name: 'Ticket-Verwaltung' },
+                { url: 'customer/index.html', name: 'Kunden-Portal' },
+                { url: 'customer/ticket-detail.html', name: 'Ticket-Details' }
+            ];
+
+            let results = [];
+            
+            for (const page of pages) {
+                try {
+                    const response = await fetch(page.url, { method: 'HEAD' });
+                    if (response.ok) {
+                        results.push(`<span class="status status-ok">✅ ${page.name}</span>`);
+                        log(`✅ ${page.name} erreichbar`);
+                    } else {
+                        results.push(`<span class="status status-error">❌ ${page.name} (${response.status})</span>`);
+                        log(`❌ ${page.name} Fehler: ${response.status}`);
+                    }
+                } catch (error) {
+                    results.push(`<span class="status status-error">❌ ${page.name} (Netzwerk)</span>`);
+                    log(`❌ ${page.name} Netzwerkfehler: ${error.message}`);
+                }
+            }
+            
+            document.getElementById('pages-status').innerHTML = results.join('<br>');
+        }
+
+        // Dateien testen
+        async function testFiles() {
+            const files = [
+                'shared/css/common.css',
+                'shared/js/auth.js', 
+                'shared/js/api.js',
+                'admin/css/admin.css',
+                'admin/js/admin.js',
+                'customer/css/customer.css',
+                'customer/js/customer.js'
+            ];
+
+            let results = [];
+            
+            for (const file of files) {
+                try {
+                    const response = await fetch(file, { method: 'HEAD' });
+                    if (response.ok) {
+                        results.push(`<span class="status status-ok">✅ ${file}</span>`);
+                        log(`✅ ${file} verfügbar`);
+                    } else {
+                        results.push(`<span class="status status-error">❌ ${file}</span>`);
+                        log(`❌ ${file} nicht gefunden`);
+                    }
+                } catch (error) {
+                    results.push(`<span class="status status-error">❌ ${file}</span>`);
+                    log(`❌ ${file} Fehler: ${error.message}`);
+                }
+            }
+            
+            document.getElementById('files-status').innerHTML = results.join('<br>');
+        }
+
+        // JavaScript-Funktionen testen
+        function testJavaScriptFunctions() {
+            const functions = [
+                'window.login',
+                'window.logout', 
+                'window.fillCredentials',
+                'window.directLogin',
+                'window.showRegisterInfo'
+            ];
+
+            let results = [];
+            
+            functions.forEach(func => {
+                try {
+                    const funcExists = eval(`typeof ${func}`) === 'function';
+                    if (funcExists) {
+                        results.push(`<span class="status status-ok">✅ ${func}</span>`);
+                        log(`✅ ${func} verfügbar`);
+                    } else {
+                        results.push(`<span class="status status-warning">⚠️ ${func} nicht geladen</span>`);
+                        log(`⚠️ ${func} nicht verfügbar`);
+                    }
+                } catch (error) {
+                    results.push(`<span class="status status-error">❌ ${func}</span>`);
+                    log(`❌ ${func} Fehler: ${error.message}`);
+                }
+            });
+            
+            document.getElementById('functions-status').innerHTML = results.join('<br>');
+        }
+
+        // Session-Management testen
+        function testSessionManagement() {
+            const currentUser = localStorage.getItem('currentUser');
+            const authToken = localStorage.getItem('authToken');
+            
+            let status = [];
+            
+            if (currentUser) {
+                try {
+                    const user = JSON.parse(currentUser);
+                    status.push(`<span class="status status-ok">✅ Session: ${user.type}</span>`);
+                    log(`✅ Session aktiv: ${user.firstName} ${user.lastName} (${user.type})`);
+                } catch (error) {
+                    status.push(`<span class="status status-error">❌ Session korrupt</span>`);
+                    log(`❌ Session-Daten korrupt: ${error.message}`);
+                }
+            } else {
+                status.push(`<span class="status status-warning">⚠️ Keine Session</span>`);
+                log(`⚠️ Keine aktive Session`);
+            }
+            
+            if (authToken) {
+                status.push(`<span class="status status-ok">✅ Auth-Token</span>`);
+            } else {
+                status.push(`<span class="status status-warning">⚠️ Kein Auth-Token</span>`);
+            }
+            
+            document.getElementById('session-status').innerHTML = status.join('<br>');
+        }
+
+        // Admin mit Session öffnen
+        function openAdminWithSession() {
+            const adminSession = {
+                firstName: 'Test',
+                lastName: 'Admin', 
+                name: 'Test Admin',
+                email: 'admin@support.com',
+                type: 'admin'
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(adminSession));
+            log('💾 Admin-Session erstellt');
+            
+            window.open('admin/index.html', '_blank');
+            log('🚀 Admin-Bereich geöffnet');
+        }
+
+        // Kunde mit Session öffnen
+        function openCustomerWithSession() {
+            const customerSession = {
+                firstName: 'Test',
+                lastName: 'Kunde',
+                name: 'Test Kunde', 
+                email: 'kunde@demo.com',
+                type: 'customer'
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(customerSession));
+            log('💾 Kunden-Session erstellt');
+            
+            window.open('customer/index.html', '_blank');
+            log('🚀 Kunden-Bereich geöffnet');
+        }
+
+        // Setup-Funktionen
+        function setupAdminTest() {
+            createAdminSession();
+            log('🛠️ Admin-Test vorbereitet - Du kannst jetzt admin/index.html öffnen');
+        }
+
+        function setupCustomerTest() {
+            createCustomerSession();
+            log('👤 Kunden-Test vorbereitet - Du kannst jetzt customer/index.html öffnen');
+        }
+
+        function resetEverything() {
+            localStorage.clear();
+            sessionStorage.clear();
+            log('🗑️ Alle Sessions und Daten gelöscht');
+            testSessionManagement();
+        }
+
+        // Hilfsfunktionen aus anderen Dateien
+        function createAdminSession() {
+            const adminSession = {
+                firstName: 'Admin',
+                lastName: 'User',
+                name: 'Admin User',
+                email: 'admin@support.com',
+                type: 'admin'
+            };
+            localStorage.setItem('currentUser', JSON.stringify(adminSession));
+            testSessionManagement();
+        }
+
+        function createCustomerSession() {
+            const customerSession = {
+                firstName: 'Demo',
+                lastName: 'Kunde',
+                name: 'Demo Kunde',
+                email: 'kunde@demo.com', 
+                type: 'customer'
+            };
+            localStorage.setItem('currentUser', JSON.stringify(customerSession));
+            testSessionManagement();
+        }
+    </script>
+</body>
+</html>
