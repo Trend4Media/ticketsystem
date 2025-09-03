@@ -470,19 +470,25 @@
                 <p>Ein Login für alle - automatische Weiterleitung basierend auf Account-Typ</p>
                 
                 <div class="test-accounts">
-                    <div class="test-account" onclick="fillCredentials('admin@support.com', 'admin123')">
+                    <div class="test-account">
                         <div class="account-type">🛠️ Admin/Support</div>
                         <div class="account-credentials">
                             admin@support.com<br>
                             admin123
                         </div>
+                        <button class="btn btn-primary" style="margin-top: 12px; padding: 8px 16px; font-size: 12px; width: 100%;" onclick="directLogin('admin@support.com', 'admin123')">
+                            🚀 Admin-Login
+                        </button>
                     </div>
-                    <div class="test-account" onclick="fillCredentials('kunde@demo.com', 'demo123')">
+                    <div class="test-account">
                         <div class="account-type">👤 Kunde</div>
                         <div class="account-credentials">
                             kunde@demo.com<br>
                             demo123
                         </div>
+                        <button class="btn btn-primary" style="margin-top: 12px; padding: 8px 16px; font-size: 12px; width: 100%;" onclick="directLogin('kunde@demo.com', 'demo123')">
+                            🚀 Kunden-Login
+                        </button>
                     </div>
                 </div>
             </div>
@@ -681,16 +687,45 @@
         function fillCredentials(email, password) {
             document.getElementById('email').value = email;
             document.getElementById('password').value = password;
+        }
+
+        // Direkter Login ohne Formular
+        function directLogin(email, password) {
+            console.log('🚀 Direkter Login:', email);
             
-            // Add visual feedback
-            const testAccounts = document.querySelectorAll('.test-account');
-            testAccounts.forEach(account => {
-                account.style.borderColor = var(--border);
-                account.style.boxShadow = 'none';
-            });
+            // Account prüfen
+            const account = testAccounts[email];
+            if (!account || account.password !== password) {
+                alert('❌ Ungültige Demo-Daten');
+                return;
+            }
             
-            event.target.closest('.test-account').style.borderColor = 'var(--primary)';
-            event.target.closest('.test-account').style.boxShadow = '0 4px 12px rgba(0, 122, 255, 0.15)';
+            // Session sofort speichern
+            const sessionData = {
+                firstName: account.firstName,
+                lastName: account.lastName,
+                name: account.name,
+                email: email,
+                type: account.type
+            };
+            
+            console.log('💾 Direkt-Login Session speichern:', sessionData);
+            localStorage.setItem('currentUser', JSON.stringify(sessionData));
+            
+            // Sofortige Anzeige des Dashboards
+            currentUser = account;
+            
+            // Login-Screen ausblenden
+            document.getElementById('login-screen').style.display = 'none';
+            
+            // Dashboard anzeigen
+            if (account.type === 'admin') {
+                console.log('✅ Admin-Dashboard wird angezeigt');
+                showAdminDashboard(account);
+            } else {
+                console.log('✅ Kunden-Dashboard wird angezeigt');
+                showCustomerDashboard(account);
+            }
         }
 
         // Login functionality
@@ -744,13 +779,13 @@
                     console.log('💾 Session-Daten speichern:', sessionData);
                     localStorage.setItem('currentUser', JSON.stringify(sessionData));
                     
-                    // Weiterleitung zu den neuen separaten Bereichen
+                    // Direkter Fix: Zeige Dashboard in dieser Seite
                     if (account.type === 'admin') {
-                        console.log('➡️ Weiterleitung zu Admin-Bereich');
-                        window.location.href = 'admin/index.html';
+                        console.log('➡️ Admin-Dashboard anzeigen');
+                        showAdminDashboard(account);
                     } else if (account.type === 'customer') {
-                        console.log('➡️ Weiterleitung zu Kunden-Bereich');
-                        window.location.href = 'customer/index.html';
+                        console.log('➡️ Kunden-Dashboard anzeigen');
+                        showCustomerDashboard(account);
                     } else {
                         console.error('❌ Unbekannter Account-Typ:', account.type);
                         alert('❌ Fehler: Unbekannter Account-Typ. Bitte kontaktieren Sie den Support.');
@@ -851,6 +886,17 @@
                 document.body.style.transition = 'opacity 0.5s ease';
             }, 100);
         });
+
+        // Versuche separate Bereiche zu öffnen (falls verfügbar)
+        function tryOpenSeparateAdminArea() {
+            // Versuche den separaten Admin-Bereich zu öffnen
+            window.open('admin/index.html', '_blank');
+        }
+
+        function tryOpenSeparateCustomerArea() {
+            // Versuche den separaten Kunden-Bereich zu öffnen
+            window.open('customer/index.html', '_blank');
+        }
 
         // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
