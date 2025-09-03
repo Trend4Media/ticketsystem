@@ -722,19 +722,13 @@
             console.log('💾 Direkt-Login Session speichern:', sessionData);
             localStorage.setItem('currentUser', JSON.stringify(sessionData));
             
-            // Sofortige Anzeige des Dashboards
-            currentUser = account;
-            
-            // Login-Screen ausblenden
-            document.getElementById('login-screen').style.display = 'none';
-            
-            // Dashboard anzeigen
+            // Weiterleitung zu separaten Bereichen
             if (account.type === 'admin') {
-                console.log('✅ Admin-Dashboard wird angezeigt');
-                showAdminDashboard(account);
+                console.log('✅ Weiterleitung zu separatem Admin-Bereich');
+                window.location.href = 'admin/index.html';
             } else {
-                console.log('✅ Kunden-Dashboard wird angezeigt');
-                showCustomerDashboard(account);
+                console.log('✅ Weiterleitung zu separatem Kunden-Bereich');
+                window.location.href = 'customer/index.html';
             }
         }
 
@@ -789,13 +783,13 @@
                     console.log('💾 Session-Daten speichern:', sessionData);
                     localStorage.setItem('currentUser', JSON.stringify(sessionData));
                     
-                    // Direkter Fix: Zeige Dashboard in dieser Seite
+                    // Weiterleitung zu den separaten Bereichen
                     if (account.type === 'admin') {
-                        console.log('➡️ Admin-Dashboard anzeigen');
-                        showAdminDashboard(account);
+                        console.log('➡️ Weiterleitung zu separatem Admin-Bereich');
+                        window.location.href = 'admin/index.html';
                     } else if (account.type === 'customer') {
-                        console.log('➡️ Kunden-Dashboard anzeigen');
-                        showCustomerDashboard(account);
+                        console.log('➡️ Weiterleitung zu separatem Kunden-Bereich');
+                        window.location.href = 'customer/index.html';
                     } else {
                         console.error('❌ Unbekannter Account-Typ:', account.type);
                         alert('❌ Fehler: Unbekannter Account-Typ. Bitte kontaktieren Sie den Support.');

@@ -33,6 +33,21 @@
         </header>
         
         <main class="app-main">
+            <!-- Navigation Tabs -->
+            <div class="customer-nav" style="background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px;">
+                <div style="display: flex; gap: 24px;">
+                    <button class="nav-tab active" onclick="showWelcome()" id="nav-welcome">
+                        🏠 Dashboard
+                    </button>
+                    <button class="nav-tab" onclick="showCreateTicket()" id="nav-create">
+                        ➕ Ticket erstellen
+                    </button>
+                    <button class="nav-tab" onclick="showMyTickets()" id="nav-tickets">
+                        📋 Meine Tickets
+                    </button>
+                </div>
+            </div>
+            
             <div class="content-area">
                 <!-- Willkommensbereich -->
                 <div id="welcome-content" class="content-view active">

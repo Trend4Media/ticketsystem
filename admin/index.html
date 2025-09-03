@@ -72,11 +72,14 @@
                             weisen Sie Tickets zu und sorgen Sie für exzellenten Kundensupport.
                         </p>
                         <div class="quick-actions">
-                            <button class="btn btn-primary" onclick="showAllTickets()">
-                                🎫 Alle Tickets verwalten
+                            <button class="btn btn-primary" onclick="openTicketManagement()">
+                                🎫 Ticket-Verwaltung öffnen
                             </button>
                             <button class="btn btn-secondary" onclick="showStatistics()">
                                 📊 Statistiken anzeigen
+                            </button>
+                            <button class="btn btn-secondary" onclick="showUsers()">
+                                👥 Benutzer verwalten
                             </button>
                         </div>
                         
@@ -110,15 +113,17 @@
                     </div>
                 </div>
                 
-                <!-- Weitere Content-Views -->
+                <!-- Ticket-Verwaltung -->
                 <div id="tickets-content" class="content-view">
                     <!-- Wird dynamisch mit JavaScript gefüllt -->
                 </div>
                 
+                <!-- Statistiken -->
                 <div id="statistics-content" class="content-view">
                     <!-- Wird dynamisch mit JavaScript gefüllt -->
                 </div>
                 
+                <!-- Benutzerverwaltung -->
                 <div id="users-content" class="content-view">
                     <!-- Wird dynamisch mit JavaScript gefüllt -->
                 </div>

@@ -105,6 +105,11 @@ window.showSettings = function() {
     setActiveLink('⚙️ Einstellungen');
 }
 
+// Ticket-Verwaltung öffnen - global verfügbar
+window.openTicketManagement = function() {
+    window.location.href = 'ticket-management.html';
+}
+
 // Aktiven Sidebar-Link setzen
 function setActiveLink(linkText) {
     const allLinks = document.querySelectorAll('.sidebar-link');

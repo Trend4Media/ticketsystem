@@ -54,14 +54,29 @@ window.showView = function(viewId) {
     }
 }
 
+// Aktiven Navigation-Tab setzen
+function setActiveNavTab(tabId) {
+    // Alle Tabs deaktivieren
+    const allTabs = document.querySelectorAll('.nav-tab');
+    allTabs.forEach(tab => tab.classList.remove('active'));
+    
+    // Gewählten Tab aktivieren
+    const targetTab = document.getElementById(tabId);
+    if (targetTab) {
+        targetTab.classList.add('active');
+    }
+}
+
 // Willkommensbereich anzeigen - global verfügbar
 window.showWelcome = function() {
     showView('welcome-content');
+    setActiveNavTab('nav-welcome');
 }
 
 // Ticket-Erstellung anzeigen - global verfügbar
 window.showCreateTicket = function() {
     showView('create-ticket-content');
+    setActiveNavTab('nav-create');
     // Formular zurücksetzen
     const form = document.querySelector('.ticket-form');
     if (form) {
@@ -72,6 +87,7 @@ window.showCreateTicket = function() {
 // Meine Tickets anzeigen - global verfügbar
 window.showMyTickets = function() {
     showView('my-tickets-content');
+    setActiveNavTab('nav-tickets');
     loadMyTickets();
 }
 

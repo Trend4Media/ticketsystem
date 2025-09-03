@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4Ticket - Ticket-Verwaltung</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../shared/css/common.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <style>
+        /* Ticket-Management spezifische Stile */
+        .ticket-management-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 24px;
+            height: calc(100vh - 120px);
+        }
+        
+        .tickets-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .tickets-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            background: var(--background);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tickets-list {
+            height: calc(100% - 70px);
+            overflow-y: auto;
+        }
+        
+        .ticket-item {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .ticket-item:hover {
+            background: var(--background);
+        }
+        
+        .ticket-item.selected {
+            background: rgba(0, 122, 255, 0.08);
+            border-right: 3px solid var(--primary);
+        }
+        
+        .ticket-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .ticket-item-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .ticket-item-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .ticket-detail-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .ticket-detail-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            background: var(--background);
+        }
+        
+        .ticket-detail-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .ticket-detail-meta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .ticket-detail-meta-item {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .ticket-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+        
+        .ticket-message {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .ticket-message.admin-message {
+            background: rgba(0, 122, 255, 0.03);
+        }
+        
+        .ticket-message.customer-message {
+            background: rgba(88, 86, 214, 0.03);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .message-sender {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        .message-content {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .ticket-actions {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            background: var(--background);
+        }
+        
+        .action-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .action-select {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .reply-area {
+            margin-top: 16px;
+        }
+        
+        .reply-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            margin-bottom: 12px;
+        }
+        
+        .reply-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        @media (max-width: 1024px) {
+            .ticket-management-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 300px 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-left">
+                <div class="app-logo">
+                    <div class="app-logo-icon">4</div>
+                    <span>4Ticket Admin</span>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="admin-avatar">A</div>
+                <div class="user-details">
+                    <div class="user-name" id="admin-name">Admin User</div>
+                    <div class="user-role">Support-Team</div>
+                </div>
+                <button class="btn btn-secondary" onclick="goBackToAdmin()">← Dashboard</button>
+                <button class="btn btn-secondary" onclick="logout()" style="margin-left: 8px;">
+                    🚪 Abmelden
+                </button>
+            </div>
+        </header>
+        
+        <main class="app-main">
+            <div class="content-area">
+                <div class="content-header">
+                    <h2>🎫 Ticket-Verwaltung</h2>
+                    <div class="content-actions">
+                        <select id="filter-status" onchange="filterTickets()" class="action-select" style="width: auto;">
+                            <option value="all">Alle Status</option>
+                            <option value="open">Offen</option>
+                            <option value="in_progress">In Bearbeitung</option>
+                            <option value="waiting_customer">Wartet auf Kunde</option>
+                            <option value="resolved">Gelöst</option>
+                            <option value="closed">Geschlossen</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="ticket-management-container">
+                    <!-- Ticket-Liste -->
+                    <div class="tickets-panel">
+                        <div class="tickets-header">
+                            <h3>📋 Alle Tickets</h3>
+                            <span id="ticket-count">0 Tickets</span>
+                        </div>
+                        <div class="tickets-list" id="tickets-list">
+                            <!-- Wird dynamisch gefüllt -->
+                        </div>
+                    </div>
+                    
+                    <!-- Ticket-Details -->
+                    <div class="ticket-detail-panel">
+                        <div class="ticket-detail-header">
+                            <div class="ticket-detail-title" id="selected-ticket-title">
+                                Ticket auswählen
+                            </div>
+                            <div class="ticket-detail-meta" id="selected-ticket-meta">
+                                Wählen Sie ein Ticket aus der Liste
+                            </div>
+                        </div>
+                        
+                        <div class="ticket-messages" id="ticket-messages">
+                            <div style="padding: 40px; text-align: center; color: var(--text-secondary);">
+                                👈 Wählen Sie ein Ticket aus der Liste, um die Details zu sehen
+                            </div>
+                        </div>
+                        
+                        <div class="ticket-actions" id="ticket-actions" style="display: none;">
+                            <div class="action-row">
+                                <select id="status-select" class="action-select">
+                                    <option value="open">Offen</option>
+                                    <option value="in_progress">In Bearbeitung</option>
+                                    <option value="waiting_customer">Wartet auf Kunde</option>
+                                    <option value="resolved">Gelöst</option>
+                                    <option value="closed">Geschlossen</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="updateTicketStatus()">
+                                    Status ändern
+                                </button>
+                            </div>
+                            
+                            <div class="reply-area">
+                                <textarea 
+                                    id="admin-reply" 
+                                    class="reply-textarea" 
+                                    placeholder="Antwort an den Kunden..."
+                                ></textarea>
+                                <div class="reply-actions">
+                                    <label style="font-size: 12px; color: var(--text-secondary);">
+                                        <input type="checkbox" id="internal-note"> Interne Notiz (nur für Team sichtbar)
+                                    </label>
+                                    <button class="btn btn-primary" onclick="sendAdminReply()">
+                                        📤 Antwort senden
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../shared/js/auth.js"></script>
+    <script src="../shared/js/api.js"></script>
+    <script>
+        let selectedTicketId = null;
+        let allTickets = [];
+
+        // Initialisierung
+        document.addEventListener('DOMContentLoaded', function() {
+            // Authentifizierung prüfen
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) {
+                window.location.href = '../app.html';
+                return;
+            }
+            
+            const user = JSON.parse(userStr);
+            if (user.type !== 'admin') {
+                alert('❌ Nur Admins haben Zugang zu diesem Bereich.');
+                window.location.href = '../app.html';
+                return;
+            }
+            
+            // Benutzerinformationen anzeigen
+            document.getElementById('admin-name').textContent = `${user.firstName} ${user.lastName}`;
+            document.getElementById('admin-avatar').textContent = user.firstName.charAt(0);
+            
+            // Tickets laden
+            loadAllTickets();
+        });
+
+        // Alle Tickets laden (Demo-Daten)
+        function loadAllTickets() {
+            allTickets = [
+                {
+                    id: 1,
+                    ticket_number: 'TK-2024-000001',
+                    subject: '💡 Hilfe bei der Anmeldung',
+                    customer_name: 'Max Mustermann',
+                    customer_email: 'max@demo.com',
+                    status: 'open',
+                    priority: 'medium',
+                    created_at: '2024-01-15T14:30:00Z',
+                    updated_at: '2024-01-15T14:30:00Z',
+                    description: 'Ich kann mich nicht in meinen Account einloggen. Das Passwort scheint nicht zu funktionieren.',
+                    messages: [
+                        {
+                            id: 1,
+                            sender_type: 'customer',
+                            sender_name: 'Max Mustermann',
+                            message: 'Ich kann mich nicht in meinen Account einloggen. Das Passwort scheint nicht zu funktionieren.',
+                            created_at: '2024-01-15T14:30:00Z'
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    ticket_number: 'TK-2024-000002',
+                    subject: '🔒 Account wurde gesperrt',
+                    customer_name: 'Anna Schmidt',
+                    customer_email: 'anna@demo.com',
+                    status: 'in_progress',
+                    priority: 'high',
+                    created_at: '2024-01-15T13:15:00Z',
+                    updated_at: '2024-01-15T15:45:00Z',
+                    description: 'Mein Account wurde ohne Grund gesperrt. Bitte entsperren Sie ihn wieder.',
+                    messages: [
+                        {
+                            id: 1,
+                            sender_type: 'customer',
+                            sender_name: 'Anna Schmidt',
+                            message: 'Mein Account wurde ohne Grund gesperrt. Bitte entsperren Sie ihn wieder.',
+                            created_at: '2024-01-15T13:15:00Z'
+                        },
+                        {
+                            id: 2,
+                            sender_type: 'admin',
+                            sender_name: 'Admin User',
+                            message: 'Hallo Anna, ich prüfe Ihren Account. Können Sie mir bitte mitteilen, wann das Problem aufgetreten ist?',
+                            created_at: '2024-01-15T14:00:00Z'
+                        },
+                        {
+                            id: 3,
+                            sender_type: 'customer',
+                            sender_name: 'Anna Schmidt',
+                            message: 'Das Problem ist heute Morgen um ca. 9:00 Uhr aufgetreten, als ich mich anmelden wollte.',
+                            created_at: '2024-01-15T15:45:00Z'
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    ticket_number: 'TK-2024-000003',
+                    subject: '🎉 Gewinn einlösen',
+                    customer_name: 'Tom Weber',
+                    customer_email: 'tom@demo.com',
+                    status: 'resolved',
+                    priority: 'low',
+                    created_at: '2024-01-14T10:20:00Z',
+                    updated_at: '2024-01-14T16:30:00Z',
+                    description: 'Ich habe bei der letzten Aktion gewonnen und möchte meinen Gewinn einlösen.',
+                    messages: [
+                        {
+                            id: 1,
+                            sender_type: 'customer',
+                            sender_name: 'Tom Weber',
+                            message: 'Ich habe bei der letzten Aktion gewonnen und möchte meinen Gewinn einlösen.',
+                            created_at: '2024-01-14T10:20:00Z'
+                        },
+                        {
+                            id: 2,
+                            sender_type: 'admin',
+                            sender_name: 'Admin User',
+                            message: 'Herzlichen Glückwunsch! Ich habe Ihren Gewinn verarbeitet. Sie erhalten eine E-Mail mit den Details.',
+                            created_at: '2024-01-14T16:30:00Z'
+                        }
+                    ]
+                }
+            ];
+            
+            displayTicketsList();
+        }
+
+        // Tickets-Liste anzeigen
+        function displayTicketsList(filter = 'all') {
+            let filteredTickets = allTickets;
+            
+            if (filter !== 'all') {
+                filteredTickets = allTickets.filter(ticket => ticket.status === filter);
+            }
+            
+            const ticketsList = document.getElementById('tickets-list');
+            const ticketCount = document.getElementById('ticket-count');
+            
+            ticketCount.textContent = `${filteredTickets.length} Tickets`;
+            
+            if (filteredTickets.length === 0) {
+                ticketsList.innerHTML = `
+                    <div style="padding: 40px; text-align: center; color: var(--text-secondary);">
+                        📭 Keine Tickets gefunden
+                    </div>
+                `;
+                return;
+            }
+            
+            ticketsList.innerHTML = filteredTickets.map(ticket => `
+                <div class="ticket-item" onclick="selectTicket(${ticket.id})">
+                    <div class="ticket-item-header">
+                        <div class="ticket-item-title">${ticket.subject}</div>
+                        <div class="ticket-status status-${ticket.status}">
+                            ${getStatusText(ticket.status)}
+                        </div>
+                    </div>
+                    <div class="ticket-item-meta">
+                        ${ticket.ticket_number} • ${ticket.customer_name} • ${formatTime(ticket.updated_at)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Ticket auswählen
+        function selectTicket(ticketId) {
+            selectedTicketId = ticketId;
+            const ticket = allTickets.find(t => t.id === ticketId);
+            
+            if (!ticket) return;
+            
+            // Auswahl-Styling
+            document.querySelectorAll('.ticket-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.target.closest('.ticket-item').classList.add('selected');
+            
+            // Ticket-Details anzeigen
+            displayTicketDetails(ticket);
+        }
+
+        // Ticket-Details anzeigen
+        function displayTicketDetails(ticket) {
+            // Header
+            document.getElementById('selected-ticket-title').textContent = ticket.subject;
+            document.getElementById('selected-ticket-meta').innerHTML = `
+                <div class="ticket-detail-meta-item">🎫 ${ticket.ticket_number}</div>
+                <div class="ticket-detail-meta-item">👤 ${ticket.customer_name} (${ticket.customer_email})</div>
+                <div class="ticket-detail-meta-item">📊 ${getStatusText(ticket.status)}</div>
+                <div class="ticket-detail-meta-item">🔥 ${getPriorityText(ticket.priority)}</div>
+                <div class="ticket-detail-meta-item">📅 ${formatTime(ticket.created_at)}</div>
+            `;
+            
+            // Nachrichten
+            const messagesContainer = document.getElementById('ticket-messages');
+            messagesContainer.innerHTML = ticket.messages.map(message => `
+                <div class="ticket-message ${message.sender_type}-message">
+                    <div class="message-header">
+                        <div class="message-sender">
+                            ${message.sender_type === 'admin' ? '🛠️' : '👤'} ${message.sender_name}
+                        </div>
+                        <div class="message-time">${formatTime(message.created_at)}</div>
+                    </div>
+                    <div class="message-content">${message.message}</div>
+                </div>
+            `).join('');
+            
+            // Status-Select setzen
+            document.getElementById('status-select').value = ticket.status;
+            
+            // Aktionen anzeigen
+            document.getElementById('ticket-actions').style.display = 'block';
+        }
+
+        // Ticket-Status aktualisieren
+        function updateTicketStatus() {
+            if (!selectedTicketId) return;
+            
+            const newStatus = document.getElementById('status-select').value;
+            const ticket = allTickets.find(t => t.id === selectedTicketId);
+            
+            if (ticket) {
+                ticket.status = newStatus;
+                ticket.updated_at = new Date().toISOString();
+                
+                // Liste neu laden
+                displayTicketsList();
+                
+                // Ticket erneut auswählen
+                selectTicket(selectedTicketId);
+                
+                alert(`✅ Ticket-Status geändert zu: ${getStatusText(newStatus)}`);
+            }
+        }
+
+        // Admin-Antwort senden
+        function sendAdminReply() {
+            if (!selectedTicketId) return;
+            
+            const replyText = document.getElementById('admin-reply').value.trim();
+            const isInternal = document.getElementById('internal-note').checked;
+            
+            if (!replyText) {
+                alert('❌ Bitte geben Sie eine Nachricht ein.');
+                return;
+            }
+            
+            const ticket = allTickets.find(t => t.id === selectedTicketId);
+            if (!ticket) return;
+            
+            // Neue Nachricht hinzufügen
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const newMessage = {
+                id: Date.now(),
+                sender_type: 'admin',
+                sender_name: `${user.firstName} ${user.lastName}`,
+                message: replyText,
+                is_internal: isInternal,
+                created_at: new Date().toISOString()
+            };
+            
+            ticket.messages.push(newMessage);
+            ticket.updated_at = new Date().toISOString();
+            
+            // Ticket-Details neu anzeigen
+            displayTicketDetails(ticket);
+            
+            // Formular zurücksetzen
+            document.getElementById('admin-reply').value = '';
+            document.getElementById('internal-note').checked = false;
+            
+            alert(`✅ ${isInternal ? 'Interne Notiz' : 'Antwort'} gesendet!`);
+        }
+
+        // Tickets filtern
+        function filterTickets() {
+            const filter = document.getElementById('filter-status').value;
+            displayTicketsList(filter);
+        }
+
+        // Zurück zum Admin-Dashboard
+        function goBackToAdmin() {
+            window.location.href = 'index.html';
+        }
+
+        // Hilfsfunktionen
+        function getStatusText(status) {
+            const statusMap = {
+                'open': 'OFFEN',
+                'in_progress': 'IN BEARBEITUNG',
+                'waiting_customer': 'WARTET AUF KUNDE',
+                'resolved': 'GELÖST',
+                'closed': 'GESCHLOSSEN'
+            };
+            return statusMap[status] || status.toUpperCase();
+        }
+
+        function getPriorityText(priority) {
+            const priorityMap = {
+                'low': 'NIEDRIG',
+                'medium': 'MITTEL',
+                'high': 'HOCH'
+            };
+            return priorityMap[priority] || priority.toUpperCase();
+        }
+
+        function formatTime(isoString) {
+            const date = new Date(isoString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 60) {
+                return `vor ${diffMins} Min`;
+            } else if (diffHours < 24) {
+                return `vor ${diffHours} Std`;
+            } else if (diffDays < 7) {
+                return `vor ${diffDays} Tagen`;
+            } else {
+                return date.toLocaleDateString('de-DE');
+            }
+        }
+    </script>
+</body>
+</html>
