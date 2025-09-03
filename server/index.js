@@ -1,5 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
+const rateLimit = require('express-rate-limit');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
@@ -11,8 +14,22 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(helmet());
+app.use(compression());
+
+const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
+app.use(cors({
+  origin: allowedOrigins.length ? allowedOrigins : true,
+  credentials: true
+}));
+
+app.use(express.json({ limit: process.env.JSON_LIMIT || '1mb' }));
+
+const apiLimiter = rateLimit({
+  windowMs: Number(process.env.RATE_WINDOW_MS || 15 * 60 * 1000),
+  max: Number(process.env.RATE_MAX || 300)
+});
+app.use('/api', apiLimiter);
 
 // JWT Middleware
 const authenticateToken = (req, res, next) => {
