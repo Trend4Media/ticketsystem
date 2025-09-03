@@ -179,7 +179,8 @@
 ### **CSS lädt nicht?**
 ```html
 <!-- Cache-Busting Parameter aktualisieren -->
-<link rel="stylesheet" href="css/style.css?v=2025-freshworks-ec0b7a">
+<!-- Hinweis: legacy style.css nicht mehr aktiv genutzt -->
+<!-- <link rel="stylesheet" href="css/style.css?v=2025-freshworks-ec0b7a"> -->
 ```
 
 ### **Glasmorphismus funktioniert nicht?**

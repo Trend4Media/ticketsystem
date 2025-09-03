@@ -68,7 +68,7 @@ Password: demo123
 4ticket/
 ├── 📄 index.html                    # Landing Page (Haupteinstieg)
 ├── 📄 app.html                      # Login/Auth Seite
-├── 📄 script.js                     # Landing Page JavaScript
+├── 📄 script.js                     # Legacy (nicht mehr aktiv genutzt)
 │
 ├── 📁 admin/                        # 🔧 Admin-Bereich
 │   ├── 📄 index.html               # Admin Dashboard

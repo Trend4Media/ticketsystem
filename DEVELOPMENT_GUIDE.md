@@ -35,8 +35,8 @@ npm start
 4ticket/
 ├── 📄 index.html                    # Landing Page (Haupteinstieg)
 ├── 📄 app.html                      # Login/Auth Seite
-├── 📄 script.js                     # Landing Page JavaScript
-├── 📄 style.css                     # Legacy CSS (deprecated)
+├── 📄 script.js                     # (legacy, nicht mehr verwendet)
+├── 📄 style.css                     # (legacy, nicht mehr verwendet)
 │
 ├── 📁 admin/                        # Admin-Bereich
 │   ├── 📄 index.html               # Admin Dashboard

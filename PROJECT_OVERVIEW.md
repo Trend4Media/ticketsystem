@@ -19,8 +19,8 @@
 /
 ├── index.html                 # Landing Page (Hauptseite)
 ├── app.html                   # Login/App Entry Point
-├── style.css                  # Legacy CSS (wird nicht mehr verwendet)
-├── script.js                  # Hauptskript für Landing Page
+├── style.css                  # Legacy (nicht mehr aktiv genutzt)
+├── script.js                  # Legacy (nicht mehr aktiv genutzt)
 │
 ├── admin/                     # Admin-Bereich
 │   ├── index.html            # Admin Dashboard
