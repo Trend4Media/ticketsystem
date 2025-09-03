@@ -1110,52 +1110,67 @@
                 </p>
             </div>
             
-            <div class="features-grid" style="max-width: 800px; margin: 0 auto;">
-                <div class="feature-card scroll-animate" style="cursor: pointer;" onclick="openWebApp('customer')">
-                    <div class="feature-icon">👤</div>
-                    <h3 class="feature-title">Kunden-Portal</h3>
-                    <p class="feature-description">
-                        Testen Sie die Benutzeroberfläche aus Kundensicht. 
-                        Erstellen Sie Tickets und verfolgen Sie den Status.
-                    </p>
-                    <div class="demo-btn-container" style="margin-top: 20px;">
-                        <div class="btn btn-primary" style="width: 100%; justify-content: center;">
-                            🚀 Web-App starten
-                        </div>
+            <!-- Zentrale Web-App Demo -->
+            <div class="demo-container" style="max-width: 600px; margin: 0 auto;">
+                <div class="feature-card scroll-animate" style="cursor: pointer;" onclick="openWebApp()">
+                    <div class="feature-icon" style="background: var(--gradient-primary); color: white; font-size: 32px; width: 80px; height: 80px; border-radius: 20px;">
+                        4
                     </div>
-                </div>
-
-                <div class="feature-card scroll-animate" style="cursor: pointer;" onclick="openWebApp('support')">
-                    <div class="feature-icon">🛠️</div>
-                    <h3 class="feature-title">Support-Dashboard</h3>
-                    <p class="feature-description">
-                        Erleben Sie die Macht des Support-Dashboards. 
-                        Verwalten Sie Tickets und kommunizieren Sie mit Kunden.
+                    <h3 class="feature-title" style="font-size: 28px; margin-bottom: 20px;">
+                        4Ticket Web-App Demo
+                    </h3>
+                    <p class="feature-description" style="font-size: 18px; margin-bottom: 30px;">
+                        Testen Sie die vollständige 4Ticket Plattform. Ein Login-System für alle Benutzer - 
+                        automatische Weiterleitung basierend auf Ihrem Account-Typ.
                     </p>
-                    <div class="demo-btn-container" style="margin-top: 20px;">
-                        <div class="btn btn-secondary" style="width: 100%; justify-content: center;">
-                            🔧 Dashboard öffnen
+                    <div class="demo-btn-container" style="margin-top: 30px;">
+                        <div class="btn btn-primary btn-large" style="width: 100%; justify-content: center; font-size: 18px; padding: 16px;">
+                            🚀 Web-App starten
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Web-App Demo Hinweis -->
+            <!-- Demo-Accounts Information -->
             <div class="demo-info scroll-animate" style="text-align: center; margin-top: 60px; padding: 30px; background: rgba(0, 122, 255, 0.05); border-radius: 20px; border: 1px solid rgba(0, 122, 255, 0.1);">
-                <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 20px;">💡 Demo-Informationen</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">
-                    Klicken Sie auf eine der Karten oben, um die vollständige 4Ticket Web-App zu starten.
+                <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 20px;">🔑 Test-Accounts</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 25px;">
+                    Melden Sie sich mit einem der Test-Accounts an - das System erkennt automatisch Ihren Benutzertyp:
                 </p>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 25px;">
-                    <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                        <strong style="color: var(--primary);">👤 Kunden-Login:</strong><br>
-                        <span style="font-family: monospace; background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">Registrierung erforderlich</span>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 25px;">
+                    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <strong style="color: var(--primary); font-size: 16px;">🛠️ Admin/Support-Account:</strong>
+                        <div style="margin-top: 12px; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                            <div style="font-family: monospace; color: var(--text-primary); margin-bottom: 6px;">
+                                📧 admin@support.com
+                            </div>
+                            <div style="font-family: monospace; color: var(--text-primary);">
+                                🔒 admin123
+                            </div>
+                        </div>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-top: 10px;">
+                            → Automatische Weiterleitung zum Support-Dashboard
+                        </p>
                     </div>
-                    <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                        <strong style="color: var(--primary);">🛠️ Support-Login:</strong><br>
-                        <span style="font-family: monospace; background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">admin@support.com</span><br>
-                        <span style="font-family: monospace; background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">admin123</span>
+                    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <strong style="color: var(--primary); font-size: 16px;">👤 Kunden-Account:</strong>
+                        <div style="margin-top: 12px; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                            <div style="font-family: monospace; color: var(--text-primary); margin-bottom: 6px;">
+                                📧 kunde@demo.com
+                            </div>
+                            <div style="font-family: monospace; color: var(--text-primary);">
+                                🔒 demo123
+                            </div>
+                        </div>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-top: 10px;">
+                            → Automatische Weiterleitung zum Kunden-Portal
+                        </p>
                     </div>
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: rgba(40, 202, 66, 0.1); border-radius: 8px;">
+                    <p style="color: var(--success); font-weight: 500; margin: 0;">
+                        ✨ Ein Login-System, intelligente Weiterleitung basierend auf Account-Typ!
+                    </p>
                 </div>
             </div>
         </div>
@@ -1354,36 +1369,34 @@
         // Web-App functions
         let currentDemoType = 'customer';
 
-        function openWebApp(type) {
-            currentDemoType = type;
+        function openWebApp() {
             const modal = document.getElementById('webapp-modal');
             const modalTitle = document.getElementById('modal-title');
             const webappTitle = document.getElementById('webapp-title');
             const webappDescription = document.getElementById('webapp-description');
             const demoCredentials = document.getElementById('demo-credentials');
-            const demoEmail = document.getElementById('demo-email');
-            const demoPassword = document.getElementById('demo-password');
             
-            // Configure modal content based on type
-            if (type === 'customer') {
-                modalTitle.textContent = '4Ticket Kunden-Portal';
-                webappTitle.textContent = '👤 Kunden-Portal Demo';
-                webappDescription.textContent = 'Testen Sie die Benutzeroberfläche aus Kundensicht. Registrieren Sie sich oder melden Sie sich an, um Tickets zu erstellen und zu verwalten.';
-                demoEmail.textContent = 'Registrierung erforderlich';
-                demoPassword.textContent = 'Neues Passwort wählen';
-                demoCredentials.querySelector('h4').textContent = '📝 Kunden-Registrierung:';
-                demoCredentials.querySelector('.credential-item:first-child .credential-label').textContent = 'Neue E-Mail:';
-                demoCredentials.querySelector('.credential-item:last-child .credential-label').textContent = 'Passwort:';
-            } else {
-                modalTitle.textContent = '4Ticket Support-Dashboard';
-                webappTitle.textContent = '🛠️ Support-Dashboard Demo';
-                webappDescription.textContent = 'Erleben Sie die Macht des Support-Dashboards. Verwalten Sie Tickets, kommunizieren Sie mit Kunden und nutzen Sie erweiterte Funktionen.';
-                demoEmail.textContent = 'admin@support.com';
-                demoPassword.textContent = 'admin123';
-                demoCredentials.querySelector('h4').textContent = '🔑 Support-Zugangsdaten:';
-                demoCredentials.querySelector('.credential-item:first-child .credential-label').textContent = 'E-Mail:';
-                demoCredentials.querySelector('.credential-item:last-child .credential-label').textContent = 'Passwort:';
-            }
+            // Configure modal for unified app
+            modalTitle.textContent = '4Ticket Web-App';
+            webappTitle.textContent = '🚀 4Ticket Demo bereit!';
+            webappDescription.textContent = 'Eine zentralisierte Plattform für alle Benutzer. Das System erkennt automatisch Ihren Account-Typ und leitet Sie zum entsprechenden Dashboard weiter.';
+            
+            // Update credentials section
+            demoCredentials.innerHTML = `
+                <h4>🔑 Test-Accounts:</h4>
+                <div style="display: grid; gap: 15px; margin-top: 15px;">
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 8px;">
+                        <div style="font-weight: 600; color: var(--primary); margin-bottom: 8px;">🛠️ Admin/Support:</div>
+                        <div style="font-family: monospace; font-size: 13px;">admin@support.com / admin123</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">→ Support-Dashboard</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 8px;">
+                        <div style="font-weight: 600; color: var(--primary); margin-bottom: 8px;">👤 Kunde:</div>
+                        <div style="font-family: monospace; font-size: 13px;">kunde@demo.com / demo123</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">→ Kunden-Portal</div>
+                    </div>
+                </div>
+            `;
             
             // Show modal
             modal.style.display = 'block';
@@ -1407,15 +1420,9 @@
             
             // Simulate app loading
             setTimeout(() => {
-                // Redirect to the actual 4Ticket Web-App
+                // Redirect to the unified 4Ticket Web-App
                 let url = 'app.html';
-                let message = '';
-                
-                if (currentDemoType === 'customer') {
-                    message = '🚀 Kunden-Portal wird gestartet...\n\nDie 4Ticket Web-App öffnet sich jetzt.\n\n👤 Als Kunde können Sie:\n• Sich registrieren und anmelden\n• Tickets in 3 Kategorien erstellen\n• Ticket-Status verfolgen\n• Mit dem Support kommunizieren\n\n💡 Tipp: Klicken Sie auf "Demo-Modus starten" für sofortigen Zugang!';
-                } else {
-                    message = '🛠️ Support-Dashboard wird gestartet...\n\nDie 4Ticket Web-App öffnet sich jetzt.\n\n🔧 Als Support-Mitarbeiter können Sie:\n• Alle Tickets verwalten\n• Tickets zuweisen und bearbeiten\n• Mit Kunden kommunizieren\n• Statistiken einsehen\n\n🔑 Login: admin@support.com / admin123';
-                }
+                let message = '🚀 4Ticket Web-App wird gestartet...\n\nDie zentrale 4Ticket Plattform öffnet sich jetzt.\n\n🎯 Intelligentes Login-System:\n• Admin-Account → Support-Dashboard\n• Kunden-Account → Kunden-Portal\n• Automatische Weiterleitung basierend auf Account-Typ\n\n🔑 Test-Accounts:\n• Admin: admin@support.com / admin123\n• Kunde: kunde@demo.com / demo123\n\n💡 Das System erkennt automatisch Ihren Benutzertyp!';
                 
                 alert(message);
                 window.open(url, '_blank');
