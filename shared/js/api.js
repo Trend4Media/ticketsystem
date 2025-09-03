@@ -10,16 +10,19 @@ class TicketAPI {
     async request(endpoint, options = {}) {
         const url = `${this.baseURL}/api${endpoint}`;
         
+        const isFormData = options && options.body && (typeof FormData !== 'undefined') && (options.body instanceof FormData);
+
+        const baseHeaders = {
+            ...(this.token && { 'Authorization': `Bearer ${this.token}` }),
+            ...options.headers
+        };
+
         const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                ...(this.token && { 'Authorization': `Bearer ${this.token}` }),
-                ...options.headers
-            },
+            headers: isFormData ? baseHeaders : { 'Content-Type': 'application/json', ...baseHeaders },
             ...options
         };
 
-        if (options.body && typeof options.body === 'object') {
+        if (options.body && typeof options.body === 'object' && !isFormData) {
             config.body = JSON.stringify(options.body);
         }
 
@@ -84,6 +87,22 @@ class TicketAPI {
         });
     }
 
+    // Ticket erstellen (Kunde) mit Dateien
+    async createTicketWithFiles({ subject, description, category, priority = 'medium', files }) {
+        const form = new FormData();
+        form.append('subject', subject);
+        form.append('description', description);
+        form.append('category', category);
+        form.append('priority', priority);
+        if (files && files.length) {
+            Array.from(files).forEach(file => form.append('files', file));
+        }
+        return await this.request('/tickets', {
+            method: 'POST',
+            body: form
+        });
+    }
+
     // Meine Tickets abrufen (Kunde)
     async getMyTickets() {
         return await this.request('/my-tickets');
@@ -109,6 +128,20 @@ class TicketAPI {
         });
     }
 
+    // Nachricht zu Ticket hinzufügen (mit Dateien)
+    async addTicketMessageMultipart(ticketId, { message, isInternal = false, files }) {
+        const form = new FormData();
+        form.append('message', message);
+        form.append('isInternal', isInternal ? 'true' : 'false');
+        if (files && files.length) {
+            Array.from(files).forEach(file => form.append('files', file));
+        }
+        return await this.request(`/tickets/${ticketId}/messages`, {
+            method: 'POST',
+            body: form
+        });
+    }
+
     // Ticket-Status ändern (Admin)
     async updateTicketStatus(ticketId, status, resolution = null) {
         return await this.request(`/tickets/${ticketId}/status`, {
@@ -125,6 +158,29 @@ class TicketAPI {
     // Benutzer abrufen (Admin)
     async getUsers() {
         return await this.request('/admin/users');
+    }
+
+    // Abrechnung (Admin)
+    async getSubscription() {
+        return await this.request('/admin/subscription');
+    }
+
+    async getInvoices() {
+        return await this.request('/admin/invoices');
+    }
+
+    async createInvoice(amountCents, currency = 'EUR', pdfUrl = null) {
+        return await this.request('/admin/invoices', {
+            method: 'POST',
+            body: { amountCents, currency, pdfUrl }
+        });
+    }
+
+    async payInvoice(id, amountCents, currency = 'EUR', provider = 'manual', providerId = null) {
+        return await this.request(`/admin/invoices/${id}/payments`, {
+            method: 'POST',
+            body: { amountCents, currency, provider, providerId }
+        });
     }
 }
 
