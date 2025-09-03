@@ -43,13 +43,24 @@ window.login = function() {
     showMessage('✅ Anmeldung erfolgreich! Weiterleitung...', 'success');
     
     setTimeout(() => {
-        // Benutzer-Session speichern
-        saveUserSession(account);
+        // Session-Daten vorbereiten
+        const sessionData = {
+            firstName: account.firstName,
+            lastName: account.lastName,
+            name: account.name,
+            email: email,
+            type: account.type
+        };
+        
+        console.log('💾 Auth.js - Session-Daten speichern:', sessionData);
+        localStorage.setItem('currentUser', JSON.stringify(sessionData));
         
         // Weiterleitung basierend auf Account-Typ
         if (account.type === 'admin') {
+            console.log('➡️ Auth.js - Weiterleitung zu Admin-Bereich');
             window.location.href = 'admin/index.html';
         } else {
+            console.log('➡️ Auth.js - Weiterleitung zu Kunden-Bereich');
             window.location.href = 'customer/index.html';
         }
     }, 1500);

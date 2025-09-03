@@ -730,13 +730,16 @@
                     console.log('🔍 Account-Objekt:', account);
                     
                     // Session speichern
-                    localStorage.setItem('currentUser', JSON.stringify({
+                    const sessionData = {
                         firstName: account.firstName,
                         lastName: account.lastName,
                         name: account.name,
                         email: email,
                         type: account.type
-                    }));
+                    };
+                    
+                    console.log('💾 Session-Daten speichern:', sessionData);
+                    localStorage.setItem('currentUser', JSON.stringify(sessionData));
                     
                     // Weiterleitung zu den neuen separaten Bereichen
                     if (account.type === 'admin') {

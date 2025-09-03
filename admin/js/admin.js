@@ -2,12 +2,39 @@
 
 // Initialisierung des Admin-Bereichs
 document.addEventListener('DOMContentLoaded', function() {
-    // Authentifizierung prüfen - nur Admins erlaubt
-    const user = requireAuth('admin');
-    if (!user) return;
+    // Session-Daten prüfen
+    const userStr = localStorage.getItem('currentUser');
+    console.log('🔍 Admin - Gespeicherte Session:', userStr);
+    
+    if (!userStr) {
+        console.log('❌ Keine Session gefunden - Weiterleitung zum Login');
+        window.location.href = '../index.html';
+        return;
+    }
+    
+    let user;
+    try {
+        user = JSON.parse(userStr);
+        console.log('✅ Admin Session geladen:', user);
+    } catch (error) {
+        console.error('❌ Fehler beim Parsen der Session:', error);
+        localStorage.removeItem('currentUser');
+        window.location.href = '../index.html';
+        return;
+    }
+    
+    // Prüfe Benutzertyp
+    if (user.type !== 'admin') {
+        console.log('❌ Falscher Benutzertyp:', user.type, '- Erwartet: admin');
+        alert('❌ Zugriff verweigert! Nur Admins haben Zugang zu diesem Bereich.');
+        window.location.href = '../index.html';
+        return;
+    }
+    
+    console.log('✅ Admin authentifiziert:', user.firstName, user.lastName);
     
     // Benutzerinformationen anzeigen
-    document.getElementById('admin-name').textContent = user.name;
+    document.getElementById('admin-name').textContent = `${user.firstName} ${user.lastName}`;
     document.getElementById('admin-avatar').textContent = user.firstName.charAt(0);
     
     // Standard-View anzeigen

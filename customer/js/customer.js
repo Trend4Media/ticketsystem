@@ -2,9 +2,36 @@
 
 // Initialisierung des Kundenbereichs
 document.addEventListener('DOMContentLoaded', function() {
-    // Authentifizierung prüfen - nur Kunden erlaubt
-    const user = requireAuthentication('customer');
-    if (!user) return;
+    // Session-Daten prüfen
+    const userStr = localStorage.getItem('currentUser');
+    console.log('🔍 Gespeicherte Session:', userStr);
+    
+    if (!userStr) {
+        console.log('❌ Keine Session gefunden - Weiterleitung zum Login');
+        window.location.href = '../index.html';
+        return;
+    }
+    
+    let user;
+    try {
+        user = JSON.parse(userStr);
+        console.log('✅ Session geladen:', user);
+    } catch (error) {
+        console.error('❌ Fehler beim Parsen der Session:', error);
+        localStorage.removeItem('currentUser');
+        window.location.href = '../index.html';
+        return;
+    }
+    
+    // Prüfe Benutzertyp
+    if (user.type !== 'customer') {
+        console.log('❌ Falscher Benutzertyp:', user.type, '- Erwartet: customer');
+        alert('❌ Zugriff verweigert! Nur Kunden haben Zugang zu diesem Bereich.');
+        window.location.href = '../index.html';
+        return;
+    }
+    
+    console.log('✅ Kunde authentifiziert:', user.firstName, user.lastName);
     
     // Benutzerinformationen anzeigen
     document.getElementById('customer-name').textContent = `${user.firstName} ${user.lastName}`;
@@ -166,7 +193,8 @@ async function loadMyTickets() {
 
 // Ticket-Details anzeigen - global verfügbar
 window.openTicketDetails = function(ticketId) {
-    alert(`🎫 Ticket #${ticketId}\n\nHier würden die detaillierten Ticket-Informationen angezeigt:\n\n• Vollständige Beschreibung\n• Kommunikationsverlauf mit Support\n• Status-Updates\n• Anhänge\n• Lösungsvorschläge\n\nIn der Vollversion öffnet sich hier eine detaillierte Ticket-Ansicht.`);
+    // Zur Ticket-Detail-Seite weiterleiten
+    window.location.href = `ticket-detail.html?id=${ticketId}`;
 }
 
 // Hilfsfunktionen

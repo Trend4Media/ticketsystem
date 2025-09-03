@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4Ticket - Ticket Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../shared/css/common.css">
+    <link rel="stylesheet" href="css/customer.css">
+    <style>
+        /* Ticket-Detail spezifische Stile */
+        .ticket-detail-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .ticket-header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .ticket-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .ticket-meta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        
+        .ticket-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .messages-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .messages-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            background: var(--background);
+        }
+        
+        .messages-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .message {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .message:last-child {
+            border-bottom: none;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .message-sender {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .message-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .message-content {
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+        
+        .message.admin-message {
+            background: rgba(0, 122, 255, 0.03);
+        }
+        
+        .message.customer-message {
+            background: rgba(88, 86, 214, 0.03);
+        }
+        
+        .reply-form {
+            padding: 24px;
+            border-top: 1px solid var(--border);
+            background: var(--background);
+        }
+        
+        .reply-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            margin-bottom: 16px;
+        }
+        
+        .reply-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-left">
+                <div class="app-logo">
+                    <div class="app-logo-icon">4</div>
+                    <span>4Ticket</span>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="customer-avatar">K</div>
+                <div class="user-details">
+                    <div class="user-name" id="customer-name">Demo Kunde</div>
+                    <div class="user-role">Kunde</div>
+                </div>
+                <button class="btn btn-secondary" onclick="logout()" style="margin-left: 16px;">
+                    🚪 Abmelden
+                </button>
+            </div>
+        </header>
+        
+        <main class="app-main">
+            <div class="content-area">
+                <div class="content-header">
+                    <h2>🎫 Ticket Details</h2>
+                    <button class="btn btn-secondary" onclick="goBack()">← Zurück zu Meine Tickets</button>
+                </div>
+                
+                <div class="ticket-detail-container">
+                    <!-- Ticket-Header -->
+                    <div class="ticket-header" id="ticket-header">
+                        <!-- Wird dynamisch gefüllt -->
+                    </div>
+                    
+                    <!-- Nachrichten -->
+                    <div class="messages-container">
+                        <div class="messages-header">
+                            <h3>💬 Kommunikationsverlauf</h3>
+                        </div>
+                        <div class="messages-list" id="messages-list">
+                            <!-- Wird dynamisch gefüllt -->
+                        </div>
+                        
+                        <!-- Antwort-Formular -->
+                        <div class="reply-form">
+                            <textarea 
+                                id="reply-message" 
+                                class="reply-textarea" 
+                                placeholder="Ihre Antwort an das Support-Team..."
+                                rows="4"
+                            ></textarea>
+                            <div class="reply-actions">
+                                <div class="reply-info">
+                                    <small style="color: var(--text-secondary);">
+                                        💡 Ihre Nachricht wird direkt an das Support-Team gesendet
+                                    </small>
+                                </div>
+                                <button class="btn btn-primary" onclick="sendReply()">
+                                    📤 Antwort senden
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../shared/js/auth.js"></script>
+    <script src="../shared/js/api.js"></script>
+    <script>
+        let currentTicketId = null;
+
+        // Initialisierung
+        document.addEventListener('DOMContentLoaded', function() {
+            // Authentifizierung prüfen
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) {
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            const user = JSON.parse(userStr);
+            if (user.type !== 'customer') {
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            // Benutzerinformationen anzeigen
+            document.getElementById('customer-name').textContent = `${user.firstName} ${user.lastName}`;
+            document.getElementById('customer-avatar').textContent = user.firstName.charAt(0);
+            
+            // Ticket-ID aus URL-Parameter holen
+            const urlParams = new URLSearchParams(window.location.search);
+            currentTicketId = urlParams.get('id');
+            
+            if (!currentTicketId) {
+                alert('❌ Keine Ticket-ID gefunden');
+                goBack();
+                return;
+            }
+            
+            // Ticket-Details laden
+            loadTicketDetails();
+        });
+
+        // Ticket-Details laden (Demo-Implementierung)
+        function loadTicketDetails() {
+            // Demo-Ticket-Daten
+            const demoTicket = {
+                id: currentTicketId,
+                ticket_number: `TK-2024-${currentTicketId.padStart(6, '0')}`,
+                subject: '💡 Hilfe bei der Anmeldung',
+                description: 'Ich kann mich nicht in meinen Account einloggen. Das Passwort scheint nicht zu funktionieren.',
+                category: 'help',
+                status: 'in_progress',
+                priority: 'medium',
+                created_at: '2024-01-15T14:30:00Z',
+                updated_at: '2024-01-15T16:45:00Z'
+            };
+            
+            // Demo-Nachrichten
+            const demoMessages = [
+                {
+                    id: 1,
+                    sender_type: 'customer',
+                    sender_name: 'Demo Kunde',
+                    message: 'Ich kann mich nicht in meinen Account einloggen. Das Passwort scheint nicht zu funktionieren.',
+                    created_at: '2024-01-15T14:30:00Z'
+                },
+                {
+                    id: 2,
+                    sender_type: 'admin',
+                    sender_name: 'Support Team',
+                    message: 'Hallo! Vielen Dank für Ihre Anfrage. Ich helfe Ihnen gerne bei dem Login-Problem. Können Sie mir bitte mitteilen, welche E-Mail-Adresse Sie für die Anmeldung verwenden?',
+                    created_at: '2024-01-15T15:15:00Z'
+                },
+                {
+                    id: 3,
+                    sender_type: 'customer',
+                    sender_name: 'Demo Kunde',
+                    message: 'Ich verwende die E-Mail-Adresse demo@beispiel.com für die Anmeldung.',
+                    created_at: '2024-01-15T16:30:00Z'
+                },
+                {
+                    id: 4,
+                    sender_type: 'admin',
+                    sender_name: 'Support Team',
+                    message: 'Danke für die Information! Ich sehe, dass Ihr Account aktiv ist. Bitte versuchen Sie, Ihr Passwort zurückzusetzen über den "Passwort vergessen" Link auf der Anmeldeseite. Falls das nicht funktioniert, kann ich Ihnen ein temporäres Passwort zusenden.',
+                    created_at: '2024-01-15T16:45:00Z'
+                }
+            ];
+            
+            // Ticket-Header anzeigen
+            displayTicketHeader(demoTicket);
+            
+            // Nachrichten anzeigen
+            displayMessages(demoMessages);
+        }
+
+        // Ticket-Header anzeigen
+        function displayTicketHeader(ticket) {
+            const header = document.getElementById('ticket-header');
+            header.innerHTML = `
+                <div class="ticket-title">${getCategoryIcon(ticket.category)} ${ticket.subject}</div>
+                <div class="ticket-meta">
+                    <div class="ticket-meta-item">
+                        🎫 <strong>${ticket.ticket_number}</strong>
+                    </div>
+                    <div class="ticket-meta-item">
+                        📊 <span class="ticket-status status-${ticket.status}">${getStatusText(ticket.status)}</span>
+                    </div>
+                    <div class="ticket-meta-item">
+                        🔥 <span class="priority priority-${ticket.priority}">${getPriorityText(ticket.priority)}</span>
+                    </div>
+                    <div class="ticket-meta-item">
+                        📅 Erstellt: ${new Date(ticket.created_at).toLocaleDateString('de-DE')}
+                    </div>
+                </div>
+                <div class="ticket-description">
+                    <strong>Beschreibung:</strong><br>
+                    ${ticket.description}
+                </div>
+            `;
+        }
+
+        // Nachrichten anzeigen
+        function displayMessages(messages) {
+            const messagesList = document.getElementById('messages-list');
+            messagesList.innerHTML = messages.map(message => `
+                <div class="message ${message.sender_type}-message">
+                    <div class="message-header">
+                        <div class="message-sender">
+                            ${message.sender_type === 'admin' ? '🛠️' : '👤'} ${message.sender_name}
+                        </div>
+                        <div class="message-time">
+                            ${new Date(message.created_at).toLocaleString('de-DE')}
+                        </div>
+                    </div>
+                    <div class="message-content">${message.message}</div>
+                </div>
+            `).join('');
+            
+            // Zum letzten Nachricht scrollen
+            messagesList.scrollTop = messagesList.scrollHeight;
+        }
+
+        // Antwort senden
+        async function sendReply() {
+            const replyText = document.getElementById('reply-message').value.trim();
+            
+            if (!replyText) {
+                alert('❌ Bitte geben Sie eine Nachricht ein.');
+                return;
+            }
+            
+            try {
+                // In der Vollversion: API-Call
+                // await window.ticketAPI.addTicketMessage(currentTicketId, replyText);
+                
+                // Demo: Nachricht zur Liste hinzufügen
+                const user = JSON.parse(localStorage.getItem('currentUser'));
+                const newMessage = {
+                    id: Date.now(),
+                    sender_type: 'customer',
+                    sender_name: `${user.firstName} ${user.lastName}`,
+                    message: replyText,
+                    created_at: new Date().toISOString()
+                };
+                
+                // Nachricht hinzufügen
+                const messagesList = document.getElementById('messages-list');
+                const messageHTML = `
+                    <div class="message customer-message">
+                        <div class="message-header">
+                            <div class="message-sender">👤 ${newMessage.sender_name}</div>
+                            <div class="message-time">${new Date().toLocaleString('de-DE')}</div>
+                        </div>
+                        <div class="message-content">${newMessage.message}</div>
+                    </div>
+                `;
+                messagesList.insertAdjacentHTML('beforeend', messageHTML);
+                
+                // Formular zurücksetzen
+                document.getElementById('reply-message').value = '';
+                
+                // Zum letzten Nachricht scrollen
+                messagesList.scrollTop = messagesList.scrollHeight;
+                
+                // Erfolgs-Nachricht
+                showTemporaryMessage('✅ Ihre Antwort wurde gesendet!', 'success');
+                
+            } catch (error) {
+                console.error('❌ Fehler beim Senden der Antwort:', error);
+                alert(`❌ Fehler beim Senden: ${error.message}`);
+            }
+        }
+
+        // Zurück zur Ticket-Liste
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        // Temporäre Nachricht anzeigen
+        function showTemporaryMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+            messageDiv.textContent = message;
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.top = '20px';
+            messageDiv.style.right = '20px';
+            messageDiv.style.zIndex = '9999';
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
+                }
+            }, 3000);
+        }
+
+        // Hilfsfunktionen
+        function getCategoryIcon(category) {
+            switch(category) {
+                case 'help': return '💡';
+                case 'blocked': return '🔒';
+                case 'prize': return '🎉';
+                default: return '📝';
+            }
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'open': return 'OFFEN';
+                case 'in_progress': return 'IN BEARBEITUNG';
+                case 'waiting_customer': return 'WARTET AUF ANTWORT';
+                case 'resolved': return 'GELÖST';
+                case 'closed': return 'GESCHLOSSEN';
+                default: return status.toUpperCase();
+            }
+        }
+
+        function getPriorityText(priority) {
+            switch(priority) {
+                case 'low': return 'NIEDRIG';
+                case 'medium': return 'MITTEL';
+                case 'high': return 'HOCH';
+                default: return priority.toUpperCase();
+            }
+        }
+    </script>
+</body>
+</html>
