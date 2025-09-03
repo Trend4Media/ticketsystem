@@ -9,31 +9,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #EC0B7A;
-            --primary-dark: #C70960;
-            --primary-light: #FF1B8A;
-            --secondary: #6C5CE7;
-            --accent: #00D9FF;
+            --primary: #FE2C55;
+            --primary-dark: #d12045;
+            --primary-light: #ff5579;
+            --secondary: #25F4EE;
+            --accent: #25F4EE;
             --success: #00D4AA;
             --warning: #FDCB6E;
-            --danger: #E84393;
-            --text-primary: #2D3436;
-            --text-secondary: #636E72;
-            --text-muted: #B2BEC3;
-            --background: #F8F9FA;
-            --surface: #FFFFFF;
-            --surface-hover: #F1F3F4;
-            --border: #E9ECEF;
-            --border-light: #F1F3F4;
-            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
-            --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.16);
-            --gradient-primary: linear-gradient(135deg, #EC0B7A 0%, #FF1B8A 100%);
-            --gradient-secondary: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
-            --gradient-accent: linear-gradient(135deg, #00D9FF 0%, #74B9FF 100%);
-            --gradient-hero: linear-gradient(135deg, #EC0B7A 0%, #6C5CE7 50%, #00D9FF 100%);
-            --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
+            --danger: #ff4d4f;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A3A7AE;
+            --text-muted: #7A7F86;
+            --background: #0f0f0f;
+            --surface: #161823;
+            --surface-hover: #1f222b;
+            --border: #2a2d35;
+            --border-light: #2a2d35;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.35);
+            --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.55);
+            --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.6);
+            --gradient-primary: linear-gradient(135deg, #FE2C55 0%, #ff5b7e 100%);
+            --gradient-secondary: linear-gradient(135deg, #25F4EE 0%, #7deaf0 100%);
+            --gradient-accent: linear-gradient(135deg, #25F4EE 0%, #74B9FF 100%);
+            --gradient-hero: linear-gradient(135deg, #0f0f0f 0%, #161823 60%, #0f0f0f 100%);
+            --gradient-card: linear-gradient(145deg, rgba(22, 24, 35, 0.98) 0%, rgba(22, 24, 35, 0.9) 100%);
         }
         
         * {
@@ -76,16 +76,14 @@
         }
         
         .login-card {
-            background: var(--gradient-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 32px;
-            padding: 48px;
-            box-shadow: var(--shadow-xl);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-lg);
             width: 100%;
-            max-width: 500px;
-            animation: slideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            max-width: 420px;
+            animation: slideUp 0.6s ease-out;
             position: relative;
             z-index: 1;
         }
@@ -107,30 +105,30 @@
         }
         
         .login-logo {
-            width: 96px;
-            height: 96px;
+            width: 64px;
+            height: 64px;
             background: var(--gradient-primary);
-            border-radius: 24px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
-            color: white;
+            font-size: 28px;
+            color: #fff;
             font-weight: 800;
-            margin: 0 auto 32px;
-            box-shadow: var(--shadow-lg);
+            margin: 0 auto 20px;
+            box-shadow: var(--shadow-md);
         }
         
         .login-title {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
             color: var(--text-primary);
         }
         
         .login-subtitle {
             color: var(--text-secondary);
-            font-size: 16px;
+            font-size: 14px;
         }
         
         .demo-banner {
@@ -207,15 +205,16 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             font-size: 16px;
-            transition: all 0.3s ease;
-            background: var(--surface);
+            transition: all 0.2s ease;
+            background: #0f0f12;
+            color: var(--text-primary);
             font-family: inherit;
         }
         
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.2);
         }
         
         .btn {
@@ -235,14 +234,14 @@
         }
         
         .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 8px 22px rgba(254, 44, 85, 0.35);
         }
         
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 28px rgba(254, 44, 85, 0.45);
         }
         
         .btn-secondary {
@@ -497,43 +496,7 @@
                 <p class="login-subtitle">Zentralisierte Plattform für Kunden und Support</p>
             </div>
             
-            <div class="demo-banner">
-                <h4>🎯 Intelligentes Login-System</h4>
-                <p>Ein Login für alle - automatische Weiterleitung basierend auf Account-Typ</p>
-                
-                <div class="test-accounts">
-                    <div class="test-account" onclick="fillCredentials('admin@support.com', 'admin123')">
-                        <div class="account-type">🛠️ Admin/Support</div>
-                        <div class="account-credentials">
-                            admin@support.com<br>
-                            admin123
-                        </div>
-                        <div style="display: flex; gap: 8px; margin-top: 12px;">
-                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px; flex: 1;" onclick="event.stopPropagation(); fillCredentials('admin@support.com', 'admin123')">
-                                📝 Ausfüllen
-                            </button>
-                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 11px; flex: 1;" onclick="event.stopPropagation(); directLogin('admin@support.com', 'admin123')">
-                                🚀 Direkt-Login
-                            </button>
-                        </div>
-                    </div>
-                    <div class="test-account" onclick="fillCredentials('kunde@demo.com', 'demo123')">
-                        <div class="account-type">👤 Kunde</div>
-                        <div class="account-credentials">
-                            kunde@demo.com<br>
-                            demo123
-                        </div>
-                        <div style="display: flex; gap: 8px; margin-top: 12px;">
-                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px; flex: 1;" onclick="event.stopPropagation(); fillCredentials('kunde@demo.com', 'demo123')">
-                                📝 Ausfüllen
-                            </button>
-                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 11px; flex: 1;" onclick="event.stopPropagation(); directLogin('kunde@demo.com', 'demo123')">
-                                🚀 Direkt-Login
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             
             <div id="message-area"></div>
             
@@ -557,7 +520,6 @@
             
             <div class="login-footer">
                 <p>
-                    <a href="#" class="login-link" onclick="showRegisterInfo()">Registrieren</a> |
                     <a href="index.html" class="login-link">← Zurück zur Homepage</a>
                 </p>
             </div>
@@ -705,65 +667,8 @@
     </div>
 
     <script>
-        // Test accounts database
-        const testAccounts = {
-            'admin@support.com': {
-                password: 'admin123',
-                type: 'admin',
-                name: 'Admin User',
-                firstName: 'Admin',
-                lastName: 'User'
-            },
-            'kunde@demo.com': {
-                password: 'demo123',
-                type: 'customer',
-                name: 'Demo Kunde',
-                firstName: 'Demo',
-                lastName: 'Kunde'
-            }
-        };
-
-        // Current user
+        // Entfernt: Demo-Testaccounts und Direkt-Login
         let currentUser = null;
-
-        // Fill credentials when clicking on test account cards
-        function fillCredentials(email, password) {
-            document.getElementById('email').value = email;
-            document.getElementById('password').value = password;
-        }
-
-        // Direkter Login ohne Formular
-        function directLogin(email, password) {
-            console.log('🚀 Direkter Login:', email);
-            
-            // Account prüfen
-            const account = testAccounts[email];
-            if (!account || account.password !== password) {
-                alert('❌ Ungültige Demo-Daten');
-                return;
-            }
-            
-            // Session sofort speichern
-            const sessionData = {
-                firstName: account.firstName,
-                lastName: account.lastName,
-                name: account.name,
-                email: email,
-                type: account.type
-            };
-            
-            console.log('💾 Direkt-Login Session speichern:', sessionData);
-            localStorage.setItem('currentUser', JSON.stringify(sessionData));
-            
-            // Weiterleitung zu separaten Bereichen
-            if (account.type === 'admin') {
-                console.log('✅ Weiterleitung zu separatem Admin-Bereich');
-                window.location.href = 'admin/index.html';
-            } else {
-                console.log('✅ Weiterleitung zu separatem Kunden-Bereich');
-                window.location.href = 'customer/index.html';
-            }
-        }
 
         // Login functionality
         document.getElementById('login-form').addEventListener('submit', function(e) {
