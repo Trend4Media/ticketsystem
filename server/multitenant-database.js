@@ -25,6 +25,18 @@ class MultiTenantDatabase {
 
     async createTables() {
         const tables = [
+            // 0. Brand-Admins (4Ticket interne Mitarbeiter)
+            `CREATE TABLE IF NOT EXISTS brand_admins (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                password_hash VARCHAR(255) NOT NULL,
+                first_name VARCHAR(100) NOT NULL,
+                last_name VARCHAR(100) NOT NULL,
+                status VARCHAR(20) DEFAULT 'active',
+                last_login_at DATETIME,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )`,
             // 1. Unternehmen/Mandanten
             `CREATE TABLE IF NOT EXISTS companies (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -386,6 +398,13 @@ class MultiTenantDatabase {
             (1, 'max@demo.com', ?, 'Max', 'Mustermann', 'premium'),
             (2, 'kunde@trend4media.com', ?, 'Trend4Media', 'Kunde', 'basic')
         `, [customerPassword, customerPassword, customerPassword]);
+
+        // Brand-Admin Demo-Nutzer
+        const brandPwd = await bcrypt.hash('brandadmin123', 10);
+        await this.runQuery(`
+            INSERT INTO brand_admins (email, password_hash, first_name, last_name)
+            VALUES ('brand@4ticket.com', ?, 'Brand', 'Admin')
+        `, [brandPwd]);
 
         console.log('✅ Demo-Daten erstellt');
     }

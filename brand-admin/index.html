@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>4Ticket Brand-Admin</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+	<style>
+		body { font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; margin: 0; background: #f6f7fb; color: #222; }
+		.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+		.header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 12px 0; position: sticky; top: 0; z-index: 10; }
+		.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+		.brand-badge { width: 36px; height: 36px; background: linear-gradient(135deg, #EC0B7A, #6C5CE7); color: #fff; border-radius: 9px; display: grid; place-items: center; font-weight: 800; }
+		.card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; }
+		.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+		.btn { appearance: none; border: 0; background: #EC0B7A; color: #fff; padding: 10px 14px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+		.input { width: 100%; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; font-size: 14px; }
+		.table { width: 100%; border-collapse: collapse; }
+		.table th, .table td { border-bottom: 1px solid #f0f1f4; padding: 10px 8px; text-align: left; font-size: 14px; }
+		.badge { display:inline-block; padding:2px 8px; border-radius: 999px; background:#f3f4f6; font-size:12px; }
+		.toolbar { display:flex; gap:10px; align-items:center; }
+		@media (max-width: 640px){ .toolbar { flex-direction: column; align-items: stretch; } }
+	</style>
+</head>
+<body>
+	<div class="header">
+		<div class="container" style="display:flex; align-items:center; justify-content:space-between;">
+			<div class="brand"><div class="brand-badge">4</div> 4Ticket Brand-Admin</div>
+			<div id="brand-user" class="badge" style="display:none;"></div>
+		</div>
+	</div>
+	<div class="container">
+		<div id="login" class="card" style="max-width:420px; margin: 40px auto;">
+			<h2 style="margin:0 0 12px 0;">Anmeldung (Brand)</h2>
+			<p style="margin:0 0 16px 0; color:#666;">Nur für 4Ticket-Mitarbeiter.</p>
+			<div style="display:grid; gap:12px;">
+				<input id="email" class="input" type="email" placeholder="brand@4ticket.com" />
+				<input id="password" class="input" type="password" placeholder="Passwort" />
+				<button class="btn" onclick="brandLogin()">Anmelden</button>
+				<div id="msg" style="color:#b91c1c; font-size:13px;"></div>
+			</div>
+		</div>
+
+		<div id="dashboard" style="display:none;">
+			<div class="grid">
+				<div class="card">
+					<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+						<h3 style="margin:0;">Unternehmen</h3>
+						<div class="toolbar">
+							<input id="search" class="input" placeholder="Suchen..." oninput="renderCompanies()" />
+						</div>
+					</div>
+					<div style="overflow:auto;">
+						<table class="table">
+							<thead><tr><th>Name</th><th>Key</th><th>Subdomain</th><th>Plan</th><th>Status</th><th>Erstellt</th><th></th></tr></thead>
+							<tbody id="companies-body"></tbody>
+						</table>
+					</div>
+				</div>
+				<div class="card">
+					<h3 style="margin:0 0 10px 0;">Accounts des Unternehmens</h3>
+					<div id="company-users" style="color:#666;">Bitte Unternehmen auswählen…</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		let brandAuth = null;
+		let companies = [];
+
+		async function brandLogin(){
+			const email = document.getElementById('email').value;
+			const password = document.getElementById('password').value;
+			const msg = document.getElementById('msg');
+			msg.textContent = '';
+			try {
+				const res = await fetch('/api/brand/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+				if(!res.ok){ msg.textContent = 'Login fehlgeschlagen'; return; }
+				const data = await res.json();
+				brandAuth = data;
+				localStorage.setItem('brandAuth', JSON.stringify(data));
+				document.getElementById('login').style.display = 'none';
+				document.getElementById('dashboard').style.display = 'block';
+				document.getElementById('brand-user').style.display = 'inline-block';
+				document.getElementById('brand-user').textContent = data.user.email;
+				await loadCompanies();
+			} catch(e){ msg.textContent = 'Unerwarteter Fehler'; }
+		}
+
+		async function loadCompanies(){
+			const res = await fetch('/api/brand/companies', { headers: { 'Authorization': `Bearer ${brandAuth.token}` } });
+			const data = await res.json();
+			companies = data.companies || [];
+			renderCompanies();
+		}
+
+		function renderCompanies(){
+			const q = (document.getElementById('search').value || '').toLowerCase();
+			const body = document.getElementById('companies-body');
+			const rows = companies
+				.filter(c => !q || c.company_name.toLowerCase().includes(q) || c.company_key.toLowerCase().includes(q) || String(c.subdomain||'').toLowerCase().includes(q))
+				.map(c => `<tr>
+					<td>${c.company_name}</td>
+					<td><span class="badge">${c.company_key}</span></td>
+					<td>${c.subdomain||'-'}</td>
+					<td>${c.plan_type}</td>
+					<td>${c.status}</td>
+					<td>${new Date(c.created_at).toLocaleDateString('de-DE')}</td>
+					<td><button class="btn" onclick="loadUsers(${c.id})">Accounts</button></td>
+				</tr>`).join('');
+			body.innerHTML = rows || '<tr><td colspan="7" style="color:#666;">Keine Daten</td></tr>';
+		}
+
+		async function loadUsers(companyId){
+			const res = await fetch(`/api/brand/companies/${companyId}/users`, { headers: { 'Authorization': `Bearer ${brandAuth.token}` } });
+			const data = await res.json();
+			const admins = (data.admins||[]).map(a => `${a.first_name} ${a.last_name} <${a.email}> [${a.role}]`).join('<br>') || '<span style="color:#666;">–</span>';
+			const customers = (data.customers||[]).map(u => `${u.first_name} ${u.last_name} <${u.email}>`).join('<br>') || '<span style="color:#666;">–</span>';
+			document.getElementById('company-users').innerHTML = `
+				<div style="display:grid; gap:10px;">
+					<div><strong>Admins</strong><div style="margin-top:6px;">${admins}</div></div>
+					<div><strong>Kunden</strong><div style="margin-top:6px;">${customers}</div></div>
+				</div>`;
+		}
+
+		// Auto-Login aus LocalStorage, falls vorhanden
+		(function(){
+			try{
+				const saved = JSON.parse(localStorage.getItem('brandAuth')||'null');
+				if(saved && saved.token){ brandAuth = saved; document.getElementById('login').style.display='none'; document.getElementById('dashboard').style.display='block'; document.getElementById('brand-user').style.display='inline-block'; document.getElementById('brand-user').textContent=saved.user.email; loadCompanies(); }
+			}catch(_){/* noop */}
+		})();
+	</script>
+</body>
+</html>

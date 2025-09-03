@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>4Ticket Support</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+	<style>
+		body { font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif; margin: 0; background: #f7f7fb; color: #222; }
+		.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+		.header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 12px 0; position: sticky; top: 0; z-index: 10; }
+		.badge { display:inline-block; padding:2px 8px; border-radius:999px; background:#f3f4f6; font-size:12px; }
+		.card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:16px; }
+		.grid { display:grid; gap:16px; grid-template-columns: 320px 1fr; }
+		.btn { appearance:none; border:0; background:#6C5CE7; color:#fff; padding:10px 14px; border-radius:10px; font-weight:600; cursor:pointer; }
+		.input { width:100%; border:1px solid #e5e7eb; border-radius:10px; padding:10px; }
+		.list { list-style:none; margin:0; padding:0; }
+		.list li { padding:10px; border-bottom:1px solid #f0f1f4; cursor:pointer; }
+		.status { font-size:12px; padding:2px 8px; border-radius:999px; }
+		.status-open { background:#fff7ed; color:#b45309; }
+		.status-progress { background:#eff6ff; color:#1d4ed8; }
+		.status-closed { background:#ecfdf5; color:#047857; }
+		@media (max-width: 860px){ .grid { grid-template-columns: 1fr; } }
+	</style>
+</head>
+<body>
+	<div class="header">
+		<div class="container" style="display:flex; align-items:center; justify-content:space-between;">
+			<div><strong>4Ticket Support</strong> <span id="company-badge" class="badge"></span></div>
+			<div id="agent-info" class="badge"></div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="grid">
+			<div class="card">
+				<h3 style="margin-top:0;">Tickets</h3>
+				<input id="q" class="input" placeholder="Suchen..." oninput="renderTickets()" />
+				<ul id="ticket-list" class="list" style="margin-top:8px;"></ul>
+			</div>
+			<div class="card">
+				<h3 style="margin-top:0;">Details</h3>
+				<div id="ticket-detail" style="color:#666;">Bitte Ticket auswählen…</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		let auth = null; let tickets = []; let filtered = [];
+		(function(){
+			try {
+				auth = JSON.parse(localStorage.getItem('auth')||'null');
+				if(!auth || !auth.token || !auth.user || auth.user.type !== 'admin'){ window.location.replace('../app.html'); return; }
+				document.getElementById('agent-info').textContent = (auth.user.firstName||'')+ ' ' + (auth.user.lastName||'');
+				document.getElementById('company-badge').textContent = (auth.company && auth.company.name) ? auth.company.name : '';
+				loadTickets();
+			}catch(_){ window.location.replace('../app.html'); }
+		})();
+
+		async function loadTickets(){
+			try {
+				const res = await fetch('/api/admin/tickets', { headers: { 'Authorization': 'Bearer ' + auth.token } });
+				const data = await res.json();
+				tickets = data.tickets || []; filtered = tickets; renderTickets();
+			} catch(e){ document.getElementById('ticket-list').innerHTML = '<li>Fehler beim Laden</li>'; }
+		}
+
+		function renderTickets(){
+			const q = (document.getElementById('q').value||'').toLowerCase();
+			filtered = tickets.filter(t => !q || (t.subject||'').toLowerCase().includes(q) || (t.ticket_number||'').toLowerCase().includes(q));
+			document.getElementById('ticket-list').innerHTML = filtered.map(t => `
+				<li onclick="openTicket(${t.id})">
+					<div style="display:flex; align-items:center; justify-content:space-between;">
+						<div>
+							<div style="font-weight:600;">${t.subject}</div>
+							<div style="font-size:12px; color:#666;">${t.ticket_number}</div>
+						</div>
+						<span class="status status-${t.status}">${t.status}</span>
+					</div>
+				</li>`).join('');
+		}
+
+		async function openTicket(id){
+			const t = filtered.find(x => x.id === id); if(!t){ return; }
+			document.getElementById('ticket-detail').innerHTML = `
+				<div style="display:grid; gap:8px;">
+					<div><strong>Betreff:</strong> ${t.subject}</div>
+					<div><strong>Nummer:</strong> ${t.ticket_number}</div>
+					<div><strong>Status:</strong> ${t.status}</div>
+					<div><strong>Priorität:</strong> ${t.priority}</div>
+					<div><strong>Beschreibung:</strong><br>${t.description}</div>
+				</div>`;
+		}
+	</script>
+</body>
+</html>

@@ -137,6 +137,62 @@ const upload = multer({
 
 // API-Routen
 
+// Brand-Admin Login (nur 4Ticket Mitarbeiter)
+app.post('/api/brand/auth/login', async (req, res) => {
+    try {
+        const { email, password } = req.body || {};
+        if (!email || !password) {
+            return res.status(400).json({ error: 'E-Mail und Passwort erforderlich' });
+        }
+        const admin = await db.getQuery('SELECT * FROM brand_admins WHERE email = ? AND status = "active"', [email]);
+        if (!admin) return res.status(401).json({ error: 'Ungültige Anmeldedaten' });
+        const ok = await bcrypt.compare(password, admin.password_hash);
+        if (!ok) return res.status(401).json({ error: 'Ungültige Anmeldedaten' });
+
+        await db.runQuery('UPDATE brand_admins SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?', [admin.id]);
+        const token = jwt.sign({ brandAdminId: admin.id, scope: 'brand' }, JWT_SECRET, { expiresIn: '12h' });
+        res.json({ success: true, token, user: { id: admin.id, email: admin.email, firstName: admin.first_name, lastName: admin.last_name, type: 'brand' } });
+    } catch (e) {
+        console.error('❌ Brand-Login-Fehler:', e);
+        res.status(500).json({ error: 'Server-Fehler' });
+    }
+});
+
+function requireBrand(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'Token fehlt' });
+    jwt.verify(token, JWT_SECRET, (err, payload) => {
+        if (err || payload.scope !== 'brand') return res.status(403).json({ error: 'Verboten' });
+        req.brandAdminId = payload.brandAdminId;
+        next();
+    });
+}
+
+// Brand-Admin: Unternehmen auflisten
+app.get('/api/brand/companies', requireBrand, async (req, res) => {
+    try {
+        const companies = await db.getAllQuery('SELECT id, company_key, company_name, subdomain, status, plan_type, created_at FROM companies ORDER BY created_at DESC');
+        res.json({ success: true, companies });
+    } catch (e) {
+        console.error('❌ Brand Companies Fehler:', e);
+        res.status(500).json({ error: 'Server-Fehler' });
+    }
+});
+
+// Brand-Admin: Accounts (Admin/Kunden) eines Unternehmens
+app.get('/api/brand/companies/:id/users', requireBrand, async (req, res) => {
+    try {
+        const companyId = req.params.id;
+        const admins = await db.getAllQuery('SELECT id, email, first_name, last_name, role, status, created_at FROM admin_users WHERE company_id = ?', [companyId]);
+        const customers = await db.getAllQuery('SELECT id, email, first_name, last_name, status, created_at FROM customers WHERE company_id = ?', [companyId]);
+        res.json({ success: true, admins, customers });
+    } catch (e) {
+        console.error('❌ Brand Users Fehler:', e);
+        res.status(500).json({ error: 'Server-Fehler' });
+    }
+});
+
 // 🔐 Authentifizierung
 app.post('/api/auth/login', getTenant, async (req, res) => {
     try {

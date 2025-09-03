@@ -8,6 +8,11 @@
     <script>
         (function() {
             if (typeof window !== 'undefined') {
+                // Wenn Brand-Admin bereits eingeloggt ist, dorthin leiten
+                try {
+                    const brand = JSON.parse(localStorage.getItem('brandAuth')||'null');
+                    if (brand && brand.token) { window.location.replace('brand-admin/index.html'); return; }
+                } catch(_) {}
                 window.location.replace('app.html');
             }
         })();
