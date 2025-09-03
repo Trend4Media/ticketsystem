@@ -119,12 +119,15 @@ window.submitTicket = async function(event) {
     }
     
     try {
-        // Ticket über API erstellen
-        const response = await window.ticketAPI.createTicket({
+        // Ticket über API erstellen (mit optionalen Anhängen)
+        const filesInput = document.getElementById('ticket-files');
+        const files = filesInput ? filesInput.files : null;
+        const response = await window.ticketAPI.createTicketWithFiles({
             subject,
             description,
             category,
-            priority
+            priority,
+            files
         });
         
         if (response.success) {

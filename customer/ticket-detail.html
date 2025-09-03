@@ -354,6 +354,14 @@
                                 required
                                 aria-describedby="reply-help"
                             ></textarea>
+                            <div class="form-group" style="margin-bottom: var(--space-md);">
+                                <label for="reply-files" class="form-label" style="display:block; margin-bottom: 6px;">
+                                    📎 Anhänge hinzufügen (optional)
+                                </label>
+                                <input type="file" id="reply-files" multiple 
+                                       accept="image/*,application/pdf,video/mp4,video/webm,video/quicktime">
+                                <div class="form-help">Bilder ≤ 10MB, PDF ≤ 20MB, Video ≤ 100MB</div>
+                            </div>
                             <div class="reply-actions">
                                 <div class="reply-info">
                                     <small id="reply-help">
@@ -513,7 +521,8 @@
         }
 
         // Antwort senden
-        async function sendReply() {
+        async function sendReply(event) {
+            if (event) event.preventDefault();
             const replyText = document.getElementById('reply-message').value.trim();
             
             if (!replyText) {
@@ -522,36 +531,20 @@
             }
             
             try {
-                // In der Vollversion: API-Call
-                // await window.ticketAPI.addTicketMessage(currentTicketId, replyText);
+                // Dateien sammeln
+                const filesInput = document.getElementById('reply-files');
+                const files = filesInput ? filesInput.files : null;
+                const resp = await window.ticketAPI.addTicketMessageMultipart(currentTicketId, { message: replyText, isInternal: false, files });
                 
-                // Demo: Nachricht zur Liste hinzufügen
-                const user = JSON.parse(localStorage.getItem('currentUser'));
-                const newMessage = {
-                    id: Date.now(),
-                    sender_type: 'customer',
-                    sender_name: `${user.firstName} ${user.lastName}`,
-                    message: replyText,
-                    created_at: new Date().toISOString()
-                };
-                
-                // Nachricht hinzufügen
-                const messagesList = document.getElementById('messages-list');
-                const messageHTML = `
-                    <div class="message customer-message">
-                        <div class="message-header">
-                            <div class="message-sender">👤 ${newMessage.sender_name}</div>
-                            <div class="message-time">${new Date().toLocaleString('de-DE')}</div>
-                        </div>
-                        <div class="message-content">${newMessage.message}</div>
-                    </div>
-                `;
-                messagesList.insertAdjacentHTML('beforeend', messageHTML);
+                // Nachrichten neu laden
+                await refreshMessages();
                 
                 // Formular zurücksetzen
                 document.getElementById('reply-message').value = '';
+                if (filesInput) filesInput.value = '';
                 
                 // Zum letzten Nachricht scrollen
+                const messagesList = document.getElementById('messages-list');
                 messagesList.scrollTop = messagesList.scrollHeight;
                 
                 // Erfolgs-Nachricht
@@ -560,6 +553,16 @@
             } catch (error) {
                 console.error('❌ Fehler beim Senden der Antwort:', error);
                 alert(`❌ Fehler beim Senden: ${error.message}`);
+            }
+        }
+
+        async function refreshMessages() {
+            try {
+                const data = await window.ticketAPI.getTicketMessages(currentTicketId);
+                const messages = data.messages || [];
+                displayMessages(messages);
+            } catch (e) {
+                console.error('Fehler beim Aktualisieren der Nachrichten', e);
             }
         }
 

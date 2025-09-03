@@ -49,6 +49,10 @@ Thumbs.db
 # Temporäre Dateien
 tmp/
 temp/
+uploads/
+
+# Crash dumps
+core
 
 # Cache
 .cache/

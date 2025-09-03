@@ -170,6 +170,16 @@
                                 </select>
                                 <div id="priority-help" class="form-help">Wählen Sie die Dringlichkeit Ihres Anliegens</div>
                             </div>
+
+                            <div class="form-group">
+                                <label for="ticket-files" class="form-label">
+                                    <span class="label-icon">📎</span>
+                                    Anhänge (Bilder, PDF, kurze Videos)
+                                </label>
+                                <input type="file" id="ticket-files" class="form-input" multiple 
+                                       accept="image/*,application/pdf,video/mp4,video/webm,video/quicktime" />
+                                <div class="form-help">Max: Bilder 10MB, PDF 20MB, Video 100MB</div>
+                            </div>
                             
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary" id="submit-ticket-btn">

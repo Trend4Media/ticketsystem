@@ -171,7 +171,110 @@ class MultiTenantDatabase {
                 FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE
             )`,
 
-            // 6. Sessions
+            // 6. Ticket-Historie
+            `CREATE TABLE IF NOT EXISTS ticket_history (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                company_id INTEGER NOT NULL,
+                ticket_id INTEGER NOT NULL,
+                
+                changed_by_type VARCHAR(20) NOT NULL,
+                changed_by_id INTEGER,
+                changed_by_name VARCHAR(255),
+                
+                field_name VARCHAR(100) NOT NULL,
+                old_value TEXT,
+                new_value TEXT,
+                
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                
+                FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
+                FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE
+            )`,
+
+            // 7. Ticket-Beobachter (Watcher)
+            `CREATE TABLE IF NOT EXISTS ticket_watchers (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                company_id INTEGER NOT NULL,
+                ticket_id INTEGER NOT NULL,
+                admin_user_id INTEGER NOT NULL,
+                
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                
+                FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
+                FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
+                FOREIGN KEY (admin_user_id) REFERENCES admin_users(id) ON DELETE CASCADE,
+                UNIQUE (company_id, ticket_id, admin_user_id)
+            )`,
+
+            // 8. Datei-Uploads (Anhänge)
+            `CREATE TABLE IF NOT EXISTS attachments (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                company_id INTEGER NOT NULL,
+                ticket_id INTEGER,
+                message_id INTEGER,
+                uploader_type VARCHAR(20) NOT NULL,
+                uploader_id INTEGER NOT NULL,
+                storage_path TEXT NOT NULL,
+                mime_type VARCHAR(100) NOT NULL,
+                file_size INTEGER NOT NULL,
+                original_name TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                
+                FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
+                FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
+                FOREIGN KEY (message_id) REFERENCES ticket_messages(id) ON DELETE CASCADE
+            )`,
+
+            // 9. Abonnements (Subscription)
+            `CREATE TABLE IF NOT EXISTS subscriptions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                company_id INTEGER NOT NULL UNIQUE,
+                plan_type VARCHAR(20) NOT NULL,
+                status VARCHAR(20) NOT NULL DEFAULT 'active',
+                current_period_start DATETIME,
+                current_period_end DATETIME,
+                seats_admin INTEGER DEFAULT 2,
+                seats_customers INTEGER DEFAULT 100,
+                features TEXT DEFAULT '{}',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                
+                FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
+            )`,
+
+            // 10. Rechnungen
+            `CREATE TABLE IF NOT EXISTS invoices (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                company_id INTEGER NOT NULL,
+                invoice_number VARCHAR(50) NOT NULL,
+                amount_cents INTEGER NOT NULL,
+                currency VARCHAR(10) DEFAULT 'EUR',
+                status VARCHAR(20) DEFAULT 'open',
+                pdf_url TEXT,
+                issued_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                paid_at DATETIME,
+                
+                FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
+                UNIQUE (company_id, invoice_number)
+            )`,
+
+            // 11. Zahlungen
+            `CREATE TABLE IF NOT EXISTS payments (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                company_id INTEGER NOT NULL,
+                invoice_id INTEGER NOT NULL,
+                provider VARCHAR(50),
+                provider_id VARCHAR(100),
+                amount_cents INTEGER NOT NULL,
+                currency VARCHAR(10) DEFAULT 'EUR',
+                status VARCHAR(20) DEFAULT 'succeeded',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                
+                FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
+                FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE
+            )`,
+
+            // 12. Sessions
             `CREATE TABLE IF NOT EXISTS sessions (
                 id VARCHAR(255) PRIMARY KEY,
                 company_id INTEGER NOT NULL,
@@ -212,7 +315,12 @@ class MultiTenantDatabase {
             'CREATE INDEX IF NOT EXISTS idx_customers_company_email ON customers(company_id, email)',
             'CREATE INDEX IF NOT EXISTS idx_tickets_company_status ON tickets(company_id, status)',
             'CREATE INDEX IF NOT EXISTS idx_tickets_customer ON tickets(customer_id)',
-            'CREATE INDEX IF NOT EXISTS idx_messages_ticket ON ticket_messages(ticket_id)'
+            'CREATE INDEX IF NOT EXISTS idx_messages_ticket ON ticket_messages(ticket_id)',
+            'CREATE INDEX IF NOT EXISTS idx_history_ticket ON ticket_history(ticket_id)',
+            'CREATE INDEX IF NOT EXISTS idx_attachments_ticket ON attachments(ticket_id)',
+            'CREATE INDEX IF NOT EXISTS idx_watchers_ticket ON ticket_watchers(ticket_id)',
+            'CREATE INDEX IF NOT EXISTS idx_invoices_company ON invoices(company_id)',
+            'CREATE INDEX IF NOT EXISTS idx_payments_invoice ON payments(invoice_id)'
         ];
 
         for (const indexSQL of indexes) {

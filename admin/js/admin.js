@@ -122,6 +122,103 @@ function setActiveLink(linkText) {
     });
 }
 
+// Abrechnung anzeigen - global verfügbar
+window.showBilling = async function() {
+    showView('billing-content');
+    setActiveLink('💳 Abrechnung');
+    await loadSubscription();
+    await loadInvoices();
+}
+
+async function loadSubscription() {
+    const box = document.getElementById('subscription-box');
+    box.innerHTML = 'Lade Abonnement...';
+    try {
+        const data = await window.ticketAPI.getSubscription();
+        const sub = data.subscription;
+        if (!sub) {
+            box.innerHTML = '<div class="setting-card">Kein Abonnement konfiguriert.</div>';
+            return;
+        }
+        box.innerHTML = `
+            <div class="setting-card">
+                <h3>Aktiver Plan: ${sub.plan_type || 'unbekannt'}</h3>
+                <p>Status: ${sub.status}</p>
+                <p>Zeitraum: ${sub.current_period_start || '-'} → ${sub.current_period_end || '-'}</p>
+                <p>Seats (Admin): ${sub.seats_admin} • Seats (Kunden): ${sub.seats_customers}</p>
+            </div>
+        `;
+    } catch (e) {
+        box.innerHTML = `<div class="setting-card">Fehler beim Laden des Abos: ${e.message}</div>`;
+    }
+}
+
+async function loadInvoices() {
+    const box = document.getElementById('invoices-box');
+    box.innerHTML = 'Lade Rechnungen...';
+    try {
+        const data = await window.ticketAPI.getInvoices();
+        const invoices = data.invoices || [];
+        if (!invoices.length) {
+            box.innerHTML = '<div class="setting-card">Keine Rechnungen vorhanden.</div>';
+            return;
+        }
+        box.innerHTML = `
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Rechnungsnr.</th>
+                        <th>Betrag</th>
+                        <th>Status</th>
+                        <th>Datum</th>
+                        <th>Aktionen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${invoices.map(inv => `
+                        <tr>
+                            <td>${inv.invoice_number}</td>
+                            <td>${(inv.amount_cents/100).toFixed(2)} ${inv.currency}</td>
+                            <td>${inv.status}</td>
+                            <td>${new Date(inv.issued_at).toLocaleDateString('de-DE')}</td>
+                            <td>
+                                ${inv.status !== 'paid' ? `<button class="btn-small btn-primary" onclick="payInvoice(${inv.id}, ${inv.amount_cents})">Bezahlt markieren</button>` : ''}
+                                ${inv.pdf_url ? `<a class="btn-small btn-secondary" href="${inv.pdf_url}" target="_blank">PDF</a>` : ''}
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    } catch (e) {
+        box.innerHTML = `<div class="setting-card">Fehler beim Laden der Rechnungen: ${e.message}</div>`;
+    }
+}
+
+window.createInvoicePrompt = async function() {
+    const amount = prompt('Betrag in EUR (z.B. 29.00):');
+    if (!amount) return;
+    const cents = Math.round(parseFloat(amount.replace(',', '.')) * 100);
+    if (!cents || cents <= 0) return alert('Ungültiger Betrag');
+    try {
+        await window.ticketAPI.createInvoice(cents);
+        await loadInvoices();
+        alert('Rechnung erstellt');
+    } catch (e) {
+        alert('Fehler: ' + e.message);
+    }
+}
+
+window.payInvoice = async function(id, amountCents) {
+    try {
+        await window.ticketAPI.payInvoice(id, amountCents);
+        await loadInvoices();
+        alert('Zahlung verbucht');
+    } catch (e) {
+        alert('Fehler: ' + e.message);
+    }
+}
+
 // Demo-Tickets laden
 function loadTicketsTable(filter = 'all') {
     const demoTickets = [

@@ -57,6 +57,7 @@
                     <ul class="sidebar-menu">
                         <li><a href="#" class="sidebar-link" onclick="showUsers()">👤 Benutzer</a></li>
                         <li><a href="#" class="sidebar-link" onclick="showSettings()">⚙️ Einstellungen</a></li>
+                        <li><a href="#" class="sidebar-link" onclick="showBilling()">💳 Abrechnung</a></li>
                     </ul>
                 </div>
             </nav>
@@ -159,6 +160,18 @@
                             <button class="btn btn-secondary">Konfigurieren</button>
                         </div>
                     </div>
+                </div>
+
+                <!-- Abrechnung -->
+                <div id="billing-content" class="content-view">
+                    <div class="content-header">
+                        <h2>💳 Abrechnung</h2>
+                        <div class="content-actions">
+                            <button class="btn btn-primary" onclick="createInvoicePrompt()">🧾 Neue Rechnung</button>
+                        </div>
+                    </div>
+                    <div id="subscription-box" class="setting-card" style="margin-bottom:16px;"></div>
+                    <div id="invoices-box"></div>
                 </div>
             </div>
         </main>
