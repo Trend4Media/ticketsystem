@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
     showWelcome();
 });
 
-// Navigation zwischen verschiedenen Views
-function showView(viewId) {
+// Navigation zwischen verschiedenen Views - global verfügbar
+window.showView = function(viewId) {
     // Alle Views ausblenden
     const allViews = document.querySelectorAll('.content-view');
     allViews.forEach(view => view.classList.remove('active'));
@@ -27,13 +27,13 @@ function showView(viewId) {
     }
 }
 
-// Willkommensbereich anzeigen
-function showWelcome() {
+// Willkommensbereich anzeigen - global verfügbar
+window.showWelcome = function() {
     showView('welcome-content');
 }
 
-// Ticket-Erstellung anzeigen
-function showCreateTicket() {
+// Ticket-Erstellung anzeigen - global verfügbar
+window.showCreateTicket = function() {
     showView('create-ticket-content');
     // Formular zurücksetzen
     const form = document.querySelector('.ticket-form');
@@ -42,14 +42,14 @@ function showCreateTicket() {
     }
 }
 
-// Meine Tickets anzeigen
-function showMyTickets() {
+// Meine Tickets anzeigen - global verfügbar
+window.showMyTickets = function() {
     showView('my-tickets-content');
     loadMyTickets();
 }
 
-// Ticket mit vorgewählter Kategorie erstellen
-function createTicketWithCategory(category) {
+// Ticket mit vorgewählter Kategorie erstellen - global verfügbar
+window.createTicketWithCategory = function(category) {
     showCreateTicket();
     
     // Kategorie vorauswählen
@@ -61,8 +61,8 @@ function createTicketWithCategory(category) {
     }, 100);
 }
 
-// Ticket-Formular absenden
-function submitTicket(event) {
+// Ticket-Formular absenden - global verfügbar
+window.submitTicket = function(event) {
     event.preventDefault();
     
     const category = document.getElementById('ticket-category').value;
@@ -158,8 +158,8 @@ function loadMyTickets() {
     }
 }
 
-// Ticket-Details anzeigen
-function openTicketDetails(ticketId) {
+// Ticket-Details anzeigen - global verfügbar
+window.openTicketDetails = function(ticketId) {
     alert(`🎫 Ticket #${ticketId}\n\nHier würden die detaillierten Ticket-Informationen angezeigt:\n\n• Vollständige Beschreibung\n• Kommunikationsverlauf mit Support\n• Status-Updates\n• Anhänge\n• Lösungsvorschläge\n\nIn der Vollversion öffnet sich hier eine detaillierte Ticket-Ansicht.`);
 }
 

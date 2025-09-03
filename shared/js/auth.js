@@ -21,8 +21,8 @@ const demoAccounts = {
 // Aktueller Benutzer
 let currentUser = null;
 
-// Login-Funktion
-function login() {
+// Login-Funktion (global verfügbar machen)
+window.login = function() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     
@@ -55,8 +55,8 @@ function login() {
     }, 1500);
 }
 
-// Logout-Funktion
-function logout() {
+// Logout-Funktion (global verfügbar machen)
+window.logout = function() {
     currentUser = null;
     localStorage.removeItem('currentUser');
     
@@ -111,14 +111,14 @@ function showMessage(message, type) {
     }, 5000);
 }
 
-// Anmeldedaten automatisch ausfüllen (für Demo)
-function fillCredentials(email, password) {
+// Anmeldedaten automatisch ausfüllen (für Demo) - global verfügbar
+window.fillCredentials = function(email, password) {
     document.getElementById('email').value = email;
     document.getElementById('password').value = password;
 }
 
-// Registrierungsinformationen anzeigen
-function showRegisterInfo() {
+// Registrierungsinformationen anzeigen - global verfügbar
+window.showRegisterInfo = function() {
     alert('📝 Registrierung\n\nIn der Vollversion können sich neue Kunden hier registrieren.\n\nFür die Demo verwenden Sie bitte einen der Test-Accounts:\n\n🛠️ Admin: admin@support.com / admin123\n👤 Kunde: kunde@demo.com / demo123\n\n💡 Das System erkennt automatisch Ihren Account-Typ!');
 }
 

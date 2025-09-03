@@ -211,6 +211,83 @@
     font-weight: 500;
 }
 
+/* Content Header */
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.content-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.content-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Kleine Buttons */
+.btn-small {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 8px;
+}
+
+.btn-small.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-small.btn-secondary {
+    background: var(--background);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+}
+
+.btn-small.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+/* Einstellungen */
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.setting-card {
+    background: var(--surface);
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.setting-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.setting-card p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
 /* Responsive Design für Admin */
 @media (max-width: 1024px) {
     .admin-sidebar {

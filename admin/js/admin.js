@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
     showOverview();
 });
 
-// Navigation zwischen verschiedenen Views
-function showView(viewId) {
+// Navigation zwischen verschiedenen Views - global verfügbar
+window.showView = function(viewId) {
     // Alle Views ausblenden
     const allViews = document.querySelectorAll('.content-view');
     allViews.forEach(view => view.classList.remove('active'));
@@ -31,49 +31,49 @@ function showView(viewId) {
     }
 }
 
-// Übersicht anzeigen
-function showOverview() {
+// Übersicht anzeigen - global verfügbar
+window.showOverview = function() {
     showView('overview-content');
     setActiveLink('🏠 Übersicht');
 }
 
-// Alle Tickets anzeigen
-function showAllTickets() {
+// Alle Tickets anzeigen - global verfügbar
+window.showAllTickets = function() {
     showView('tickets-content');
     setActiveLink('📋 Alle Tickets');
     loadTicketsTable();
 }
 
-// Offene Tickets anzeigen
-function showOpenTickets() {
+// Offene Tickets anzeigen - global verfügbar
+window.showOpenTickets = function() {
     showView('tickets-content');
     setActiveLink('🔓 Offene Tickets');
     loadTicketsTable('open');
 }
 
-// Geschlossene Tickets anzeigen
-function showClosedTickets() {
+// Geschlossene Tickets anzeigen - global verfügbar
+window.showClosedTickets = function() {
     showView('tickets-content');
     setActiveLink('✅ Geschlossene Tickets');
     loadTicketsTable('closed');
 }
 
-// Statistiken anzeigen
-function showStatistics() {
+// Statistiken anzeigen - global verfügbar
+window.showStatistics = function() {
     showView('statistics-content');
     setActiveLink('📈 Statistiken');
     loadStatistics();
 }
 
-// Benutzer anzeigen
-function showUsers() {
+// Benutzer anzeigen - global verfügbar
+window.showUsers = function() {
     showView('users-content');
     setActiveLink('👤 Benutzer');
     loadUsersTable();
 }
 
-// Einstellungen anzeigen
-function showSettings() {
+// Einstellungen anzeigen - global verfügbar
+window.showSettings = function() {
     showView('settings-content');
     setActiveLink('⚙️ Einstellungen');
 }
@@ -300,15 +300,15 @@ function getPriorityText(priority) {
     }
 }
 
-// Ticket-Aktionen (Demo-Funktionen)
-function openTicketDetails(ticketId) {
+// Ticket-Aktionen (Demo-Funktionen) - global verfügbar
+window.openTicketDetails = function(ticketId) {
     alert(`🎫 Ticket #${ticketId}\n\nHier würden die detaillierten Ticket-Informationen angezeigt:\n\n• Vollständige Beschreibung\n• Kommunikationsverlauf\n• Anhänge\n• Status-Historie\n• Zuweisungen\n\nIn der Vollversion öffnet sich hier ein detailliertes Ticket-Modal.`);
 }
 
-function editTicket(ticketId) {
+window.editTicket = function(ticketId) {
     alert(`✏️ Ticket #${ticketId} bearbeiten\n\nHier können Sie:\n\n• Status ändern\n• Priorität anpassen\n• Ticket zuweisen\n• Kommentare hinzufügen\n• Kategorien ändern\n\nIn der Vollversion öffnet sich hier ein Bearbeitungsformular.`);
 }
 
-function assignTicket(ticketId) {
+window.assignTicket = function(ticketId) {
     alert(`👤 Ticket #${ticketId} zuweisen\n\nWählen Sie einen Support-Mitarbeiter:\n\n• Max Weber (verfügbar)\n• Sarah Klein (beschäftigt)\n• Tom Müller (im Urlaub)\n\nIn der Vollversion würde hier eine Zuweisungs-Auswahl erscheinen.`);
 }

@@ -147,5 +147,39 @@
     </div>
 
     <script src="shared/js/auth.js"></script>
+    <script>
+        // Debug: Prüfe ob alle Funktionen verfügbar sind
+        console.log('🔍 Debug: Login-Funktionen verfügbar:', {
+            login: typeof window.login,
+            fillCredentials: typeof window.fillCredentials,
+            showRegisterInfo: typeof window.showRegisterInfo
+        });
+        
+        // Stelle sicher, dass die Login-Funktion verfügbar ist
+        if (typeof window.login === 'undefined') {
+            console.error('❌ Login-Funktion nicht gefunden!');
+            
+            // Fallback-Login-Funktion
+            window.login = function() {
+                console.log('🔧 Fallback-Login ausgeführt');
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                console.log('📧 E-Mail:', email);
+                console.log('🔑 Passwort:', password ? '***' : 'leer');
+                
+                // Demo-Account prüfen
+                if (email === 'admin@support.com' && password === 'admin123') {
+                    alert('✅ Admin-Login erfolgreich! Weiterleitung zum Admin-Bereich...');
+                    window.location.href = 'admin/index.html';
+                } else if (email === 'kunde@demo.com' && password === 'demo123') {
+                    alert('✅ Kunden-Login erfolgreich! Weiterleitung zum Kunden-Bereich...');
+                    window.location.href = 'customer/index.html';
+                } else {
+                    alert('❌ Ungültige Anmeldedaten. Bitte versuchen Sie es erneut.');
+                }
+            };
+        }
+    </script>
 </body>
 </html>
