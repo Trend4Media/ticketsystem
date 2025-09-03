@@ -120,8 +120,8 @@
 ### 🔧 **Falls Probleme auftreten:**
 
 1. **Cache leeren:** Strg+F5
-2. **Diagnose-Seite:** `/diagnose.html`
-3. **Link-Test-Seite:** `/link-test.html`
+2. (entfernt) Diagnose-Seite
+3. (entfernt) Link-Test-Seite
 4. **Browser-Konsole:** F12 für Debug-Logs
 
 **Alle Verlinkungen sind technisch korrekt!** Das System sollte vollständig funktionieren.
