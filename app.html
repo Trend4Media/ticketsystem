@@ -725,14 +725,11 @@
                 showMessage('✅ Anmeldung erfolgreich! Weiterleitung...', 'success');
                 
                 setTimeout(() => {
-                    // Hide login screen
-                    document.getElementById('login-screen').style.display = 'none';
-                    
-                    // Show appropriate dashboard based on account type
+                    // Weiterleitung zu den neuen separaten Bereichen
                     if (account.type === 'admin') {
-                        showAdminDashboard(account);
+                        window.location.href = 'admin/index.html';
                     } else {
-                        showCustomerDashboard(account);
+                        window.location.href = 'customer/index.html';
                     }
                 }, 1000);
                 
