@@ -70,13 +70,14 @@ window.login = function() {
 window.logout = function() {
     currentUser = null;
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
     
-    // Bestimme den korrekten Pfad zur Hauptseite
+    // Bestimme den korrekten Pfad zur Login-Seite
     const currentPath = window.location.pathname;
     if (currentPath.includes('/admin/') || currentPath.includes('/customer/')) {
-        window.location.href = '../index.html';
+        window.location.href = '../app.html';
     } else {
-        window.location.href = 'index.html';
+        window.location.href = 'app.html';
     }
 }
 

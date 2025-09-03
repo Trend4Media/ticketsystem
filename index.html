@@ -3,183 +3,634 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4Ticket - Anmeldung</title>
+    <title>4Ticket - Professionelles Ticketsystem für Ihren Support</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="shared/css/common.css">
     <style>
-        .demo-banner {
-            background: rgba(0, 122, 255, 0.1);
-            border: 1px solid rgba(0, 122, 255, 0.2);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 30px;
-            text-align: center;
+        :root {
+            --primary: #007AFF;
+            --primary-dark: #0056CC;
+            --secondary: #5856D6;
+            --success: #28CA42;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --text-primary: #1D1D1F;
+            --text-secondary: #86868B;
+            --background: #FBFBFD;
+            --surface: #FFFFFF;
+            --border: rgba(0, 0, 0, 0.1);
+            --shadow-light: rgba(0, 0, 0, 0.05);
+            --shadow-medium: rgba(0, 0, 0, 0.1);
+            --gradient-primary: linear-gradient(135deg, #007AFF, #5856D6);
         }
-        
-        .demo-banner h4 {
-            color: var(--primary);
-            font-weight: 600;
-            margin-bottom: 12px;
-            font-size: 18px;
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        .demo-banner p {
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
             color: var(--text-secondary);
-            margin-bottom: 20px;
-        }
-        
-        .test-accounts {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .test-account {
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .test-account:hover {
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.15);
-        }
-        
-        .account-type {
-            font-weight: 600;
-            color: var(--primary);
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-        
-        .account-credentials {
-            font-family: 'SF Mono', Monaco, monospace;
-            font-size: 12px;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-        
-        .login-footer {
-            text-align: center;
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-        }
-        
-        .login-link {
-            color: var(--primary);
             text-decoration: none;
             font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
             font-size: 14px;
+            font-family: inherit;
         }
-        
-        .login-link:hover {
-            text-decoration: underline;
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
         }
-        
-        .login-form {
-            margin-top: 20px;
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--background);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .hero-title {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-actions .btn {
+            padding: 16px 32px;
+            font-size: 16px;
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: var(--surface);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section-title {
+            font-size: 48px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .section-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 60px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 40px 24px;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            margin: 0 auto 24px;
+        }
+
+        .feature-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 100px 0;
+            background: var(--background);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .pricing-card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 40px 32px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px var(--shadow-medium);
+        }
+
+        .pricing-card.featured {
+            border: 2px solid var(--primary);
+            transform: scale(1.05);
+        }
+
+        .plan-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .plan-price {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .plan-period {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 32px;
+        }
+
+        .plan-features li {
+            padding: 8px 0;
+            color: var(--text-secondary);
+        }
+
+        .plan-features li:before {
+            content: "✅";
+            margin-right: 12px;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .footer-logo {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .footer-description {
+            opacity: 0.8;
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-link:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 36px;
+            }
+            
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-card.featured {
+                transform: none;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div class="login-screen">
-        <div class="login-card">
-            <div class="login-header">
-                <div class="login-logo">4</div>
-                <h2 class="login-title">Willkommen bei 4Ticket</h2>
-                <p class="login-subtitle">Zentralisierte Plattform für Kunden und Support</p>
-            </div>
-            
-            <!-- Demo Banner -->
-            <div class="demo-banner">
-                <h4>🚀 Demo-Version</h4>
-                <p>Testen Sie das System mit vorgefertigten Accounts</p>
-                <div class="test-accounts">
-                    <div class="test-account" onclick="fillCredentials('admin@support.com', 'admin123')">
-                        <div class="account-type">🛠️ Support-Team</div>
-                        <div class="account-credentials">
-                            admin@support.com<br>
-                            admin123
-                        </div>
-                    </div>
-                    <div class="test-account" onclick="fillCredentials('kunde@demo.com', 'demo123')">
-                        <div class="account-type">👤 Kunde</div>
-                        <div class="account-credentials">
-                            kunde@demo.com<br>
-                            demo123
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Login Form -->
-            <div class="login-form">
-                <div class="form-group">
-                    <label for="email" class="form-label">E-Mail-Adresse</label>
-                    <input type="email" id="email" class="form-input" placeholder="ihre@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="password" class="form-label">Passwort</label>
-                    <input type="password" id="password" class="form-input" placeholder="••••••••" required>
-                </div>
-                <div class="login-actions">
-                    <button class="btn btn-primary btn-full" onclick="login()">
-                        🚀 Anmelden
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Footer -->
-            <div class="login-footer">
-                <a href="#" class="login-link" onclick="showRegisterInfo()">
-                    📝 Noch kein Account? Hier registrieren
-                </a>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">4</div>
+                4Ticket
+            </a>
+            <nav class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#pricing" class="nav-link">Preise</a>
+                <a href="#contact" class="nav-link">Kontakt</a>
+                <a href="app.html" class="btn btn-primary">🔐 Anmelden</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1 class="hero-title">Professioneller Kundensupport leicht gemacht</h1>
+            <p class="hero-subtitle">
+                4Ticket ist die moderne White-Label-Lösung für Ihren Kundensupport. 
+                Individuell anpassbar, skalierbar und sofort einsatzbereit.
+            </p>
+            <div class="hero-actions">
+                <a href="app.html" class="btn btn-white">🚀 Jetzt testen</a>
+                <a href="#pricing" class="btn btn-secondary" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);">💰 Preise ansehen</a>
             </div>
         </div>
-    </div>
+    </section>
 
-    <script src="shared/js/auth.js"></script>
-    <script>
-        // Debug: Prüfe ob alle Funktionen verfügbar sind
-        console.log('🔍 Debug: Login-Funktionen verfügbar:', {
-            login: typeof window.login,
-            fillCredentials: typeof window.fillCredentials,
-            showRegisterInfo: typeof window.showRegisterInfo
-        });
-        
-        // Stelle sicher, dass die Login-Funktion verfügbar ist
-        if (typeof window.login === 'undefined') {
-            console.error('❌ Login-Funktion nicht gefunden!');
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Warum 4Ticket?</h2>
+            <p class="section-subtitle">
+                Alles was Sie für professionellen Kundensupport benötigen - 
+                in einer modernen, benutzerfreundlichen Plattform.
+            </p>
             
-            // Fallback-Login-Funktion
-            window.login = function() {
-                console.log('🔧 Fallback-Login ausgeführt');
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🛠️</div>
+                    <h3 class="feature-title">Admin-Dashboard</h3>
+                    <p class="feature-description">
+                        Vollständige Ticket-Verwaltung mit Statistiken, Zuweisungen und 
+                        Echtzeit-Kommunikation. Behalten Sie den Überblick über alle Anfragen.
+                    </p>
+                </div>
                 
-                console.log('📧 E-Mail:', email);
-                console.log('🔑 Passwort:', password ? '***' : 'leer');
+                <div class="feature-card">
+                    <div class="feature-icon">👤</div>
+                    <h3 class="feature-title">Kunden-Portal</h3>
+                    <p class="feature-description">
+                        Benutzerfreundliches Interface für Ihre Kunden. Ticket-Erstellung, 
+                        Status-Verfolgung und direkte Kommunikation mit Ihrem Support-Team.
+                    </p>
+                </div>
                 
-                // Demo-Account prüfen
-                if (email === 'admin@support.com' && password === 'admin123') {
-                    alert('✅ Admin-Login erfolgreich! Weiterleitung zum Admin-Bereich...');
-                    window.location.href = 'admin/index.html';
-                } else if (email === 'kunde@demo.com' && password === 'demo123') {
-                    alert('✅ Kunden-Login erfolgreich! Weiterleitung zum Kunden-Bereich...');
-                    window.location.href = 'customer/index.html';
-                } else {
-                    alert('❌ Ungültige Anmeldedaten. Bitte versuchen Sie es erneut.');
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">White-Label Design</h3>
+                    <p class="feature-description">
+                        Vollständig anpassbares Design mit Ihren Farben, Logo und Domain. 
+                        Ihre Kunden sehen nur Ihre Marke.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">Multi-Tenant Sicherheit</h3>
+                    <p class="feature-description">
+                        Vollständige Datentrennung zwischen Unternehmen. Sichere Authentifizierung 
+                        und rollenbasierte Berechtigungen.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Mobile-optimiert</h3>
+                    <p class="feature-description">
+                        Responsive Design für alle Geräte. Ihre Kunden und Ihr Team können 
+                        von überall aus auf das System zugreifen.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Sofort einsatzbereit</h3>
+                    <p class="feature-description">
+                        Keine komplizierte Einrichtung. In wenigen Minuten können Sie 
+                        Ihren ersten Kunden-Support anbieten.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <h2 class="section-title">Transparente Preise</h2>
+            <p class="section-subtitle">
+                Wählen Sie das Paket, das perfekt zu Ihrem Unternehmen passt. 
+                Jederzeit kündbar, keine versteckten Kosten.
+            </p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3 class="plan-name">Starter</h3>
+                    <div class="plan-price">€29</div>
+                    <div class="plan-period">pro Monat</div>
+                    <ul class="plan-features">
+                        <li>Bis zu 50 Kunden</li>
+                        <li>2 Support-Mitarbeiter</li>
+                        <li>Basis-Features</li>
+                        <li>E-Mail-Support</li>
+                        <li>SSL-Verschlüsselung</li>
+                    </ul>
+                    <a href="app.html" class="btn btn-secondary">Jetzt starten</a>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <h3 class="plan-name">Professional</h3>
+                    <div class="plan-price">€99</div>
+                    <div class="plan-period">pro Monat</div>
+                    <ul class="plan-features">
+                        <li>Bis zu 500 Kunden</li>
+                        <li>10 Support-Mitarbeiter</li>
+                        <li>Custom Branding</li>
+                        <li>Eigene Domain</li>
+                        <li>API-Zugang</li>
+                        <li>Priority Support</li>
+                    </ul>
+                    <a href="app.html" class="btn btn-primary">Beliebt - Jetzt starten</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3 class="plan-name">Enterprise</h3>
+                    <div class="plan-price">€299</div>
+                    <div class="plan-period">pro Monat</div>
+                    <ul class="plan-features">
+                        <li>Unlimited Kunden</li>
+                        <li>Unlimited Mitarbeiter</li>
+                        <li>Vollständiges White-Label</li>
+                        <li>Custom Features</li>
+                        <li>SLA-Garantie</li>
+                        <li>Telefon-Support</li>
+                    </ul>
+                    <a href="app.html" class="btn btn-secondary">Kontakt aufnehmen</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section class="demo" style="padding: 80px 0; background: var(--surface);">
+        <div class="container">
+            <h2 class="section-title">🎯 Live-Demo testen</h2>
+            <p class="section-subtitle">
+                Probieren Sie 4Ticket sofort aus - keine Registrierung erforderlich!
+            </p>
+            
+            <div style="display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin-top: 40px;">
+                <div style="background: white; padding: 32px; border-radius: 16px; border: 1px solid var(--border); text-align: center; min-width: 250px;">
+                    <h3 style="color: var(--primary); margin-bottom: 16px;">🛠️ Admin-Demo</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px;">
+                        Testen Sie das Support-Dashboard
+                    </p>
+                    <div style="font-family: 'SF Mono', Monaco, monospace; font-size: 12px; color: var(--text-secondary); margin-bottom: 20px;">
+                        admin@support.com<br>
+                        admin123
+                    </div>
+                    <a href="app.html" class="btn btn-primary">🚀 Admin testen</a>
+                </div>
+                
+                <div style="background: white; padding: 32px; border-radius: 16px; border: 1px solid var(--border); text-align: center; min-width: 250px;">
+                    <h3 style="color: var(--secondary); margin-bottom: 16px;">👤 Kunden-Demo</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px;">
+                        Testen Sie das Kunden-Portal
+                    </p>
+                    <div style="font-family: 'SF Mono', Monaco, monospace; font-size: 12px; color: var(--text-secondary); margin-bottom: 20px;">
+                        kunde@demo.com<br>
+                        demo123
+                    </div>
+                    <a href="app.html" class="btn btn-secondary">👤 Kunde testen</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">4Ticket</div>
+            <p class="footer-description">
+                Professionelles Ticketsystem für modernen Kundensupport. 
+                White-Label-ready und sofort einsatzbereit.
+            </p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">Datenschutz</a>
+                <a href="#" class="footer-link">AGB</a>
+                <a href="#" class="footer-link">Impressum</a>
+                <a href="#" class="footer-link">Support</a>
+            </div>
+            <p style="opacity: 0.6; font-size: 14px;">
+                © 2024 4Ticket. Entwickelt für optimalen Kundensupport.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth Scrolling für Anchor-Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
-            };
-        }
+            });
+        });
+
+        // Fade-in Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+                document.body.style.transition = 'opacity 0.5s ease';
+            }, 100);
+        });
     </script>
 </body>
 </html>

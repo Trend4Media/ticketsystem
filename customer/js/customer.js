@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (!userStr) {
         console.log('❌ Keine Session gefunden - Weiterleitung zum Login');
-        window.location.href = '../index.html';
+        window.location.href = '../app.html';
         return;
     }
     
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (error) {
         console.error('❌ Fehler beim Parsen der Session:', error);
         localStorage.removeItem('currentUser');
-        window.location.href = '../index.html';
+        window.location.href = '../app.html';
         return;
     }
     
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (user.type !== 'customer') {
         console.log('❌ Falscher Benutzertyp:', user.type, '- Erwartet: customer');
         alert('❌ Zugriff verweigert! Nur Kunden haben Zugang zu diesem Bereich.');
-        window.location.href = '../index.html';
+        window.location.href = '../app.html';
         return;
     }
     

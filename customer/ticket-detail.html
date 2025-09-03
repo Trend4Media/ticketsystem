@@ -206,13 +206,13 @@
             // Authentifizierung prüfen
             const userStr = localStorage.getItem('currentUser');
             if (!userStr) {
-                window.location.href = '../index.html';
+                window.location.href = '../app.html';
                 return;
             }
             
             const user = JSON.parse(userStr);
             if (user.type !== 'customer') {
-                window.location.href = '../index.html';
+                window.location.href = '../app.html';
                 return;
             }
             

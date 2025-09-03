@@ -52,9 +52,10 @@ npm run dev
 ```
 
 ### 4. Anwendung öffnen
-- **Hauptseite:** http://localhost:3000
-- **Admin-Bereich:** http://localhost:3000/admin
-- **Kundenbereich:** http://localhost:3000/customer
+- **🏠 Landingpage:** http://localhost:3000 (Marketing, Features, Preise)
+- **🔐 Login:** http://localhost:3000/app.html (Anmeldung für Benutzer)
+- **🛠️ Admin-Bereich:** http://localhost:3000/admin (nach Admin-Login)
+- **👤 Kundenbereich:** http://localhost:3000/customer (nach Kunden-Login)
 
 ## 🔑 Demo-Zugangsdaten
 
