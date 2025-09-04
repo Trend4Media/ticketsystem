@@ -37,6 +37,29 @@
             --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
         }
 
+        /* Dark theme variables (applied when <html data-theme="dark"> or .dark is present) */
+        html[data-theme="dark"],
+        .dark {
+            /* Core Colors */
+            --text-primary: #E5E7EB;
+            --text-secondary: #9CA3AF;
+            --text-muted: #6B7280;
+
+            --background: #0B0F15;
+            --surface: #0F1621;
+            --surface-hover: #14202B;
+
+            --border: #1F2A37;
+            --border-light: #1A2430;
+
+            /* Gradients and shadows slightly intensified for dark */
+            --gradient-card: linear-gradient(145deg, rgba(20, 32, 43, 0.98) 0%, rgba(20, 32, 43, 0.9) 100%);
+            --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.45);
+            --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.6);
+            --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.65);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -828,7 +851,98 @@
             }
         }
     </style>
-    <script src="shared/js/theme.js"></script>
+    <script>
+        /* Simple global theme manager: toggles between 'light' and 'dark'.
+           - Applies `data-theme` attribute on <html>
+           - Adds/removes `dark` class on <html> for Tailwind compatibility
+           - Persists choice in localStorage under key 'theme'
+        */
+        (function(){
+            var STORAGE_KEY = 'theme';
+
+            function getSystemPreference(){
+                try {
+                    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                } catch (_) {
+                    return 'light';
+                }
+            }
+
+            function readStoredTheme(){
+                try {
+                    var v = localStorage.getItem(STORAGE_KEY);
+                    if (v === 'dark' || v === 'light') return v;
+                } catch(_) {}
+                return null;
+            }
+
+            function applyTheme(theme){
+                var html = document.documentElement;
+                html.setAttribute('data-theme', theme);
+                if (theme === 'dark') {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+                try { localStorage.setItem(STORAGE_KEY, theme); } catch(_) {}
+                var ev;
+                try {
+                    ev = new CustomEvent('themechange', { detail: { theme: theme } });
+                } catch(_) {
+                    ev = document.createEvent('CustomEvent');
+                    ev.initCustomEvent('themechange', false, false, { theme: theme });
+                }
+                window.dispatchEvent(ev);
+            }
+
+            function getCurrentTheme(){
+                var current = document.documentElement.getAttribute('data-theme');
+                if (current === 'dark' || current === 'light') return current;
+                var stored = readStoredTheme();
+                if (stored) return stored;
+                return getSystemPreference();
+            }
+
+            function toggle(){
+                var next = getCurrentTheme() === 'dark' ? 'light' : 'dark';
+                applyTheme(next);
+                return next;
+            }
+
+            function init(){
+                var initial = readStoredTheme() || getSystemPreference();
+                applyTheme(initial);
+                // Keep in sync with system preference changes
+                try {
+                    if (window.matchMedia) {
+                        var mq = window.matchMedia('(prefers-color-scheme: dark)');
+                        // modern spec
+                        if (typeof mq.addEventListener === 'function') {
+                            mq.addEventListener('change', function(){
+                                if (!readStoredTheme()) applyTheme(getSystemPreference());
+                            });
+                        } else if (typeof mq.addListener === 'function') {
+                            mq.addListener(function(){
+                                if (!readStoredTheme()) applyTheme(getSystemPreference());
+                            });
+                        }
+                    }
+                } catch(_) {}
+            }
+
+            // Expose API
+            window.Theme = {
+                apply: applyTheme,
+                toggle: toggle,
+                get: getCurrentTheme,
+                set: applyTheme,
+                init: init
+            };
+
+            // Initialize asap
+            init();
+        })();
+    </script>
 </head>
 <body>
     <!-- Header -->
