@@ -22,12 +22,21 @@
 		.badge { display:inline-block; padding:2px 8px; border-radius: 999px; background:#f3f4f6; font-size:12px; }
 		.toolbar { display:flex; gap:10px; align-items:center; }
 		@media (max-width: 640px){ .toolbar { flex-direction: column; align-items: stretch; } }
+
+		/* Dark mode overrides */
+		html[data-theme="dark"] body, .dark body { background: #0B0F15; color: #E5E7EB; }
+		html[data-theme="dark"] .header, .dark .header { background: #0F1621; border-bottom-color: #1F2A37; }
+		html[data-theme="dark"] .card, .dark .card { background: #0F1621; border-color: #1F2A37; }
+		html[data-theme="dark"] .input, .dark .input { background: #0B0F15; border-color: #1F2A37; color: #E5E7EB; }
+		html[data-theme="dark"] .badge, .dark .badge { background:#14202B; color:#E5E7EB; }
 	</style>
+    <script src="../shared/js/theme.js"></script>
 </head>
 <body>
 	<div class="header">
 		<div class="container" style="display:flex; align-items:center; justify-content:space-between;">
 			<div class="brand"><div class="brand-badge">4</div> 4Ticket Brand-Admin</div>
+			<button class="btn" onclick="Theme.toggle()" title="Theme umschalten" aria-label="Theme umschalten">🌗</button>
 			<div id="brand-user" class="badge" style="display:none;"></div>
 		</div>
 	</div>
