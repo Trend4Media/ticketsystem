@@ -26,6 +26,42 @@
     --radius-xl: 1rem;
 }
 
+/* Dark theme */
+html[data-theme="dark"], .dark {
+    --text-primary: #E5E7EB;
+    --text-secondary: #9CA3AF;
+    --text-muted: #6B7280;
+    --bg-primary: #0B0F15;
+    --bg-secondary: #0F1621;
+    --border-color: #1F2A37;
+}
+
+html[data-theme="dark"] body, .dark body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+html[data-theme="dark"] .nav, .dark .nav {
+    background: rgba(15, 22, 33, 0.95);
+    border-bottom-color: var(--border-color);
+}
+
+html[data-theme="dark"] .btn-secondary, .dark .btn-secondary {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+html[data-theme="dark"] .feature-card,
+.dark .feature-card,
+html[data-theme="dark"] .demo-card,
+.dark .demo-card,
+html[data-theme="dark"] .pricing-card,
+.dark .pricing-card {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
 html {
     scroll-behavior: smooth;
 }
