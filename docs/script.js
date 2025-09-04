@@ -1,22 +1,49 @@
-// Smooth scrolling for navigation links
+// Theme helpers (fallback in case inline script is blocked)
+function getStoredTheme(){ try{ var v=localStorage.getItem('theme'); if(v==='dark'||v==='light') return v; }catch(_){} return null; }
+function getSystemTheme(){ try{ return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch(_) { return 'light'; } }
+function getCurrentTheme(){ var a=document.documentElement.getAttribute('data-theme'); if(a==='dark'||a==='light') return a; return getStoredTheme() || getSystemTheme(); }
+function applyTheme(theme){ var h=document.documentElement; h.setAttribute('data-theme', theme); if(theme==='dark'){ h.classList.add('dark'); } else { h.classList.remove('dark'); } try{ localStorage.setItem('theme', theme); }catch(_){} }
+function toggleTheme(){ applyTheme(getCurrentTheme()==='dark' ? 'light' : 'dark'); }
+
+// Smooth scrolling for navigation links and UI effects
 document.addEventListener('DOMContentLoaded', function() {
     // Add scroll effect to navigation
     const nav = document.querySelector('.nav');
     let lastScrollTop = 0;
 
+    function isDark(){ return (document.documentElement.getAttribute('data-theme')||'') === 'dark'; }
+    function navBg(scrolled){
+        if (scrolled) return isDark() ? 'rgba(15, 22, 33, 0.98)' : 'rgba(255, 255, 255, 0.98)';
+        return isDark() ? 'rgba(15, 22, 33, 0.95)' : 'rgba(255, 255, 255, 0.95)';
+    }
+
+    // initialize nav background once
+    nav.style.background = navBg(false);
+
     window.addEventListener('scroll', function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         
         if (scrollTop > 100) {
-            nav.style.background = 'rgba(255, 255, 255, 0.98)';
+            nav.style.background = navBg(true);
             nav.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
         } else {
-            nav.style.background = 'rgba(255, 255, 255, 0.95)';
+            nav.style.background = navBg(false);
             nav.style.boxShadow = 'none';
         }
         
         lastScrollTop = scrollTop;
     });
+
+    // Theme toggle button (top right)
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', function(){
+            toggleTheme();
+            // update nav background immediately when toggled
+            const scrolled = (window.pageYOffset || document.documentElement.scrollTop) > 100;
+            nav.style.background = navBg(scrolled);
+        });
+    }
 
     // Animate elements on scroll
     const observerOptions = {
