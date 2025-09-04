@@ -538,3 +538,43 @@ body {
         font-size: 16px;
     }
 }
+
+/* Dark theme variables (applied when <html data-theme="dark"> or .dark is present) */
+html[data-theme="dark"],
+.dark {
+    /* Core Colors */
+    --text-primary: #E5E7EB;
+    --text-secondary: #9CA3AF;
+    --text-tertiary: #6B7280;
+    --text-muted: #4B5563;
+    --text-inverse: #0B0F15;
+
+    --background: #0B0F15;
+    --background-alt: #0F1621;
+    --surface: #0F1621;
+    --surface-hover: #14202B;
+    --surface-active: #1A2A38;
+
+    --border: #1F2A37;
+    --border-light: #1A2430;
+    --border-strong: #2A3A4A;
+
+    /* Gradients and shadows slightly intensified for dark */
+    --gradient-card: linear-gradient(145deg, rgba(20, 32, 43, 0.98) 0%, rgba(20, 32, 43, 0.9) 100%);
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.45);
+    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.6);
+    --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.65);
+}
+
+/* Surface adjustments in dark mode for specific components that used light rgba backgrounds */
+html[data-theme="dark"] .app-header,
+.dark .app-header {
+    background: rgba(15, 22, 33, 0.9);
+}
+
+html[data-theme="dark"] .customer-nav,
+.dark .customer-nav {
+    background: rgba(15, 22, 33, 0.9);
+}
