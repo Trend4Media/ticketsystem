@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* Brand Colors */
             --primary: #FE2C55;
             --primary-dark: #d12045;
             --primary-light: #ff5579;
@@ -17,6 +18,30 @@
             --success: #00D4AA;
             --warning: #FDCB6E;
             --danger: #ff4d4f;
+            
+            /* Light Theme Variables (default) */
+            --text-primary: #2D3436;
+            --text-secondary: #636E72;
+            --text-muted: #B2BEC3;
+            --background: #F8F9FA;
+            --surface: #FFFFFF;
+            --surface-hover: #F1F3F4;
+            --border: #E9ECEF;
+            --border-light: #F1F3F4;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.16);
+            --gradient-primary: linear-gradient(135deg, #FE2C55 0%, #ff5b7e 100%);
+            --gradient-secondary: linear-gradient(135deg, #25F4EE 0%, #7deaf0 100%);
+            --gradient-accent: linear-gradient(135deg, #25F4EE 0%, #74B9FF 100%);
+            --gradient-hero: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 60%, #F8F9FA 100%);
+            --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.9) 100%);
+        }
+
+        /* Dark theme variables (applied when <html data-theme="dark"> or .dark is present) */
+        html[data-theme="dark"],
+        .dark {
             --text-primary: #FFFFFF;
             --text-secondary: #A3A7AE;
             --text-muted: #7A7F86;
@@ -29,9 +54,6 @@
             --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
             --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.55);
             --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.6);
-            --gradient-primary: linear-gradient(135deg, #FE2C55 0%, #ff5b7e 100%);
-            --gradient-secondary: linear-gradient(135deg, #25F4EE 0%, #7deaf0 100%);
-            --gradient-accent: linear-gradient(135deg, #25F4EE 0%, #74B9FF 100%);
             --gradient-hero: linear-gradient(135deg, #0f0f0f 0%, #161823 60%, #0f0f0f 100%);
             --gradient-card: linear-gradient(145deg, rgba(22, 24, 35, 0.98) 0%, rgba(22, 24, 35, 0.9) 100%);
         }
@@ -482,7 +504,98 @@
             100% { transform: rotate(360deg); }
         }
     </style>
-    <script src="shared/js/theme.js"></script>
+    <script>
+        /* Simple global theme manager: toggles between 'light' and 'dark'.
+           - Applies `data-theme` attribute on <html>
+           - Adds/removes `dark` class on <html> for Tailwind compatibility
+           - Persists choice in localStorage under key 'theme'
+        */
+        (function(){
+            var STORAGE_KEY = 'theme';
+
+            function getSystemPreference(){
+                try {
+                    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                } catch (_) {
+                    return 'light';
+                }
+            }
+
+            function readStoredTheme(){
+                try {
+                    var v = localStorage.getItem(STORAGE_KEY);
+                    if (v === 'dark' || v === 'light') return v;
+                } catch(_) {}
+                return null;
+            }
+
+            function applyTheme(theme){
+                var html = document.documentElement;
+                html.setAttribute('data-theme', theme);
+                if (theme === 'dark') {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+                try { localStorage.setItem(STORAGE_KEY, theme); } catch(_) {}
+                var ev;
+                try {
+                    ev = new CustomEvent('themechange', { detail: { theme: theme } });
+                } catch(_) {
+                    ev = document.createEvent('CustomEvent');
+                    ev.initCustomEvent('themechange', false, false, { theme: theme });
+                }
+                window.dispatchEvent(ev);
+            }
+
+            function getCurrentTheme(){
+                var current = document.documentElement.getAttribute('data-theme');
+                if (current === 'dark' || current === 'light') return current;
+                var stored = readStoredTheme();
+                if (stored) return stored;
+                return getSystemPreference();
+            }
+
+            function toggle(){
+                var next = getCurrentTheme() === 'dark' ? 'light' : 'dark';
+                applyTheme(next);
+                return next;
+            }
+
+            function init(){
+                var initial = readStoredTheme() || getSystemPreference();
+                applyTheme(initial);
+                // Keep in sync with system preference changes
+                try {
+                    if (window.matchMedia) {
+                        var mq = window.matchMedia('(prefers-color-scheme: dark)');
+                        // modern spec
+                        if (typeof mq.addEventListener === 'function') {
+                            mq.addEventListener('change', function(){
+                                if (!readStoredTheme()) applyTheme(getSystemPreference());
+                            });
+                        } else if (typeof mq.addListener === 'function') {
+                            mq.addListener(function(){
+                                if (!readStoredTheme()) applyTheme(getSystemPreference());
+                            });
+                        }
+                    }
+                } catch(_) {}
+            }
+
+            // Expose API
+            window.Theme = {
+                apply: applyTheme,
+                toggle: toggle,
+                get: getCurrentTheme,
+                set: applyTheme,
+                init: init
+            };
+
+            // Initialize asap
+            init();
+        })();
+    </script>
 </head>
 <body>
     <div style="position: fixed; top: 16px; right: 16px; z-index: 1000;">
